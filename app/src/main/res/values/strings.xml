@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Graduation Project</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_back">Welcome Back !</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="stay_logged_in">Stay Logged In</string>
+    <string name="forgot_your_password">Forgot Your Password?</string>
+    <string name="sign_in">Sign in</string>
+</resources>
