@@ -1,6 +1,7 @@
 package com.example.graduationproject.ui.auth.login
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validatePass
@@ -25,6 +27,7 @@ class LoginFragment : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
     val viewModel: LoginViewModel by viewModels()
+    val user = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,20 @@ class LoginFragment : Fragment() {
                     loginUser(getUserData())
 
             }
+        }
+
+        binding.txtPassword.doOnTextChanged { s, _, _, _ ->
+            if (s?.length!=0){
+                binding.txtPasswordContainer.error = null
+                binding.btnSignIn.setBackgroundResource(R.drawable.checkbox_checked)
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.setTextColor(Color.WHITE)
+            } else{
+                binding.btnSignIn.setBackgroundResource(R.drawable.edittext_border)
+                binding.btnSignIn.isEnabled = false
+                binding.btnSignIn.setTextColor(resources.getColor(R.color.validateTextBButton))
+            }
+
         }
 
 
@@ -97,6 +114,7 @@ class LoginFragment : Fragment() {
             "password should be at least 6 letters or numbers"
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
             binding.txtEmailContainer.error = null
+
         }
         binding.txtPassword.doOnTextChanged { _, _, _, _ ->
             binding.txtPasswordContainer.error = null

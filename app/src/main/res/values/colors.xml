@@ -10,4 +10,5 @@
 
     <color name="primary_gray">#586276</color>
     <color name="background">#dbdcdc</color>
+    <color name="validateTextBButton">#7d7771</color>
 </resources>
