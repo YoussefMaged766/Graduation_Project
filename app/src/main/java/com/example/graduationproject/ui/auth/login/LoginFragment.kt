@@ -44,6 +44,7 @@ class LoginFragment : Fragment() {
         binding.btnSignIn.setOnClickListener {
             lifecycleScope.launch {
                 loginUser(getUserData())
+
             }
         }
 
@@ -56,17 +57,20 @@ class LoginFragment : Fragment() {
                 when (it.status) {
                     Status.SUCCESS -> {
                         startActivity(Intent(requireActivity(), HomeActivity::class.java))
-                        Toast.makeText(requireContext(), "login Success", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), it.data?.body()?.message.toString(), Toast.LENGTH_SHORT).show()
+
                     }
                     Status.LOADING -> {}
                     Status.ERROR -> {
-                        Log.e("loginUser: ", it.message.toString())
+                        Toast.makeText(requireContext(), it.message.toString(), Toast.LENGTH_SHORT).show()
                     }
                     else -> {}
                 }
             }
         }
     }
+
+
 
     fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
