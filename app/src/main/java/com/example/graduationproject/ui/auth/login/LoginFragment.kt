@@ -27,7 +27,7 @@ class LoginFragment : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
     val viewModel: LoginViewModel by viewModels()
-    val user = User()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,20 +55,7 @@ class LoginFragment : Fragment() {
 
             }
         }
-
-        binding.txtPassword.doOnTextChanged { s, _, _, _ ->
-            if (s?.length!=0){
-                binding.txtPasswordContainer.error = null
-                binding.btnSignIn.setBackgroundResource(R.drawable.checkbox_checked)
-                binding.btnSignIn.isEnabled = true
-                binding.btnSignIn.setTextColor(Color.WHITE)
-            } else{
-                binding.btnSignIn.setBackgroundResource(R.drawable.edittext_border)
-                binding.btnSignIn.isEnabled = false
-                binding.btnSignIn.setTextColor(resources.getColor(R.color.validateTextBButton))
-            }
-
-        }
+        validateBtn()
 
 
     }
@@ -80,7 +67,11 @@ class LoginFragment : Fragment() {
                     Status.SUCCESS -> {
                         startActivity(Intent(requireActivity(), HomeActivity::class.java))
                         activity?.finish()
-                        Constants.customToast(requireContext(),requireActivity(),it.data?.body()?.message.toString())
+                        Constants.customToast(
+                            requireContext(),
+                            requireActivity(),
+                            it.data?.body()?.message.toString()
+                        )
                         binding.frameLoading.visibility = View.GONE
 
                     }
@@ -88,7 +79,11 @@ class LoginFragment : Fragment() {
                         binding.frameLoading.visibility = View.VISIBLE
                     }
                     Status.ERROR -> {
-                        Constants.customToast(requireContext(),requireActivity(),it.message.toString())
+                        Constants.customToast(
+                            requireContext(),
+                            requireActivity(),
+                            it.message.toString()
+                        )
                         binding.frameLoading.visibility = View.GONE
                     }
                     else -> {}
@@ -120,6 +115,22 @@ class LoginFragment : Fragment() {
             binding.txtPasswordContainer.error = null
         }
         return false
+    }
+
+    private fun validateBtn() {
+        binding.txtPassword.doOnTextChanged { s, _, _, _ ->
+            if (s?.length != 0) {
+                binding.txtPasswordContainer.error = null
+                binding.btnSignIn.setBackgroundResource(R.drawable.checkbox_checked)
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.setTextColor(Color.WHITE)
+            } else {
+                binding.btnSignIn.setBackgroundResource(R.drawable.edittext_border)
+                binding.btnSignIn.isEnabled = false
+                binding.btnSignIn.setTextColor(resources.getColor(R.color.validateTextBButton))
+            }
+
+        }
     }
 
 }
