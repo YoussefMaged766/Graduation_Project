@@ -3,8 +3,8 @@ package com.example.graduationproject.models
 import com.google.gson.annotations.SerializedName
 
 data class User(
-    val email: String?=null,
-    val password: String?=null,
+    val email: String="",
+    val password: String="",
     val confirmPassword: String?=null,
     val firstName: String?=null,
     val lastName: String?=null,

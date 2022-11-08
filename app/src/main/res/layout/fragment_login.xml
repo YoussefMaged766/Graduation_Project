@@ -33,7 +33,6 @@
         android:id="@+id/txtLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:fontFamily="@font/poppins"
         android:text="@string/login_to_your_account"
         android:textColor="@color/primary_gray"
@@ -153,6 +152,21 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        android:src="@drawable/path"/>-->
+
+    <FrameLayout
+        android:id="@+id/frameLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#60050505"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:padding="@dimen/_8sdp"/>
+    </FrameLayout>
 
 
 

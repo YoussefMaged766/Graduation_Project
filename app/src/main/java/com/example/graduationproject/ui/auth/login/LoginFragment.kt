@@ -8,8 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.validateEmail
+import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentLoginBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.ui.main.home.HomeActivity
@@ -43,7 +47,8 @@ class LoginFragment : Fragment() {
 
         binding.btnSignIn.setOnClickListener {
             lifecycleScope.launch {
-                loginUser(getUserData())
+                if (emailAndPassValidation(getUserData()))
+                    loginUser(getUserData())
 
             }
         }
@@ -57,12 +62,17 @@ class LoginFragment : Fragment() {
                 when (it.status) {
                     Status.SUCCESS -> {
                         startActivity(Intent(requireActivity(), HomeActivity::class.java))
-                        Toast.makeText(requireContext(), it.data?.body()?.message.toString(), Toast.LENGTH_SHORT).show()
+                        activity?.finish()
+                        Constants.customToast(requireContext(),requireActivity(),it.data?.body()?.message.toString())
+                        binding.frameLoading.visibility = View.GONE
 
                     }
-                    Status.LOADING -> {}
+                    Status.LOADING -> {
+                        binding.frameLoading.visibility = View.VISIBLE
+                    }
                     Status.ERROR -> {
-                        Toast.makeText(requireContext(), it.message.toString(), Toast.LENGTH_SHORT).show()
+                        Constants.customToast(requireContext(),requireActivity(),it.message.toString())
+                        binding.frameLoading.visibility = View.GONE
                     }
                     else -> {}
                 }
@@ -71,12 +81,27 @@ class LoginFragment : Fragment() {
     }
 
 
-
     fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
         val password = binding.txtPassword.text.toString().trim()
-
         return User(email, password)
+    }
+
+    private fun emailAndPassValidation(user: User): Boolean {
+        if (user.email.validateEmail() && user.password.validatePass()) {
+            return true
+        }
+        if (!user.email.validateEmail()) binding.txtEmailContainer.error =
+            "Please enter a valid E-mail"
+        if (!user.password.validatePass()) binding.txtPasswordContainer.error =
+            "password should be at least 6 letters or numbers"
+        binding.txtEmail.doOnTextChanged { _, _, _, _ ->
+            binding.txtEmailContainer.error = null
+        }
+        binding.txtPassword.doOnTextChanged { _, _, _, _ ->
+            binding.txtPasswordContainer.error = null
+        }
+        return false
     }
 
 }
