@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.auth.signup.SignUpFragment">
+    tools:context=".ui.auth.signup.SignUpFragment"
+    android:background="@color/background">
 
     <ImageView
         android:id="@+id/imgLogo"
@@ -62,10 +63,11 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconMode="clear_text"
-        app:hintTextColor="#80212121"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img1">
+        app:layout_constraintTop_toBottomOf="@id/img1"
+        android:textColorHint="#80212121">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtFirstName"
@@ -87,10 +89,11 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconMode="clear_text"
-        app:hintTextColor="#80212121"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer">
+        app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer"
+        android:textColorHint="#80212121">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtLastName"
@@ -112,10 +115,11 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconMode="clear_text"
-        app:hintTextColor="#80212121"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer">
+        app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer"
+        android:textColorHint="#80212121">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtEmail"
@@ -140,10 +144,12 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconMode="password_toggle"
-        app:hintTextColor="#80212121"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtEmailContainer">
+        app:layout_constraintTop_toBottomOf="@id/txtEmailContainer"
+        android:textColorHint="#80212121"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtPassword"
@@ -166,10 +172,13 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconMode="password_toggle"
-        app:hintTextColor="#80212121"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer">
+        app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer"
+        android:textColorHint="#80212121"
+
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtPasswordConfirm"
