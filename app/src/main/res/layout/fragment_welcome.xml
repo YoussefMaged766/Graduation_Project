@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.auth.welcome.WelcomeFragment"
+    android:background="@color/background">
+
+    <TextView
+        android:id="@+id/txtReco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recobooks"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/_8sdp"
+        android:textSize="@dimen/_50sdp"
+        android:textColor="#202d4c"
+        android:fontFamily="@font/poppins"
+        />
+    <TextView
+        android:id="@+id/txtWelcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtReco"
+        android:text="@string/welcome"
+        android:gravity="center"
+        android:textSize="@dimen/_14sdp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_bold"
+        android:maxLines="2"
+        android:autoSizeTextType="uniform"
+
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSignIn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16sdp"
+        android:fontFamily="@font/poppins"
+        android:padding="@dimen/_8sdp"
+        android:text="@string/sign_in"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_16sdp"
+        app:backgroundTint="@null"
+        android:background="@drawable/checkbox_checked"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
+        android:elevation="@dimen/_10sdp"
+        app:elevation="@dimen/_10sdp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSignUp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16sdp"
+        android:fontFamily="@font/poppins"
+        android:padding="@dimen/_8sdp"
+        android:text="@string/sign_up"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_16sdp"
+        app:backgroundTint="@null"
+        android:background="@drawable/checkbox_checked"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+    <ImageView
+        android:id="@+id/img1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btnSignUp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/tree3"
+        android:visibility="visible"
+
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img1"
+        android:src="@drawable/logo"
+        android:scaleType="centerCrop"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

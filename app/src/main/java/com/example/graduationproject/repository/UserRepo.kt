@@ -30,10 +30,20 @@ class UserRepo {
             emit(Resource.error(null,errorResponse?.message.toString()))
         }
 
-
-
-
     }.flowOn(Dispatchers.IO)
 
+
+    suspend fun signUpUser(user: User) = flow {
+        emit(Resource.loading(null))
+        val response = ApiManager.getwebbservices().signUpUser(user)
+        try {
+            if (response.code() == 201 && response.isSuccessful) {
+                emit(Resource.success(response))
+            }
+        } catch (e:Exception){
+            emit(Resource.error(null,e.message.toString()))
+        }
+
+    }.flowOn(Dispatchers.IO)
 
 }

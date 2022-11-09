@@ -9,4 +9,11 @@
     <string name="stay_logged_in">Stay Logged In</string>
     <string name="forgot_your_password">Forgot Your Password?</string>
     <string name="sign_in">Sign in</string>
+    <string name="recobooks">RecoBooks</string>
+    <string name="welcome">Find your favorite book with us. \nGet recommendations from your interests.</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>

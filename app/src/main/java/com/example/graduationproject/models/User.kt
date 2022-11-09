@@ -13,7 +13,7 @@ data class User(
 
 )
 
-data class UserResponse(
+data class UserResponseSignUp(
 
     @field:SerializedName("savedUser")
     val savedUser: SavedUser? = null,
