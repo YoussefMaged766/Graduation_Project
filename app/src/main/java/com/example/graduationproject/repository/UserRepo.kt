@@ -3,6 +3,7 @@ package com.example.graduationproject.repository
 import android.util.Log
 import com.example.graduationproject.models.User
 import com.example.graduationproject.models.UserResponseLogin
+import com.example.graduationproject.models.UserResponseSignUp
 import com.example.graduationproject.utils.ApiManager
 import com.example.graduationproject.utils.Resource
 import com.google.gson.Gson
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class UserRepo {
-
+    val gson = Gson()
     suspend fun loginUser(user: User) = flow {
         emit(Resource.loading(null))
         val response = ApiManager.getwebbservices().loginUser(user)
@@ -22,12 +23,13 @@ class UserRepo {
             Log.e("loginUser: ", response.body().toString())
         } else if (response.code() == 401) {
 
-            val gson = Gson()
+
             val type = object : TypeToken<UserResponseLogin>() {}.type
-            val errorResponse: UserResponseLogin? = gson.fromJson(response.errorBody()!!.charStream(), type)
+            val errorResponse: UserResponseLogin? =
+                gson.fromJson(response.errorBody()!!.charStream(), type)
 
             Log.e("loginUsereeeee: ", errorResponse?.message.toString())
-            emit(Resource.error(null,errorResponse?.message.toString()))
+            emit(Resource.error(null, errorResponse?.message.toString()))
         }
 
     }.flowOn(Dispatchers.IO)
@@ -39,9 +41,15 @@ class UserRepo {
         try {
             if (response.code() == 201 && response.isSuccessful) {
                 emit(Resource.success(response))
+            } else {
+                val type = object : TypeToken<UserResponseSignUp>() {}.type
+                val errorResponse: UserResponseSignUp? =
+                    gson.fromJson(response.errorBody()!!.charStream(), type)
+                Log.e("signUpUser: ", errorResponse?.data?.get(0)?.msg.toString())
+                emit(Resource.error(null, errorResponse?.data?.get(0)?.msg.toString()))
             }
-        } catch (e:Exception){
-            emit(Resource.error(null,e.message.toString()))
+        } catch (e: Exception) {
+            emit(Resource.error(null, e.message.toString()))
         }
 
     }.flowOn(Dispatchers.IO)

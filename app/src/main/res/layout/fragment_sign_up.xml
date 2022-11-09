@@ -123,7 +123,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/edittext_border"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:inputType="textEmailAddress"/>
 
 
     </com.google.android.material.textfield.TextInputLayout>

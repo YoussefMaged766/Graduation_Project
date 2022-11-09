@@ -19,7 +19,10 @@ data class UserResponseSignUp(
     val savedUser: SavedUser? = null,
 
     @field:SerializedName("message")
-    val message: String? = null
+    val message: String? = null,
+
+    @field:SerializedName("data")
+val data: List<DataItem?>? = null,
 )
 
 data class SavedUser(
@@ -45,6 +48,23 @@ data class SavedUser(
     @field:SerializedName("email")
     val email: String? = null
 )
+
+
+data class DataItem(
+
+    @field:SerializedName("msg")
+    val msg: String? = null,
+
+    @field:SerializedName("param")
+    val param: String? = null,
+
+    @field:SerializedName("location")
+    val location: String? = null,
+
+    @field:SerializedName("value")
+    val value: String? = null
+)
+
 
 data class UserResponseLogin(
 
