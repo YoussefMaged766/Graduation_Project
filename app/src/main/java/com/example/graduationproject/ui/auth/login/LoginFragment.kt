@@ -20,9 +20,10 @@ import com.example.graduationproject.databinding.FragmentLoginBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.ui.main.home.HomeActivity
 import com.example.graduationproject.utils.Status
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
