@@ -53,7 +53,6 @@ class LoginFragment : Fragment() {
             lifecycleScope.launch {
                 if (emailAndPassValidation(getUserData()))
                     loginUser(getUserData())
-
             }
         }
         validateBtn()

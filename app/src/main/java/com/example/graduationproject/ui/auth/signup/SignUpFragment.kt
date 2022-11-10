@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -51,8 +52,6 @@ class SignUpFragment : Fragment() {
             lifecycleScope.launch {
                 if (userDataValidation(getUserData())){
                     signUpUser(getUserData())
-                }
-
             }
         }
         validateBtn()
@@ -96,9 +95,10 @@ class SignUpFragment : Fragment() {
         return User(email, password, confirmPassword, firstName, lastName)
     }
 
+
     private fun userDataValidation(user: User): Boolean {
-        if (user.email.validateEmail() && user.password.validatePass() && user.password == user.confirmPassword
-            && user.firstName?.validateFirstname()!! && user.lastName!!.validateLastname()) {
+        if (user.email.validateEmail() && user.password.validatePass() && user.confirmPassword?.validatePass()!!
+            && user.firstName?.validateFirstname()!! && user.firstName?.validateLastname()!!) {
             return true
         }
         if (!user.email.validateEmail()) binding.txtEmailContainer.error =
