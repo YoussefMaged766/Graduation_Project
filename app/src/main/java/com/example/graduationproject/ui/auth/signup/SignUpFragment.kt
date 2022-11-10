@@ -17,11 +17,10 @@ import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentSignUpBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
+
 class SignUpFragment : Fragment() {
 
     lateinit var binding: FragmentSignUpBinding
