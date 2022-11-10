@@ -49,6 +49,7 @@ class SignUpFragment : Fragment() {
                 signUpUser(getUserData())
             }
         }
+        validateBtn()
     }
 
     suspend fun signUpUser(user: User) {
