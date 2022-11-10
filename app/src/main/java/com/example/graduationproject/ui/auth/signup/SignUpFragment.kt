@@ -13,14 +13,17 @@ import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
+import com.example.graduationproject.constants.Constants.Companion.validateFirstname
+import com.example.graduationproject.constants.Constants.Companion.validateLastname
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentSignUpBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     lateinit var binding: FragmentSignUpBinding
@@ -46,7 +49,10 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSignUp.setOnClickListener {
             lifecycleScope.launch {
-                signUpUser(getUserData())
+                if (userDataValidation(getUserData())){
+                    signUpUser(getUserData())
+                }
+
             }
         }
         validateBtn()
@@ -90,26 +96,43 @@ class SignUpFragment : Fragment() {
         return User(email, password, confirmPassword, firstName, lastName)
     }
 
-    private fun emailAndPassValidation(user: User): Boolean {
-        if (user.email.validateEmail() && user.password.validatePass()) {
+    private fun userDataValidation(user: User): Boolean {
+        if (user.email.validateEmail() && user.password.validatePass() && user.password == user.confirmPassword
+            && user.firstName?.validateFirstname()!! && user.lastName!!.validateLastname()) {
             return true
         }
         if (!user.email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
         if (!user.password.validatePass()) binding.txtPasswordContainer.error =
             "password should be at least 6 letters or numbers"
+        if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
+            "confirm password is not equal to password "
+        if (!user.firstName?.validateFirstname()!!) binding.txtFirstNameContainer.error =
+            "Firstname should be at least 3 letters "
+
+        if (!user.lastName?.validateLastname()!!) binding.txtLastNameContainer.error =
+            "Lastname should be at least 4 letters "
+
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
             binding.txtEmailContainer.error = null
-
         }
         binding.txtPassword.doOnTextChanged { _, _, _, _ ->
             binding.txtPasswordContainer.error = null
+        }
+        binding.txtPasswordConfirm.doOnTextChanged { _, _, _, _ ->
+            binding.txtPasswordConfirmContainer.error = null
+        }
+        binding.txtFirstName.doOnTextChanged { _, _, _, _ ->
+            binding.txtFirstNameContainer.error = null
+        }
+        binding.txtLastName.doOnTextChanged { _, _, _, _ ->
+            binding.txtLastNameContainer.error = null
         }
         return false
     }
 
     private fun validateBtn() {
-        binding.txtPassword.doOnTextChanged { s, _, _, _ ->
+        binding.txtPasswordConfirm.doOnTextChanged { s, _, _, _ ->
             if (s?.length != 0) {
                 binding.txtPasswordContainer.error = null
                 binding.btnSignUp.setBackgroundResource(R.drawable.checkbox_checked)
