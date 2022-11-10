@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.example.graduationproject.R
+import com.example.graduationproject.constants.Constants.Companion.validatePass
 
 class Constants {
     companion object{
@@ -23,6 +24,17 @@ class Constants {
             return !(this.isEmpty() || this.length < 6)
         }
 
+        fun String.validateConfirmPass(): Boolean {
+            return !(this.isEmpty() || this.length < 6 || this.equals(this.validateConfirmPass()) )
+        }
+
+        fun String.validateFirstname(): Boolean {
+            return !(this.isEmpty() || this.length < 3)
+        }
+
+        fun String.validateLastname(): Boolean {
+            return !(this.isEmpty() || this.length < 4)
+        }
         fun customToast(context: Context, activity: Activity, msg: String) {
             val inflater: LayoutInflater = activity.layoutInflater
             val layout: View = inflater.inflate(
