@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
-import com.example.graduationproject.constants.Constants.Companion.validateConfirmPass
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validateFirstname
 import com.example.graduationproject.constants.Constants.Companion.validateLastname
@@ -95,7 +94,7 @@ class SignUpFragment : Fragment() {
     }
 
     private fun userDataValidation(user: User): Boolean {
-        if (user.email.validateEmail() && user.password.validatePass() && user.confirmPassword?.validateConfirmPass()!!
+        if (user.email.validateEmail() && user.password.validatePass() && user.confirmPassword?.validatePass()!!
             && user.firstName?.validateFirstname()!! && user.firstName?.validateLastname()!!) {
             return true
         }
@@ -103,29 +102,28 @@ class SignUpFragment : Fragment() {
             "Please enter a valid E-mail"
         if (!user.password.validatePass()) binding.txtPasswordContainer.error =
             "password should be at least 6 letters or numbers"
-        if (!user.password.validateConfirmPass()) binding.txtFirstNameContainer.error =
+        if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
             "confirm password is not equal to password "
-        if (!user.password.validateFirstname()) binding.txtFirstNameContainer.error =
+        if (!user.firstName?.validateFirstname()!!) binding.txtFirstNameContainer.error =
             "Firstname should be at least 3 letters "
 
-        if (!user.password.validateLastname()) binding.txtLastNameContainer.error =
+        if (!user.lastName?.validateLastname()!!) binding.txtLastNameContainer.error =
             "Lastname should be at least 4 letters "
 
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
             binding.txtEmailContainer.error = null
-
         }
         binding.txtPassword.doOnTextChanged { _, _, _, _ ->
             binding.txtPasswordContainer.error = null
         }
         binding.txtPasswordConfirm.doOnTextChanged { _, _, _, _ ->
-            binding.txtPasswordContainer.error = null
+            binding.txtPasswordConfirmContainer.error = null
         }
         binding.txtFirstName.doOnTextChanged { _, _, _, _ ->
-            binding.txtPasswordContainer.error = null
+            binding.txtFirstNameContainer.error = null
         }
         binding.txtLastName.doOnTextChanged { _, _, _, _ ->
-            binding.txtPasswordContainer.error = null
+            binding.txtLastNameContainer.error = null
         }
         return false
     }
