@@ -57,7 +57,6 @@ class LoginFragment : Fragment() {
         }
         validateBtn()
 
-
     }
 
     suspend fun loginUser(user: User) {
