@@ -1,15 +1,19 @@
 package com.example.graduationproject.ui.auth.signup
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.validateEmail
+import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentSignUpBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
@@ -83,5 +87,39 @@ class SignUpFragment : Fragment() {
         val confirmPassword = binding.txtPasswordConfirm.text?.trim().toString()
 
         return User(email, password, confirmPassword, firstName, lastName)
+    }
+
+    private fun emailAndPassValidation(user: User): Boolean {
+        if (user.email.validateEmail() && user.password.validatePass()) {
+            return true
+        }
+        if (!user.email.validateEmail()) binding.txtEmailContainer.error =
+            "Please enter a valid E-mail"
+        if (!user.password.validatePass()) binding.txtPasswordContainer.error =
+            "password should be at least 6 letters or numbers"
+        binding.txtEmail.doOnTextChanged { _, _, _, _ ->
+            binding.txtEmailContainer.error = null
+
+        }
+        binding.txtPassword.doOnTextChanged { _, _, _, _ ->
+            binding.txtPasswordContainer.error = null
+        }
+        return false
+    }
+
+    private fun validateBtn() {
+        binding.txtPassword.doOnTextChanged { s, _, _, _ ->
+            if (s?.length != 0) {
+                binding.txtPasswordContainer.error = null
+                binding.btnSignUp.setBackgroundResource(R.drawable.checkbox_checked)
+                binding.btnSignUp.isEnabled = true
+                binding.btnSignUp.setTextColor(Color.WHITE)
+            } else {
+                binding.btnSignUp.setBackgroundResource(R.drawable.edittext_border)
+                binding.btnSignUp.isEnabled = false
+                binding.btnSignUp.setTextColor(resources.getColor(R.color.validateTextBButton))
+            }
+
+        }
     }
 }
