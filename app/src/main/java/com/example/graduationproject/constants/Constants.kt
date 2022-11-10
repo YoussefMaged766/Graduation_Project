@@ -24,10 +24,6 @@ class Constants {
             return !(this.isEmpty() || this.length < 6)
         }
 
-        fun String.validateConfirmPass(): Boolean {
-            return !(this.isEmpty() || this.length < 6 || this.equals(this.validateConfirmPass()) )
-        }
-
         fun String.validateFirstname(): Boolean {
             return !(this.isEmpty() || this.length < 3)
         }
