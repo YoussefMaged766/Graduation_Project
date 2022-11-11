@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
@@ -56,6 +57,7 @@ class LoginFragment : Fragment() {
             }
         }
         validateBtn()
+        animation()
 
     }
 
@@ -130,6 +132,22 @@ class LoginFragment : Fragment() {
             }
 
         }
+    }
+
+    fun animation(){
+        val an = AnimationUtils.loadAnimation(requireContext() ,R.anim.ftb)
+        val an2 = AnimationUtils.loadAnimation(requireContext(),R.anim.fendtostart)
+        val an3 = AnimationUtils.loadAnimation(requireContext(),R.anim.fstarttoendt)
+        val an4 = AnimationUtils.loadAnimation(requireContext(),R.anim.frombottomtotop)
+        binding.imgLogo.startAnimation(an)
+        binding.txtWelcome.startAnimation(an)
+        binding.txtLogin.startAnimation(an)
+        binding.txtEmailContainer.startAnimation(an2)
+        binding.txtPasswordContainer.startAnimation(an3)
+        binding.checkBox.startAnimation(an4)
+        binding.forgetPassword.startAnimation(an4)
+        binding.btnSignIn.startAnimation(an4)
+
     }
 
 }
