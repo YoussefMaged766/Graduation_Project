@@ -9,7 +9,16 @@
         android:id="@+id/loginFragment"
         android:name="com.example.graduationproject.ui.auth.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_forgetPasswordFragment"
+            app:destination="@id/forgetPasswordFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_exit_anim"
+            app:popExitAnim="@anim/pop_enter_anim"
+            />
+    </fragment>
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.example.graduationproject.ui.auth.welcome.WelcomeFragment"
@@ -45,5 +54,33 @@
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_exit_anim"
             app:popExitAnim="@anim/pop_enter_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/forgetPasswordFragment"
+        android:name="com.example.graduationproject.ui.auth.forgetpassword.ForgetPasswordFragment"
+        android:label="fragment_forget_password"
+        tools:layout="@layout/fragment_forget_password" >
+        <action
+            android:id="@+id/action_forgetPasswordFragment_to_verifyAccountFragment"
+            app:destination="@id/verifyAccountFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_exit_anim"
+            app:popExitAnim="@anim/pop_enter_anim"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyAccountFragment"
+        android:name="com.example.graduationproject.ui.auth.verify.VerifyAccountFragment"
+        android:label="fragment_verify_account"
+        tools:layout="@layout/fragment_verify_account" >
+        <action
+            android:id="@+id/action_verifyAccountFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_exit_anim"
+            app:popExitAnim="@anim/pop_enter_anim"
+            />
     </fragment>
 </navigation>

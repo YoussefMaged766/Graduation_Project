@@ -16,4 +16,9 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="find_your_account">Find your account</string>
+    <string name="enter_your_email">Enter Your Email.</string>
+    <string name="find_account">Find account</string>
+    <string name="enter_code">Enter Code</string>
+    <string name="verify">Verify</string>
 </resources>

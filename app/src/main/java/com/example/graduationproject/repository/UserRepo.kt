@@ -1,6 +1,7 @@
 package com.example.graduationproject.repository
 
 import android.util.Log
+import com.example.graduationproject.models.GenerationCodeResponse
 import com.example.graduationproject.models.User
 import com.example.graduationproject.models.UserResponseLogin
 import com.example.graduationproject.models.UserResponseSignUp
@@ -35,7 +36,6 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
 
     }.flowOn(Dispatchers.IO)
 
-
     suspend fun signUpUser(user: User) = flow {
         emit(Resource.loading(null))
         val response = webServices.signUpUser(user)
@@ -54,5 +54,26 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
         }
 
     }.flowOn(Dispatchers.IO)
+
+    suspend fun forgetPassword(user: User) = flow {
+
+        val response = webServices.forgetPassword(user)
+        emit(Resource.loading(null))
+        try {
+            if (response.isSuccessful && response.code() ==200){
+                emit(Resource.success(response))
+            } else{
+                val type = object : TypeToken<GenerationCodeResponse>() {}.type
+                val errorResponse: GenerationCodeResponse? =
+                    gson.fromJson(response.errorBody()!!.charStream(), type)
+                emit(Resource.error(null,errorResponse?.message.toString()))
+            }
+        } catch (e:Exception){
+            emit(Resource.error(null,e.message.toString()))
+        }
+
+    }.flowOn(Dispatchers.IO)
+
+
 
 }

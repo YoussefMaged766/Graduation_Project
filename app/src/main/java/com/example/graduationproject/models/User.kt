@@ -77,3 +77,12 @@ data class UserResponseLogin(
     @field:SerializedName("message")
     val message: String? = null
 )
+
+data class GenerationCodeResponse(
+
+    @field:SerializedName("code")
+    val code: Int? = null,
+
+    @field:SerializedName("message")
+    val message: String? = null
+)

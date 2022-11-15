@@ -1,6 +1,7 @@
 package com.example.graduationproject.utils
 
 
+import com.example.graduationproject.models.GenerationCodeResponse
 import com.example.graduationproject.models.User
 import com.example.graduationproject.models.UserResponseLogin
 import com.example.graduationproject.models.UserResponseSignUp
@@ -16,6 +17,9 @@ interface WebServices {
 
     @POST("auth/signup")
     suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>
+
+    @POST("password-reset")
+    suspend fun forgetPassword(@Body user: User) : Response<GenerationCodeResponse>
 
 
 }

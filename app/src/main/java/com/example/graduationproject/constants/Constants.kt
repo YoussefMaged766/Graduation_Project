@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 
@@ -46,5 +49,8 @@ class Constants {
             toast.view = layout
             toast.show()
         }
+
+        val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
+
     }
 }

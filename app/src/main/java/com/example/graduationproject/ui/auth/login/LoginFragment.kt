@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
@@ -55,6 +56,9 @@ class LoginFragment : Fragment() {
                 if (emailAndPassValidation(getUserData()))
                     loginUser(getUserData())
             }
+        }
+        binding.forgetPassword.setOnClickListener {
+            view.findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
         }
         validateBtn()
         animation()
