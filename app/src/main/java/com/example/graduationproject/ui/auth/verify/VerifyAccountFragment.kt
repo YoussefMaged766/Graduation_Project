@@ -54,7 +54,7 @@ class VerifyAccountFragment : Fragment() {
             lifecycleScope.launch {
                 if (codeValidation()) {
                     verify()
-                    clearDataStore()
+
                 }
             }
         }
@@ -72,8 +72,10 @@ class VerifyAccountFragment : Fragment() {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
             findNavController().navigate(R.id.action_verifyAccountFragment_to_loginFragment)
             binding.frameLoading.visibility =View.GONE
+            clearDataStore()
         } else {
             Constants.customToast(requireContext(), requireActivity(), "Code Isn't Correct")
+            binding.frameLoading.visibility =View.GONE
         }
     }
 
