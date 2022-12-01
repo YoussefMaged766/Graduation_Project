@@ -1,7 +1,9 @@
 package com.example.graduationproject.ui.auth.forgetpassword
 
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -62,13 +64,13 @@ class ForgetPasswordFragment : Fragment() {
 
     }
 
-    fun getUserData(): User {
+    fun getUserData(): String {
         val email = binding.txtEmail.text?.trim().toString()
-        return User(email)
+        return email
     }
 
-    suspend fun sendEmail(user: User) {
-        viewModel.forgetPassword(user).collect {
+    suspend fun sendEmail(email: String) {
+        viewModel.forgetPassword(email).collect {
             it.let {
                 when (it.status) {
                     Status.SUCCESS -> {
@@ -91,6 +93,7 @@ class ForgetPasswordFragment : Fragment() {
                             requireActivity(),
                             it.message.toString()
                         )
+                        Log.d(TAG, "sendEmail: ${it.message.toString()}")
                     }
                     else -> {}
                 }
@@ -114,11 +117,11 @@ class ForgetPasswordFragment : Fragment() {
         }
     }
 
-     fun emailValidation(user: User): Boolean {
-        if (user.email.validateEmail()) {
+     fun emailValidation(email: String): Boolean {
+        if (email.validateEmail()) {
             return true
         }
-        if (!user.email.validateEmail()) binding.txtEmailContainer.error =
+        if (!email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
 
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->

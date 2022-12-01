@@ -116,8 +116,8 @@
 
     <ImageView
         android:id="@+id/img1"
-        android:layout_width="335dp"
-        android:layout_height="252dp"
+        android:layout_width="326dp"
+        android:layout_height="244dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/bibliophile_cuate"
         android:visibility="visible"

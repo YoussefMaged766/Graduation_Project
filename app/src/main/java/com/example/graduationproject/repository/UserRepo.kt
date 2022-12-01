@@ -55,9 +55,9 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
 
     }.flowOn(Dispatchers.IO)
 
-    suspend fun forgetPassword(user: User) = flow {
+    suspend fun forgetPassword(email: String) = flow {
 
-        val response = webServices.forgetPassword(user)
+        val response = webServices.forgetPassword(email)
         emit(Resource.loading(null))
         try {
             if (response.isSuccessful && response.code() ==200){
@@ -73,7 +73,4 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
         }
 
     }.flowOn(Dispatchers.IO)
-
-
-
 }

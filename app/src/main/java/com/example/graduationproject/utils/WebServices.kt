@@ -12,14 +12,14 @@ import retrofit2.http.POST
 interface WebServices {
 
 
-    @POST("auth/login")
+    @POST("login")
     suspend fun loginUser(@Body user: User) : Response<UserResponseLogin>
 
-    @POST("auth/signup")
+    @POST("signup")
     suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>
 
-    @POST("auth/password-reset")
-    suspend fun forgetPassword(@Body user: User) : Response<GenerationCodeResponse>
+    @POST("password-reset")
+    suspend fun forgetPassword(@Body email: String) : Response<GenerationCodeResponse>
 
 
 }

@@ -32,6 +32,7 @@ class VerifyAccountFragment : Fragment() {
 
     lateinit var binding: FragmentVerifyAccountBinding
     private lateinit var dataStore: DataStore<Preferences>
+    var txtCode = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -64,19 +65,19 @@ class VerifyAccountFragment : Fragment() {
     }
 
     suspend fun verify() {
-        var totalTxt = binding.txtCode1.text.toString().toInt()
-                        +binding.txtCode2.text.toString().toInt()
-                        +binding.txtCode3.text.toString().toInt()
-                        +binding.txtCode4.text.toString().toInt()
-                        binding.txtCode5.text.toString().toInt()
-                        +binding.txtCode6.text.toString().toInt()
-        val txtCode = totalTxt
+        var totalTxt = binding.txtCode1.text.toString().toInt()!!
+                        +binding.txtCode2.text.toString().toInt()!!
+                        +binding.txtCode3.text.toString().toInt()!!
+                        +binding.txtCode4.text.toString().toInt()!!
+                        binding.txtCode5.text.toString().toInt()!!
+                        +binding.txtCode6.text.toString().toInt()!!
+       txtCode = totalTxt.toString()
 
         withContext(Dispatchers.Main){
             binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }
-        if (getCode("code") == txtCode) {
+        if (getCode("code")?.equals(txtCode)!!) {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
             findNavController().navigate(R.id.action_verifyAccountFragment_to_createNewPasswordFragment)
             binding.frameLoading.visibility =View.GONE
@@ -96,9 +97,9 @@ class VerifyAccountFragment : Fragment() {
     }
 
     private fun validateBtn() {
-        binding.txtCode.doOnTextChanged { s, _, _, _ ->
-            if (s?.length == 6) {
-                binding.txtCodeContainer.error = null
+        binding.txtCode6.doOnTextChanged { s, _, _, _ ->
+            if (s?.length == 1) {
+//                binding.txtCodeContainer.error = null
                 binding.btnVerify.setBackgroundResource(R.drawable.checkbox_checked)
                 binding.btnVerify.isEnabled = true
                 binding.btnVerify.setTextColor(Color.WHITE)
@@ -112,16 +113,16 @@ class VerifyAccountFragment : Fragment() {
     }
 
     private fun codeValidation(): Boolean {
-        if (!binding.txtCode.text.isNullOrEmpty() && binding.txtCode.text!!.length == 6) {
+        if (!txtCode.isNullOrEmpty() && txtCode!!.length == 6) {
             return true
         }
-        if (binding.txtCode.text!!.length < 6) binding.txtCodeContainer.error =
-            "Code Must be 6 Numbers"
-
-        binding.txtCode.doOnTextChanged { _, _, _, _ ->
-            binding.txtCodeContainer.error = null
-
-        }
+//        if (txtCode!!.length < 6) binding.txtCodeContainer.error =
+//            "Code Must be 6 Numbers"
+//
+//        binding.txtCode.doOnTextChanged { _, _, _, _ ->
+//            binding.txtCodeContainer.error = null
+//
+//        }
 
         return false
     }
