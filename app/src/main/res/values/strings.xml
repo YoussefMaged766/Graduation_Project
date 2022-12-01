@@ -10,7 +10,8 @@
     <string name="forgot_your_password">Forgot Your Password?</string>
     <string name="sign_in">Sign in</string>
     <string name="recobooks">RecoBooks</string>
-    <string name="welcome">Find your favorite book with us. \n\nGet recommendations from your interests.</string>
+    <string name="welcome">Find your favorite book with us.</string>
+    <string name="Get_recommendations_from_your_interests.">Get recommendations from your interests.</string>
     <string name="sign_up">Sign Up</string>
     <string name="create_your_account">Create your account</string>
     <string name="first_name">First Name</string>

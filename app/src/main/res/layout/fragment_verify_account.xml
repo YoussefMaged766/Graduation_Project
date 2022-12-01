@@ -14,29 +14,40 @@
         android:layout_marginTop="96dp"
         android:text="@string/verify_your_email"
         android:textSize="@dimen/_16sdp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/confirmed_cuate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verifytxt" />
+
+
     <TextView
         android:id="@+id/enter_codetxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="48dp"
         android:text="@string/please_enter_your_6_Digits_sent_to"
         android:textSize="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/verifytxt" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/txtCodeContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="48dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,66 +60,63 @@
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="1"
-            android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
-            />
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/txtCode2"
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="1"
-            android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
-            />
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/txtCode3"
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="1"
-            android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
-            />
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/txtCode4"
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="1"
-            android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
-            />
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/txtCode5"
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
@@ -116,7 +124,6 @@
             android:inputType="number"
             android:maxLength="1"
             android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
 
             />
 
@@ -125,15 +132,14 @@
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_39sdp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:background="@drawable/verifycode_border"
             android:fontFamily="@font/poppins"
             android:gravity="center"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="1"
-            android:textColor="@color/black"
-            android:background="@drawable/verifycode_border"
-            />
+            android:textColor="@color/black" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <Button
@@ -141,7 +147,7 @@
         android:layout_width="@dimen/_134sdp"
         android:layout_height="@dimen/_45sdp"
         android:layout_margin="@dimen/_16sdp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/_48sdp"
         android:background="@drawable/checkbox_background"
         android:enabled="false"
         android:fontFamily="@font/poppins"
@@ -152,10 +158,10 @@
         android:textSize="@dimen/_16sdp"
         app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCodeContainer"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/txtCodeContainer" />
+
     <FrameLayout
         android:id="@+id/frameLoading"
         android:layout_width="match_parent"
