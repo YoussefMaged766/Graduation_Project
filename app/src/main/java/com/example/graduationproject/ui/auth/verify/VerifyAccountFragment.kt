@@ -19,6 +19,7 @@ import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.databinding.FragmentVerifyAccountBinding
+
 import com.example.graduationproject.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

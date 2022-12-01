@@ -8,7 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="primary_gray">#586276</color>
-    <color name="background">#dbdcdc</color>
+    <color name="primary_gray">#967355</color>
+    <color name="background">#E2D9D0</color>
     <color name="validateTextBButton">#7d7771</color>
+    <color name="darkbrown">#562505</color>
+    <color name="brown2">#967355</color>
+    <color name="brown_background">#D9CDC1 </color>
+    <color name="brown_verify">#707070</color>
 </resources>

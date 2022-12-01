@@ -8,6 +8,8 @@
     tools:context=".ui.auth.login.LoginFragment"
     android:id="@+id/cl">
 
+
+
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="200dp"

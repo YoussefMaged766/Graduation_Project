@@ -10,15 +10,23 @@
     <string name="forgot_your_password">Forgot Your Password?</string>
     <string name="sign_in">Sign in</string>
     <string name="recobooks">RecoBooks</string>
-    <string name="welcome">Find your favorite book with us. \nGet recommendations from your interests.</string>
+    <string name="welcome">Find your favorite book with us. \n\nGet recommendations from your interests.</string>
     <string name="sign_up">Sign Up</string>
     <string name="create_your_account">Create your account</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="find_your_account">Find your account</string>
-    <string name="enter_your_email">Enter Your Email.</string>
+    <string name="enter_your_email">please enter your email address to \nreceive a verification code</string>
     <string name="find_account">Find account</string>
     <string name="enter_code">Enter Code</string>
     <string name="verify">Verify</string>
+    <string name="save">save</string>
+    <string name="send">send</string>
+    <string name="dont_have_account_yet">don\'t have account yet?</string>
+    <string name="please_enter_your_6_Digits_sent_to">please enter your 6 Digits sent to </string>
+    <string name="verify_your_email">Verify your Email</string>
+    <string name="create_new_password">Create new password</string>
+    <string name="Your_new_password">Your new password must be Different \n from previously used password</string>
+
 </resources>

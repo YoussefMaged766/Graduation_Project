@@ -203,7 +203,7 @@
         android:padding="@dimen/_8sdp"
         android:text="@string/sign_up"
         android:textAllCaps="false"
-        android:textColor="#7d7771"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_16sdp"
         app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"

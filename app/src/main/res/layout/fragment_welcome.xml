@@ -11,66 +11,71 @@
         android:id="@+id/txtReco"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/recobooks"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="@dimen/_8sdp"
-        android:textSize="@dimen/_50sdp"
-        android:textColor="#202d4c"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins"
-        />
+        android:text="@string/recobooks"
+        android:textColor="#562505"
+        android:textSize="@dimen/_48sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
     <TextView
         android:id="@+id/txtWelcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtReco"
-        android:text="@string/welcome"
-        android:gravity="center"
-        android:textSize="@dimen/_14sdp"
-        android:textColor="@color/black"
-        android:fontFamily="@font/poppins_bold"
-        android:maxLines="2"
         android:autoSizeTextType="uniform"
-
-        />
+        android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
+        android:maxLines="3"
+        android:text="@string/welcome"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtReco" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSignIn"
-        android:layout_width="0dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_16sdp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/checkbox_checked"
+        android:elevation="@dimen/_10sdp"
         android:fontFamily="@font/poppins"
         android:padding="@dimen/_8sdp"
         android:text="@string/sign_in"
         android:textAllCaps="false"
+        android:textColor="@color/white"
         android:textSize="@dimen/_16sdp"
         app:backgroundTint="@null"
-        android:background="@drawable/checkbox_checked"
-        android:textColor="@color/white"
+        app:elevation="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
-        android:elevation="@dimen/_10sdp"
-        app:elevation="@dimen/_10sdp"/>
+        app:layout_constraintTop_toBottomOf="@+id/txtWelcome" />
 
-    <com.google.android.material.button.MaterialButton
+    <TextView
         android:id="@+id/btnSignUp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_16sdp"
+        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins"
         android:padding="@dimen/_8sdp"
         android:text="@string/sign_up"
         android:textAllCaps="false"
+        android:textColor="@color/darkbrown"
         android:textSize="@dimen/_16sdp"
+        android:textStyle="bold"
         app:backgroundTint="@null"
-        android:background="@drawable/checkbox_checked"
-        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        tools:layout_editor_absoluteY="466dp" />
+
     <ImageView
         android:id="@+id/img1"
         android:layout_width="wrap_content"
@@ -81,15 +86,32 @@
         />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img1"
-        android:src="@drawable/logo"
+        android:id="@+id/imageView2"
+        android:layout_width="120dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="64dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_4sdp"
+        android:layout_marginStart="16dp"
+        android:padding="@dimen/_8sdp"
+        android:text="@string/dont_have_account_yet"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignIn"
+        app:layout_constraintVertical_bias="0.057"
+
         />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,5 +15,6 @@
     </style>
     <style name="btn" parent="ThemeOverlay.AppCompat.Light" >
         <item name="android:background">@drawable/checkbox_background</item>
+
     </style>
 </resources>
