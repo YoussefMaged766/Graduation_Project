@@ -19,13 +19,10 @@ import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
-import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentForgetPasswordBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -81,6 +78,7 @@ class ForgetPasswordFragment : Fragment() {
                             it.data?.body()?.message.toString()
                         )
                         saveCode("code", it.data?.body()?.code!!)
+                        saveToken("token",it.data?.body()?.token!!)
                         binding.frameLoading.visibility = View.GONE
                     }
                     Status.LOADING -> {
@@ -100,17 +98,23 @@ class ForgetPasswordFragment : Fragment() {
         }
     }
 
+
     suspend fun saveCode(key: String, value: Int) {
         dataStore = requireContext().dataStore
         val dataStoreKey = intPreferencesKey(key)
         dataStore.edit {
             it[dataStoreKey] = value
         }
-
-
+    }
+    suspend fun saveToken(key: String, value: String) {
+        dataStore = requireContext().dataStore
+        val dataStoreKey = stringPreferencesKey(key)
+        dataStore.edit {
+            it[dataStoreKey] = value
+        }
     }
 
-    private fun emailValidation(user: User): Boolean {
+     fun emailValidation(user: User): Boolean {
         if (user.email.validateEmail()) {
             return true
         }
@@ -125,7 +129,7 @@ class ForgetPasswordFragment : Fragment() {
         return false
     }
 
-    private fun validateBtn() {
+     fun validateBtn() {
         binding.txtEmail.doOnTextChanged { s, _, _, _ ->
             if (s?.length != 0) {
                 binding.txtEmailContainer.error = null

@@ -64,14 +64,21 @@ class VerifyAccountFragment : Fragment() {
     }
 
     suspend fun verify() {
-        val txtCode = binding.txtCode.text.toString().toInt()
+        var totalTxt = binding.txtCode1.text.toString().toInt()
+                        +binding.txtCode2.text.toString().toInt()
+                        +binding.txtCode3.text.toString().toInt()
+                        +binding.txtCode4.text.toString().toInt()
+                        binding.txtCode5.text.toString().toInt()
+                        +binding.txtCode6.text.toString().toInt()
+        val txtCode = totalTxt
+
         withContext(Dispatchers.Main){
             binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }
         if (getCode("code") == txtCode) {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
-            findNavController().navigate(R.id.action_verifyAccountFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_verifyAccountFragment_to_createNewPasswordFragment)
             binding.frameLoading.visibility =View.GONE
             clearDataStore()
         } else {

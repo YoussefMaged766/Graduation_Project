@@ -84,5 +84,10 @@ data class GenerationCodeResponse(
     val code: Int? = null,
 
     @field:SerializedName("message")
-    val message: String? = null
+    val message: String? = null,
+
+    @field:SerializedName("resetToken")
+    val token: String? = null
+
+
 )
