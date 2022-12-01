@@ -19,7 +19,7 @@ interface WebServices {
     suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>
 
     @POST("password-reset")
-    suspend fun forgetPassword(@Body email: String) : Response<GenerationCodeResponse>
+    suspend fun forgetPassword(@Body user: User) : Response<GenerationCodeResponse>
 
 
 }

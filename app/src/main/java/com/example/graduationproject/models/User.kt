@@ -8,7 +8,8 @@ data class User(
     val confirmPassword: String?=null,
     val firstName: String?=null,
     val lastName: String?=null,
-
+    val token: String?=null,
+    val resetToken: String?=null
 
 
 )

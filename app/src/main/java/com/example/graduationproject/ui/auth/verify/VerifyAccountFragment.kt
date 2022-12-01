@@ -1,7 +1,9 @@
 package com.example.graduationproject.ui.auth.verify
 
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,16 +48,19 @@ class VerifyAccountFragment : Fragment() {
     ): View? {
 
         binding = FragmentVerifyAccountBinding.inflate(layoutInflater)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         validateBtn()
+
         binding.btnVerify.setOnClickListener {
             lifecycleScope.launch {
+                verify()
+                Log.d( "onCreateView: ", getCode("code").toString())
                 if (codeValidation()) {
-                    verify()
 
                 }
             }
@@ -65,19 +70,21 @@ class VerifyAccountFragment : Fragment() {
     }
 
     suspend fun verify() {
-        var totalTxt = binding.txtCode1.text.toString().toInt()!!
-                        +binding.txtCode2.text.toString().toInt()!!
-                        +binding.txtCode3.text.toString().toInt()!!
-                        +binding.txtCode4.text.toString().toInt()!!
-                        binding.txtCode5.text.toString().toInt()!!
-                        +binding.txtCode6.text.toString().toInt()!!
-       txtCode = totalTxt.toString()
+        var txtcode1 = binding.txtCode1.text.toString()
+        var txtcode2 = binding.txtCode2.text.toString()
+        var txtcode3 = binding.txtCode3.text.toString()
+        var txtcode4 = binding.txtCode4.text.toString()
+        var txtcode5 = binding.txtCode5.text.toString()
+        var txtcode6 = binding.txtCode6.text.toString()
+        var totalTxt = txtcode1+txtcode2+txtcode3+txtcode4+txtcode5+txtcode6
+        txtCode = totalTxt.toString()
+        Log.d("testingVerify", "verify: ${txtCode}")
 
         withContext(Dispatchers.Main){
             binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }
-        if (getCode("code")?.equals(txtCode)!!) {
+        if (getCode("code").toString() == totalTxt) {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
             findNavController().navigate(R.id.action_verifyAccountFragment_to_createNewPasswordFragment)
             binding.frameLoading.visibility =View.GONE
@@ -95,7 +102,6 @@ class VerifyAccountFragment : Fragment() {
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
-
     private fun validateBtn() {
         binding.txtCode6.doOnTextChanged { s, _, _, _ ->
             if (s?.length == 1) {
@@ -113,7 +119,7 @@ class VerifyAccountFragment : Fragment() {
     }
 
     private fun codeValidation(): Boolean {
-        if (!txtCode.isNullOrEmpty() && txtCode!!.length == 6) {
+        if (!txtCode.isNullOrEmpty() && txtCode!!.length == 1) {
             return true
         }
 //        if (txtCode!!.length < 6) binding.txtCodeContainer.error =

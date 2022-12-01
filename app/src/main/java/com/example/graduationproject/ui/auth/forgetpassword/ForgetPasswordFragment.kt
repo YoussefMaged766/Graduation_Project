@@ -64,13 +64,13 @@ class ForgetPasswordFragment : Fragment() {
 
     }
 
-    fun getUserData(): String {
+    fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
-        return email
+        return User(email)
     }
 
-    suspend fun sendEmail(email: String) {
-        viewModel.forgetPassword(email).collect {
+    suspend fun sendEmail(user: User) {
+        viewModel.forgetPassword(user).collect {
             it.let {
                 when (it.status) {
                     Status.SUCCESS -> {
@@ -117,11 +117,11 @@ class ForgetPasswordFragment : Fragment() {
         }
     }
 
-     fun emailValidation(email: String): Boolean {
-        if (email.validateEmail()) {
+     fun emailValidation(user: User): Boolean {
+        if (user.email.validateEmail()) {
             return true
         }
-        if (!email.validateEmail()) binding.txtEmailContainer.error =
+        if (user.email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
 
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
