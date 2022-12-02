@@ -15,8 +15,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
@@ -25,6 +27,9 @@ import com.example.graduationproject.databinding.FragmentForgetPasswordBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -54,8 +59,11 @@ class ForgetPasswordFragment : Fragment() {
         binding.btnFindAccount.setOnClickListener {
             lifecycleScope.launch {
                 if (emailValidation(getUserData())) {
-                    sendEmail(getUserData())
-                    view.findNavController().navigate(R.id.action_forgetPasswordFragment_to_verifyAccountFragment)
+                    viewModel.forgetPassword(getUserData())
+                    collectResponse()
+                    collectProgress()
+                    collectError()
+
                 }
 
             }
@@ -64,52 +72,87 @@ class ForgetPasswordFragment : Fragment() {
 
     }
 
-    fun getUserData(): User {
+    private fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
         return User(email)
     }
 
-    suspend fun sendEmail(user: User) {
-        viewModel.forgetPassword(user).collect {
-            it.let {
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        Constants.customToast(
-                            requireContext(),
-                            requireActivity(),
-                            it.data?.body()?.message.toString()
-                        )
-                        saveCode("code", it.data?.body()?.code!!)
-                        saveToken("token",it.data?.body()?.token!!)
-                        binding.frameLoading.visibility = View.GONE
-                    }
-                    Status.LOADING -> {
-                        binding.frameLoading.visibility = View.VISIBLE
-                    }
-                    Status.ERROR -> {
-                        binding.frameLoading.visibility = View.GONE
-                        Constants.customToast(
-                            requireContext(),
-                            requireActivity(),
-                            it.message.toString()
-                        )
-                        Log.d(TAG, "sendEmail: ${it.message.toString()}")
-                    }
-                    else -> {}
+//    fun sendEmail(user: User) {
+//        viewModel.forgetPassword(user).collect {
+//            it.let {
+//                when (it.status) {
+//                    Status.SUCCESS -> {
+//                        Constants.customToast(
+//                            requireContext(),
+//                            requireActivity(),
+//                            it.data?.body()?.message.toString()
+//                        )
+//                        saveCode("code", it.data?.body()?.code!!)
+//                        saveToken("token",it.data?.body()?.token!!)
+//                        binding.frameLoading.visibility = View.GONE
+//                    }
+//                    Status.LOADING -> {
+//                        binding.frameLoading.visibility = View.VISIBLE
+//                    }
+//                    Status.ERROR -> {
+//                        binding.frameLoading.visibility = View.GONE
+//                        Constants.customToast(
+//                            requireContext(),
+//                            requireActivity(),
+//                            it.message.toString()
+//                        )
+//                        Log.d(TAG, "sendEmail: ${it.message.toString()}")
+//                    }
+//                    else -> {}
+//                }
+//            }
+//        }
+//    }
+
+    private suspend fun collectResponse() {
+        viewModel.response.observe(viewLifecycleOwner, Observer {
+            lifecycleScope.launch {
+                Constants.customToast(
+                    requireContext(),
+                    requireActivity(),
+                    it.message.toString()
+                )
+
+                saveCode("code", it.code!!)
+                saveToken("token", it.token!!)
+                Log.e("collectResponse: ", it.toString())
+                viewModel.eventFlow.collect {
+                    findNavController().navigate(it)
                 }
             }
+
+        })
+    }
+
+
+    private suspend fun collectProgress() {
+        viewModel.progress.collect {
+            binding.frameLoading.visibility = it
+        }
+
+    }
+
+    private suspend fun collectError() {
+        viewModel.error.collect {
+            Constants.customToast(requireContext(), requireActivity(), it)
         }
     }
 
 
-    suspend fun saveCode(key: String, value: Int) {
+    private suspend fun saveCode(key: String, value: Int) {
         dataStore = requireContext().dataStore
         val dataStoreKey = intPreferencesKey(key)
         dataStore.edit {
             it[dataStoreKey] = value
         }
     }
-    suspend fun saveToken(key: String, value: String) {
+
+    private suspend fun saveToken(key: String, value: String) {
         dataStore = requireContext().dataStore
         val dataStoreKey = stringPreferencesKey(key)
         dataStore.edit {
@@ -117,8 +160,8 @@ class ForgetPasswordFragment : Fragment() {
         }
     }
 
-     fun emailValidation(user: User): Boolean {
-        if (user.email.validateEmail()) {
+    private fun emailValidation(user: User): Boolean {
+        if (user.email!!.validateEmail()) {
             return true
         }
         if (user.email.validateEmail()) binding.txtEmailContainer.error =
@@ -132,7 +175,7 @@ class ForgetPasswordFragment : Fragment() {
         return false
     }
 
-     fun validateBtn() {
+    private fun validateBtn() {
         binding.txtEmail.doOnTextChanged { s, _, _, _ ->
             if (s?.length != 0) {
                 binding.txtEmailContainer.error = null

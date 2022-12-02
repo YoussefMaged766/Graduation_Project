@@ -67,9 +67,11 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
                 val errorResponse: GenerationCodeResponse? =
                     gson.fromJson(response.errorBody()!!.charStream(), type)
                 emit(Resource.error(null,errorResponse?.message.toString()))
+                Log.e( "forgetPassword: ", errorResponse?.message.toString())
             }
         } catch (e:Exception){
             emit(Resource.error(null,e.message.toString()))
+            Log.e( "forgetPassword: ", e.message.toString())
         }
 
     }.flowOn(Dispatchers.IO)

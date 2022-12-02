@@ -100,14 +100,14 @@ class SignUpFragment : Fragment() {
 
 
             fun userDataValidation(user: User): Boolean {
-                if (user.email.validateEmail() && user.password.validatePass() && user.password == user.confirmPassword
+                if (user.email!!.validateEmail() && user.password!!.validatePass() && user.password == user.confirmPassword
                     && user.firstName?.validateFirstname()!! && user.lastName?.validateLastname()!!
                 ) {
                     return true
                 }
                 if (!user.email.validateEmail()) binding.txtEmailContainer.error =
                     "Please enter a valid E-mail"
-                if (!user.password.validatePass()) binding.txtPasswordContainer.error =
+                if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
                     "password should be at least 6 letters or numbers"
                 if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
                     "confirm password is not equal to password "

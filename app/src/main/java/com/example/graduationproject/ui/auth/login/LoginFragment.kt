@@ -105,12 +105,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun emailAndPassValidation(user: User): Boolean {
-        if (user.email.validateEmail() && user.password.validatePass()) {
+        if (user.email!!.validateEmail() && user.password!!.validatePass()) {
             return true
         }
         if (!user.email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
-        if (!user.password.validatePass()) binding.txtPasswordContainer.error =
+        if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
             "password should be at least 6 letters or numbers"
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
             binding.txtEmailContainer.error = null

@@ -30,7 +30,7 @@ object AppModule {
     @Singleton
     fun retrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://reco-books.onrender.com")
+            .baseUrl("https://reco-books.onrender.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
