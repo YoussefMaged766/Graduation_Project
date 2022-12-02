@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Use for the item to be input, set the value as the default to disable it -->
+    <item android:color="@color/primary_gray" android:state_selected="true" />
+    <item android:color="@color/brown_verify" android:state_focused="true" />
+    <item android:color="@color/brown_verify" />
+</selector>

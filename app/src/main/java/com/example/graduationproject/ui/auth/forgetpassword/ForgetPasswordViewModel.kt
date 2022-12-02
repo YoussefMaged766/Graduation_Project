@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ForgetPasswordViewModel @Inject constructor(private val userRepo: UserRepo) : ViewModel() {
 
-    //    suspend fun forgetPassword(user: User) = userRepo.forgetPassword(user)
+
 
 
     private val _response = MutableLiveData<GenerationCodeResponse>()

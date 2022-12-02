@@ -60,9 +60,7 @@ class VerifyAccountFragment : Fragment() {
             lifecycleScope.launch {
                 verify()
                 Log.d( "onCreateView: ", getCode("code").toString())
-                if (codeValidation()) {
 
-                }
             }
         }
 
@@ -70,21 +68,13 @@ class VerifyAccountFragment : Fragment() {
     }
 
     suspend fun verify() {
-        var txtcode1 = binding.txtCode1.text.toString()
-        var txtcode2 = binding.txtCode2.text.toString()
-        var txtcode3 = binding.txtCode3.text.toString()
-        var txtcode4 = binding.txtCode4.text.toString()
-        var txtcode5 = binding.txtCode5.text.toString()
-        var txtcode6 = binding.txtCode6.text.toString()
-        var totalTxt = txtcode1+txtcode2+txtcode3+txtcode4+txtcode5+txtcode6
-        txtCode = totalTxt.toString()
-        Log.d("testingVerify", "verify: ${txtCode}")
+
 
         withContext(Dispatchers.Main){
             binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }
-        if (getCode("code").toString() == totalTxt) {
+        if (getCode("code").toString() == binding.pin.text.toString()) {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
             findNavController().navigate(R.id.action_verifyAccountFragment_to_createNewPasswordFragment)
             binding.frameLoading.visibility =View.GONE
@@ -103,8 +93,8 @@ class VerifyAccountFragment : Fragment() {
         return preference[dataStoreKey]
     }
     private fun validateBtn() {
-        binding.txtCode6.doOnTextChanged { s, _, _, _ ->
-            if (s?.length == 1) {
+        binding.pin.doOnTextChanged { s, _, _, _ ->
+            if (s?.length == 6) {
 //                binding.txtCodeContainer.error = null
                 binding.btnVerify.setBackgroundResource(R.drawable.checkbox_checked)
                 binding.btnVerify.isEnabled = true
@@ -118,26 +108,14 @@ class VerifyAccountFragment : Fragment() {
         }
     }
 
-    private fun codeValidation(): Boolean {
-        if (!txtCode.isNullOrEmpty() && txtCode!!.length == 1) {
-            return true
-        }
-//        if (txtCode!!.length < 6) binding.txtCodeContainer.error =
-//            "Code Must be 6 Numbers"
-//
-//        binding.txtCode.doOnTextChanged { _, _, _, _ ->
-//            binding.txtCodeContainer.error = null
-//
-//        }
 
-        return false
-    }
 
     private suspend fun clearDataStore(){
 
         dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<Int> = intPreferencesKey("code")
         dataStore.edit {
-            it.clear()
+            it.remove(dataStoreKey)
         }
     }
 

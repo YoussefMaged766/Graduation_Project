@@ -27,10 +27,9 @@ import com.example.graduationproject.databinding.FragmentForgetPasswordBinding
 import com.example.graduationproject.models.User
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class ForgetPasswordFragment : Fragment() {
@@ -59,12 +58,18 @@ class ForgetPasswordFragment : Fragment() {
         binding.btnFindAccount.setOnClickListener {
             lifecycleScope.launch {
                 if (emailValidation(getUserData())) {
-                    viewModel.forgetPassword(getUserData())
-                    collectResponse()
-                    collectProgress()
-                    collectError()
+                  val d = async { viewModel.forgetPassword(getUserData()) }
+                    withTimeout(1000){
+                        d.await()
+                        collectResponse()
+                        collectError()
+                        collectProgress()
+                    }
+
+
 
                 }
+//                findNavController().navigate(R.id.action_forgetPasswordFragment_to_verifyAccountFragment)
 
             }
         }
@@ -77,38 +82,6 @@ class ForgetPasswordFragment : Fragment() {
         return User(email)
     }
 
-//    fun sendEmail(user: User) {
-//        viewModel.forgetPassword(user).collect {
-//            it.let {
-//                when (it.status) {
-//                    Status.SUCCESS -> {
-//                        Constants.customToast(
-//                            requireContext(),
-//                            requireActivity(),
-//                            it.data?.body()?.message.toString()
-//                        )
-//                        saveCode("code", it.data?.body()?.code!!)
-//                        saveToken("token",it.data?.body()?.token!!)
-//                        binding.frameLoading.visibility = View.GONE
-//                    }
-//                    Status.LOADING -> {
-//                        binding.frameLoading.visibility = View.VISIBLE
-//                    }
-//                    Status.ERROR -> {
-//                        binding.frameLoading.visibility = View.GONE
-//                        Constants.customToast(
-//                            requireContext(),
-//                            requireActivity(),
-//                            it.message.toString()
-//                        )
-//                        Log.d(TAG, "sendEmail: ${it.message.toString()}")
-//                    }
-//                    else -> {}
-//                }
-//            }
-//        }
-//    }
-
     private suspend fun collectResponse() {
         viewModel.response.observe(viewLifecycleOwner, Observer {
             lifecycleScope.launch {
@@ -118,15 +91,19 @@ class ForgetPasswordFragment : Fragment() {
                     it.message.toString()
                 )
 
-                saveCode("code", it.code!!)
-                saveToken("token", it.token!!)
+                it.code?.let { it1 -> saveCode("code", it1) }
+                it.token?.let { it1 -> saveToken("token", it1) }
                 Log.e("collectResponse: ", it.toString())
                 viewModel.eventFlow.collect {
                     findNavController().navigate(it)
                 }
             }
-
         })
+
+
+
+
+
     }
 
 
@@ -134,6 +111,7 @@ class ForgetPasswordFragment : Fragment() {
         viewModel.progress.collect {
             binding.frameLoading.visibility = it
         }
+
 
     }
 
@@ -164,7 +142,7 @@ class ForgetPasswordFragment : Fragment() {
         if (user.email!!.validateEmail()) {
             return true
         }
-        if (user.email.validateEmail()) binding.txtEmailContainer.error =
+        if (!user.email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
 
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->
