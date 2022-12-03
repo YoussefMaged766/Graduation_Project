@@ -91,6 +91,7 @@ class WelcomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        binding.constraint.visibility = View.GONE
         Log.e( "onViewCreated5: ","onResume" )
     }
 
