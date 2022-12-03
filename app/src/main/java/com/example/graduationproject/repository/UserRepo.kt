@@ -10,11 +10,13 @@ import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.Response
 import javax.inject.Inject
 
-class UserRepo @Inject constructor(private val webServices: WebServices){
+class UserRepo @Inject constructor(private val webServices: WebServices) {
     val gson = Gson()
     suspend fun loginUser(user: User) = flow {
         emit(Resource.loading(null))
@@ -55,24 +57,23 @@ class UserRepo @Inject constructor(private val webServices: WebServices){
 
     }.flowOn(Dispatchers.IO)
 
-    suspend fun forgetPassword(user: User) = flow {
+    fun forgetPassword(user: User): Flow<Resource<GenerationCodeResponse>> = flow {
 
-        val response = webServices.forgetPassword(user)
-        emit(Resource.loading(null))
         try {
-            if (response.isSuccessful && response.code() ==200){
-                emit(Resource.success(response))
-            } else{
-                val type = object : TypeToken<GenerationCodeResponse>() {}.type
-                val errorResponse: GenerationCodeResponse? =
-                    gson.fromJson(response.errorBody()!!.charStream(), type)
-                emit(Resource.error(null,errorResponse?.message.toString()))
-                Log.e( "forgetPassword: ", errorResponse?.message.toString())
-            }
-        } catch (e:Exception){
-            emit(Resource.error(null,e.message.toString()))
-            Log.e( "forgetPassword: ", e.message.toString())
-        }
+            emit(Resource.loading(null))
+            kotlinx.coroutines.delay(3000L)
 
-    }.flowOn(Dispatchers.IO)
+            val response = webServices.forgetPassword(user)
+                emit(Resource.success(response))
+//                val type = object : TypeToken<GenerationCodeResponse>() {}.type
+//                val errorResponse: GenerationCodeResponse? =
+//                    gson.fromJson(response.errorBody()!!.charStream(), type)
+                emit(Resource.error(null, response.message.toString()))
+                Log.e("forgetPassword: ", response.message.toString())
+
+        } catch (e: Exception) {
+            emit(Resource.error(null, e.message.toString()))
+            Log.e("forgetPassword: ", e.message.toString())
+        }
+    }
 }

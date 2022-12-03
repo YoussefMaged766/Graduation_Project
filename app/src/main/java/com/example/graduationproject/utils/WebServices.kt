@@ -7,6 +7,7 @@ import com.example.graduationproject.models.UserResponseLogin
 import com.example.graduationproject.models.UserResponseSignUp
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface WebServices {
@@ -19,7 +20,8 @@ interface WebServices {
     suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>
 
     @POST("password-reset")
-    suspend fun forgetPassword(@Body user: User) : Response<GenerationCodeResponse>
+
+    suspend fun forgetPassword(@Body user: User) : GenerationCodeResponse
 
 
 }

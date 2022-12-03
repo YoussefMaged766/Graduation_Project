@@ -12,9 +12,8 @@
         android:layout_width="194dp"
         android:layout_height="99dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/logo"
+        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,21 +66,17 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins"
         android:padding="@dimen/_8sdp"
         android:text="@string/dont_have_account_yet"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/btnSignIn"
         app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 
     <TextView
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="120dp"
         android:fontFamily="@font/poppins"
         android:padding="@dimen/_4sdp"
         android:text="@string/sign_up"
@@ -89,10 +84,9 @@
         android:textColor="@color/darkbrown"
         android:textSize="14sp"
         app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+        app:layout_constraintTop_toTopOf="@id/textView" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSignIn"
@@ -110,20 +104,21 @@
         app:backgroundTint="@null"
         app:elevation="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtWelcome2" />
 
     <ImageView
         android:id="@+id/img1"
-        android:layout_width="326dp"
-        android:layout_height="244dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/bibliophile_cuate"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerCrop"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

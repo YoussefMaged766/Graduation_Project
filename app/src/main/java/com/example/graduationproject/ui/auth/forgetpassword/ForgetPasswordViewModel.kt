@@ -28,11 +28,11 @@ class ForgetPasswordViewModel @Inject constructor(private val userRepo: UserRepo
 
 
 
-    private val _response = MutableLiveData<GenerationCodeResponse>()
-    val response: LiveData<GenerationCodeResponse> get() = _response
+    private val _response = Channel<GenerationCodeResponse>()
+    val response = _response.receiveAsFlow()
 
-    private val _progress = MutableStateFlow<Int>(0)
-    val progress: StateFlow<Int> get() = _progress
+    private val _progress = Channel<Boolean>()
+    val progress = _progress.receiveAsFlow()
 
     private val eventChannel = Channel<Int>()
     // Receiving channel as a flow
@@ -40,25 +40,25 @@ class ForgetPasswordViewModel @Inject constructor(private val userRepo: UserRepo
 
 
 
-    private val _error = MutableStateFlow<String>("")
-    val error: StateFlow<String> get() = _error
+    private val _error = Channel<String>()
+    val error = _error.receiveAsFlow()
 
 
     fun forgetPassword(user: User) = viewModelScope.launch(Dispatchers.IO) {
 
         userRepo.forgetPassword(user).collect {
             when (it.status) {
+                Status.LOADING -> _progress.send(true)
+
                 Status.SUCCESS -> {
-                    _response.postValue(it.data?.body()!!)
-                    _progress.value = View.INVISIBLE
+                    _progress.send(false)
+                    _response.send(it.data!!)
                     eventChannel.send(R.id.action_forgetPasswordFragment_to_verifyAccountFragment)
                 }
-                Status.LOADING -> {
-                    _progress.value = View.VISIBLE
-                }
+
                 Status.ERROR -> {
-                    _progress.value = View.INVISIBLE
-                    _error.value = it.message.toString()
+                    _progress.send(false)
+                    _error.send(it.message.toString())
                 }
             }
 

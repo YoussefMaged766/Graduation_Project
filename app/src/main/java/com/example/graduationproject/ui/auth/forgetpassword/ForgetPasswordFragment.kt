@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -37,6 +38,7 @@ class ForgetPasswordFragment : Fragment() {
     lateinit var binding: FragmentForgetPasswordBinding
     val viewModel: ForgetPasswordViewModel by viewModels()
     lateinit var dataStore: DataStore<Preferences>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -55,36 +57,31 @@ class ForgetPasswordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnFindAccount.setOnClickListener {
-            lifecycleScope.launch {
-                if (emailValidation(getUserData())) {
-                  val d = async { viewModel.forgetPassword(getUserData()) }
-                    withTimeout(1000){
-                        d.await()
-                        collectResponse()
-                        collectError()
-                        collectProgress()
-                    }
 
 
+        onClicks()
+        validateBtn()
+        collectResponse()
+        collectProgress()
+        collectError()
 
-                }
-//                findNavController().navigate(R.id.action_forgetPasswordFragment_to_verifyAccountFragment)
+    }
 
+    private fun onClicks() {
+        binding.apply {
+            btnFindAccount.setOnClickListener {
+                val mEmail = binding.txtEmail.text?.trim().toString()
+                val mUser = User(mEmail)
+                viewModel.forgetPassword(mUser)
             }
         }
-        validateBtn()
-
     }
 
-    private fun getUserData(): User {
-        val email = binding.txtEmail.text?.trim().toString()
-        return User(email)
-    }
 
-    private suspend fun collectResponse() {
-        viewModel.response.observe(viewLifecycleOwner, Observer {
-            lifecycleScope.launch {
+    private fun collectResponse() {
+        lifecycleScope.launch {
+            viewModel.response.collect {
+
                 Constants.customToast(
                     requireContext(),
                     requireActivity(),
@@ -97,28 +94,34 @@ class ForgetPasswordFragment : Fragment() {
                 viewModel.eventFlow.collect {
                     findNavController().navigate(it)
                 }
+
             }
-        })
-
-
-
-
-
+        }
     }
 
 
-    private suspend fun collectProgress() {
-        viewModel.progress.collect {
-            binding.frameLoading.visibility = it
+    private fun collectProgress() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                viewModel.progress.collectLatest {
+                    binding.frameLoading.isVisible = it
+                    Log.i(TAG, "collectProgress: $it")
+                }
+            }
         }
 
 
     }
 
-    private suspend fun collectError() {
-        viewModel.error.collect {
-            Constants.customToast(requireContext(), requireActivity(), it)
+    private fun collectError() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                viewModel.error.collect {
+                    Constants.customToast(requireContext(), requireActivity(), it)
+                }
+            }
         }
+
     }
 
 
