@@ -89,11 +89,7 @@ class WelcomeFragment : Fragment() {
         Log.e( "onViewCreated4: ","start")
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.constraint.visibility = View.GONE
-        Log.e( "onViewCreated5: ","onResume" )
-    }
+
 
     private suspend fun getIsLogging(key: String): Boolean? {
         dataStore = requireContext().dataStore
