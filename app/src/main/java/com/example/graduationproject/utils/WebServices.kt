@@ -1,10 +1,7 @@
 package com.example.graduationproject.utils
 
 
-import com.example.graduationproject.models.GenerationCodeResponse
-import com.example.graduationproject.models.User
-import com.example.graduationproject.models.UserResponseLogin
-import com.example.graduationproject.models.UserResponseSignUp
+import com.example.graduationproject.models.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.FormUrlEncoded
@@ -17,11 +14,13 @@ interface WebServices {
     suspend fun loginUser(@Body user: User) : UserResponseLogin
 
     @POST("signup")
-    suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>
+    suspend fun signUpUser(@Body user: User) : UserResponseSignUp
 
     @POST("password-reset")
-
     suspend fun forgetPassword(@Body user: User) : GenerationCodeResponse
+
+    @POST("new-password")
+    suspend fun newPassword(@Body user: User) : NewPasswordResponse
 
 
 }

@@ -70,13 +70,17 @@ class ForgetPasswordFragment : Fragment() {
     private fun onClicks() {
         binding.apply {
             btnFindAccount.setOnClickListener {
-                val mEmail = binding.txtEmail.text?.trim().toString()
-                val mUser = User(mEmail)
-                viewModel.forgetPassword(mUser)
+                if (emailValidation(getUserData())) {
+                    viewModel.forgetPassword(getUserData())
+                }
             }
         }
     }
 
+    private fun getUserData(): User {
+        val email = binding.txtEmail.text?.trim().toString()
+        return User(email)
+    }
 
     private fun collectResponse() {
         lifecycleScope.launch {

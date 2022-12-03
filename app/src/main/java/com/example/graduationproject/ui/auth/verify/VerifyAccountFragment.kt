@@ -67,9 +67,7 @@ class VerifyAccountFragment : Fragment() {
 
     }
 
-    suspend fun verify() {
-
-
+    private suspend  fun verify() {
         withContext(Dispatchers.Main){
             binding.frameLoading.visibility =View.VISIBLE
             delay(500)

@@ -89,6 +89,8 @@ data class GenerationCodeResponse(
 
     @field:SerializedName("resetToken")
     val token: String? = null
-
-
+)
+data class NewPasswordResponse(
+    @field:SerializedName("message")
+    val message: String? = null
 )
