@@ -1,5 +1,6 @@
 package com.example.graduationproject.ui.auth.login
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,20 +11,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentLoginBinding
 import com.example.graduationproject.models.User
+import com.example.graduationproject.ui.main.MainActivity
 import com.example.graduationproject.ui.main.home.HomeActivity
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -51,54 +58,73 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnSignIn.setOnClickListener {
-            lifecycleScope.launch {
-                if (emailAndPassValidation(getUserData()))
-                    loginUser(getUserData())
-            }
-        }
-        binding.forgetPassword.setOnClickListener {
-            view.findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
-        }
+
+        ocClicks()
+        collectResponse()
+        collectProgress()
+        collectError()
         validateBtn()
         animation()
 
     }
 
-    suspend fun loginUser(user: User) {
-        viewModel.loginUser(user).collect {
-            it.let {
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        startActivity(Intent(requireActivity(), HomeActivity::class.java))
-                        activity?.finish()
-                        Constants.customToast(
-                            requireContext(),
-                            requireActivity(),
-                            it.data?.body()?.message.toString()
-                        )
-                        binding.frameLoading.visibility = View.GONE
+    private fun ocClicks() {
+        binding.apply {
+            btnSignIn.setOnClickListener {
+                if (emailAndPassValidation(getUserData()))
+                    viewModel.loginUser(getUserData(), requireContext(), HomeActivity::class.java, requireActivity())
 
-                    }
-                    Status.LOADING -> {
-                        binding.frameLoading.visibility = View.VISIBLE
-                    }
-                    Status.ERROR -> {
-                        Constants.customToast(
-                            requireContext(),
-                            requireActivity(),
-                            it.message.toString()
-                        )
-                        binding.frameLoading.visibility = View.GONE
-                    }
-                    else -> {}
-                }
+            }
+            forgetPassword.setOnClickListener {
+                findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
+            }
+        }
+
+    }
+
+    private fun collectResponse() {
+        lifecycleScope.launch {
+            viewModel.response.collect {
+
+                Constants.customToast(
+                    requireContext(),
+                    requireActivity(),
+                    it.message.toString()
+                )
+
+
+                Log.e("collectResponse: ", it.toString())
+
+
             }
         }
     }
 
+    private fun collectProgress() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                viewModel.progress.collectLatest {
+                    binding.frameLoading.isVisible = it
+                    Log.i(ContentValues.TAG, "collectProgress: $it")
+                }
+            }
+        }
 
-    fun getUserData(): User {
+
+    }
+
+    private fun collectError() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                viewModel.error.collect {
+                    Constants.customToast(requireContext(), requireActivity(), it)
+                }
+            }
+        }
+
+    }
+
+    private fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
         val password = binding.txtPassword.text.toString().trim()
         return User(email, password)
@@ -138,11 +164,11 @@ class LoginFragment : Fragment() {
         }
     }
 
-    fun animation(){
-        val an = AnimationUtils.loadAnimation(requireContext() ,R.anim.ftb)
-        val an2 = AnimationUtils.loadAnimation(requireContext(),R.anim.fendtostart)
-        val an3 = AnimationUtils.loadAnimation(requireContext(),R.anim.fstarttoendt)
-        val an4 = AnimationUtils.loadAnimation(requireContext(),R.anim.frombottomtotop)
+   private fun animation() {
+        val an = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb)
+        val an2 = AnimationUtils.loadAnimation(requireContext(), R.anim.fendtostart)
+        val an3 = AnimationUtils.loadAnimation(requireContext(), R.anim.fstarttoendt)
+        val an4 = AnimationUtils.loadAnimation(requireContext(), R.anim.frombottomtotop)
         binding.imgLogo.startAnimation(an)
         binding.txtWelcome.startAnimation(an)
         binding.txtLogin.startAnimation(an)

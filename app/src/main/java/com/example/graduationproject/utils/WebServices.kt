@@ -14,7 +14,7 @@ interface WebServices {
 
 
     @POST("login")
-    suspend fun loginUser(@Body user: User) : Response<UserResponseLogin>
+    suspend fun loginUser(@Body user: User) : UserResponseLogin
 
     @POST("signup")
     suspend fun signUpUser(@Body user: User) : Response<UserResponseSignUp>

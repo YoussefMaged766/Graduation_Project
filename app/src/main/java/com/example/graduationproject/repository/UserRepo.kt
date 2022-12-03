@@ -13,27 +13,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
 class UserRepo @Inject constructor(private val webServices: WebServices) {
-    val gson = Gson()
-    suspend fun loginUser(user: User) = flow {
-        emit(Resource.loading(null))
-        val response = webServices.loginUser(user)
-
-        if (response.code() == 200 && response.isSuccessful) {
+    private val gson = Gson()
+    fun loginUser(user: User) = flow {
+        try {
+            emit(Resource.loading(null))
+            val response = webServices.loginUser(user)
             emit(Resource.success(response))
-            Log.e("loginUser: ", response.body().toString())
-        } else if (response.code() == 401) {
 
-
-            val type = object : TypeToken<UserResponseLogin>() {}.type
-            val errorResponse: UserResponseLogin? =
-                gson.fromJson(response.errorBody()!!.charStream(), type)
-
-            Log.e("loginUsereeeee: ", errorResponse?.message.toString())
-            emit(Resource.error(null, errorResponse?.message.toString()))
+            Log.e("loginUser: ", response.toString())
+        } catch (e: Throwable) {
+            when (e) {
+                is HttpException -> {
+                    val type = object : TypeToken<UserResponseLogin>() {}.type
+                    val errorResponse: UserResponseLogin? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeee: ", errorResponse?.message.toString())
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                }
+                is Exception -> {
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Resource.error(null, e.message.toString()))
+                }
+            }
         }
 
     }.flowOn(Dispatchers.IO)
@@ -61,19 +67,24 @@ class UserRepo @Inject constructor(private val webServices: WebServices) {
 
         try {
             emit(Resource.loading(null))
-            kotlinx.coroutines.delay(3000L)
-
             val response = webServices.forgetPassword(user)
-                emit(Resource.success(response))
-//                val type = object : TypeToken<GenerationCodeResponse>() {}.type
-//                val errorResponse: GenerationCodeResponse? =
-//                    gson.fromJson(response.errorBody()!!.charStream(), type)
-                emit(Resource.error(null, response.message.toString()))
-                Log.e("forgetPassword: ", response.message.toString())
+            emit(Resource.success(response))
 
-        } catch (e: Exception) {
-            emit(Resource.error(null, e.message.toString()))
-            Log.e("forgetPassword: ", e.message.toString())
+        } catch (e: Throwable) {
+            when (e) {
+                is HttpException->{
+                    val type = object : TypeToken<GenerationCodeResponse>() {}.type
+                    val errorResponse: GenerationCodeResponse? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                    Log.e("forgetPassword: ", errorResponse?.message.toString())
+                }
+                is Exception->{
+                    emit(Resource.error(null, e.message.toString()))
+                    Log.e("forgetPassword: ", e.message.toString())
+                }
+            }
+
         }
     }
 }
