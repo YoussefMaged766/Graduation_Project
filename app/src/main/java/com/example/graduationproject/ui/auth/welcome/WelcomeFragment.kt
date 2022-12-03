@@ -1,5 +1,6 @@
 package com.example.graduationproject.ui.auth.welcome
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,11 +12,15 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentWelcomeBinding
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -75,11 +80,18 @@ class WelcomeFragment : Fragment() {
         super.onStart()
         dataStore = requireContext().dataStore
         lifecycleScope.launch {
-            Log.e( "onViewCreated3: ",RUN_ONCE.toString() )
+            Log.e( "onViewCreated3: ","start")
             if (getIsLogging("isLogging") == false) {
-                findNavController().navigate(R.id.action_welcomeFragment_to_loginFragment)
+                binding.constraint.visibility = View.GONE
+                Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_loginFragment)
             }
         }
+        Log.e( "onViewCreated4: ","start")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e( "onViewCreated5: ","onResume" )
     }
 
     private suspend fun getIsLogging(key: String): Boolean? {
