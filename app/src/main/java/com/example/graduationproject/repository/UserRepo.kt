@@ -46,7 +46,7 @@ class UserRepo @Inject constructor(private val webServices: WebServices) {
         try {
             emit(Resource.loading(null))
             val response = webServices.signUpUser(user)
-                emit(Resource.success(response))
+            emit(Resource.success(response))
 
         } catch (e: Throwable) {
             when(e){

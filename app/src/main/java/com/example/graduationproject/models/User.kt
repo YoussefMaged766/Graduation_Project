@@ -3,13 +3,14 @@ package com.example.graduationproject.models
 import com.google.gson.annotations.SerializedName
 
 data class User(
-    val email: String?=null,
-    val password: String?=null,
-    val confirmPassword: String?=null,
-    val firstName: String?=null,
-    val lastName: String?=null,
-    val token: String?=null,
-    val resetToken: String?=null
+    val email: String? = null,
+    val password: String? = null,
+    val confirmPassword: String? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val token: String? = null,
+    val resetToken: String? = null,
+    val newPassword: String? = null
 
 
 )
@@ -90,6 +91,7 @@ data class GenerationCodeResponse(
     @field:SerializedName("resetToken")
     val token: String? = null
 )
+
 data class NewPasswordResponse(
     @field:SerializedName("message")
     val message: String? = null

@@ -74,11 +74,11 @@ class LoginFragment : Fragment() {
         collectError()
         validateBtn()
         animation()
-        lifecycleScope.launch {
-            delay(5000L)
-            handleCheckBox("hello")
-
-        }
+//        lifecycleScope.launch {
+//            delay(5000L)
+//            handleCheckBox("hello")
+//
+//        }
         if (RUN_ONCE) {
             RUN_ONCE = false
             lifecycleScope.launch {
@@ -119,7 +119,7 @@ class LoginFragment : Fragment() {
                     it.message.toString()
                 )
                 Log.e("collectResponse: ", it.toString())
-//                handleCheckBox(it.token.toString())
+                handleCheckBox(it.token.toString())
             }
         }
     }

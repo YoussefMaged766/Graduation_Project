@@ -130,7 +130,7 @@ class CreateNewPasswordFragment : Fragment() {
         return User(
             password = password,
             resetToken = getToken("token"),
-            confirmPassword = confirmPassword
+            newPassword = confirmPassword
         )
     }
 
@@ -150,7 +150,7 @@ class CreateNewPasswordFragment : Fragment() {
 
         if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
             "password should be at least 6 letters or numbers"
-        if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
+        if (!user.newPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
             "confirm password is not equal to password "
 
         if (user.password != user.confirmPassword) binding.txtPasswordConfirmContainer.error =
