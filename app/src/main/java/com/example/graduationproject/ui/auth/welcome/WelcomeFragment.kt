@@ -57,13 +57,13 @@ class WelcomeFragment : Fragment() {
             findNavController().navigate(R.id.action_welcomeFragment_to_signUpFragment)
         }
         Log.e( "onViewCreated1: ",RUN_ONCE.toString() )
-        if (RUN_ONCE) {
-            RUN_ONCE = false
-            lifecycleScope.launch {
-                saveIsLogging("isLogging", RUN_ONCE)
-                Log.e( "onViewCreated2: ",RUN_ONCE.toString() )
-            }
-        }
+//        if (RUN_ONCE) {
+//            RUN_ONCE = false
+//            lifecycleScope.launch {
+//                saveIsLogging("isLogging", RUN_ONCE)
+//                Log.e( "onViewCreated2: ",RUN_ONCE.toString() )
+//            }
+//        }
 
 
     }
@@ -76,18 +76,18 @@ class WelcomeFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        dataStore = requireContext().dataStore
-        lifecycleScope.launch {
-            Log.e( "onViewCreated3: ","start")
-            if (getIsLogging("isLogging") == false) {
-                binding.constraint.visibility = View.GONE
-                Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_loginFragment)
-            }
-        }
-        Log.e( "onViewCreated4: ","start")
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        dataStore = requireContext().dataStore
+//        lifecycleScope.launch {
+//            Log.e( "onViewCreated3: ","start")
+//            if (getIsLogging("isLogging") == false) {
+//                binding.constraint.visibility = View.GONE
+//                Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_loginFragment)
+//            }
+//        }
+//        Log.e( "onViewCreated4: ","start")
+//    }
 
 
 

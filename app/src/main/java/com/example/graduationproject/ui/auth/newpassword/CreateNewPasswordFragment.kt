@@ -142,7 +142,7 @@ class CreateNewPasswordFragment : Fragment() {
     }
 
     private fun userDataValidation(user: User): Boolean {
-        if (user.password!!.validatePass() && user.password == user.confirmPassword
+        if (user.password!!.validatePass() && user.password == user.newPassword
 
         ) {
             return true

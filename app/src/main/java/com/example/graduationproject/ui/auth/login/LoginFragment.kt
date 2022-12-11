@@ -87,9 +87,8 @@ class LoginFragment : Fragment() {
             }
         }
 
-
     }
-
+// login fragment
     private fun ocClicks() {
         binding.apply {
             btnSignIn.setOnClickListener {
