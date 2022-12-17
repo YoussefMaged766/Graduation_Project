@@ -73,7 +73,8 @@
         android:text="@string/dont_have_account_yet"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/btnSignIn"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSignIn"
+        android:textColor="#8f212121"/>
 
     <TextView
         android:id="@+id/btnSignUp"

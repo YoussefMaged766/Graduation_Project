@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -60,35 +61,8 @@ class SignUpFragment : Fragment() {
         collectResponse()
         collectProgress()
         collectError()
+        animation()
     }
-
-//            suspend fun signUpUser(user: User) {
-//                viewModel.signUpUser(user).collect {
-//                    it.let {
-//                        when (it.status) {
-//                            Status.SUCCESS -> {
-//                                findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
-//                                Constants.customToast(
-//                                    requireContext(), requireActivity(),
-//                                    it.data?.body()?.message.toString()
-//                                )
-//                                binding.frameLoading.visibility = View.GONE
-//                            }
-//                            Status.LOADING -> {
-//                                binding.frameLoading.visibility = View.VISIBLE
-//                            }
-//                            Status.ERROR -> {
-//                                Constants.customToast(
-//                                    requireContext(), requireActivity(),
-//                                    it.message.toString()
-//                                )
-//                                binding.frameLoading.visibility = View.GONE
-//                            }
-//                            else -> {}
-//                        }
-//                    }
-//                }
-//            }
 
     private fun onClicks() {
 
@@ -213,6 +187,21 @@ class SignUpFragment : Fragment() {
                 binding.btnSignUp.setTextColor(resources.getColor(R.color.validateTextBButton))
             }
 
+        }
+    }
+
+    fun animation(){
+        val an = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb)
+        val an2 = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb_edit_text)
+        binding.apply {
+            imgLogo.startAnimation(an)
+            txtWelcome.startAnimation(an)
+            txtLogin.startAnimation(an)
+            txtFirstNameContainer.startAnimation(an2)
+            txtEmailContainer.startAnimation(an2)
+            txtLastNameContainer.startAnimation(an2)
+            txtPasswordContainer.startAnimation(an2)
+            txtPasswordConfirmContainer.startAnimation(an2)
         }
     }
 }

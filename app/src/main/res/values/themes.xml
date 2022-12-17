@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/primary_gray</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/primary_gray</item>
     </style>
     <style name="btn" parent="ThemeOverlay.AppCompat.Light" >
         <item name="android:background">@drawable/checkbox_background</item>

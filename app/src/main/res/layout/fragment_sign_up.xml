@@ -8,12 +8,14 @@
     tools:context=".ui.auth.signup.SignUpFragment">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
 
             <ImageView
@@ -75,7 +77,8 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img1">
+                app:layout_constraintTop_toBottomOf="@id/img1"
+                app:endIconTint="@color/cardview_dark_background">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtFirstName"
@@ -101,7 +104,8 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer"
+                app:endIconTint="@color/cardview_dark_background">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtLastName"
@@ -127,7 +131,8 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer"
+                app:endIconTint="@color/cardview_dark_background">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtEmail"
@@ -156,7 +161,8 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer"
+                app:endIconTint="@color/cardview_dark_background">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtPassword"
@@ -184,7 +190,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer"
-
+                app:endIconTint="@color/cardview_dark_background"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -222,21 +228,19 @@
                 android:id="@+id/pathTop"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/path_top2"
                 app:layout_constraintTop_toTopOf="parent"
-                android:scaleType="fitXY"
-                app:layout_constraintVertical_bias="0.0"
-                />
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/pathBottom"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/path_bottom"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:scaleType="fitXY"
-                app:layout_constraintVertical_bias="0.0"
-                />
+                app:layout_constraintVertical_bias="0.0" />
 
             <FrameLayout
                 android:id="@+id/frameLoading"
