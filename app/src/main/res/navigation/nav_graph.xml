@@ -78,7 +78,12 @@
         tools:layout="@layout/fragment_verify_account" >
         <action
             android:id="@+id/action_verifyAccountFragment_to_createNewPasswordFragment"
-            app:destination="@id/createNewPasswordFragment" />
+            app:destination="@id/createNewPasswordFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_exit_anim"
+            app:popExitAnim="@anim/pop_enter_anim"
+            app:popUpTo="@id/nav_graph.xml"/>
         <argument
             android:name="email"
             app:argType="com.example.graduationproject.models.User" />
@@ -95,6 +100,8 @@
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_exit_anim"
-            app:popExitAnim="@anim/pop_enter_anim"/>
+            app:popExitAnim="@anim/pop_enter_anim"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/nav_graph.xml"/>
     </fragment>
 </navigation>

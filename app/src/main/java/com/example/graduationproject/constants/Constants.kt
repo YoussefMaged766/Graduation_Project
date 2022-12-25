@@ -1,7 +1,6 @@
 package com.example.graduationproject.constants
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,7 +12,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.graduationproject.R
-import com.example.graduationproject.constants.Constants.Companion.validatePass
+import com.gmail.samehadar.iosdialog.CamomileSpinner
 
 class Constants {
     companion object {
@@ -54,23 +53,26 @@ class Constants {
         }
 
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
-
-        fun customAlertDialog(
-            activity: Activity,
+        lateinit var dialog: Dialog
+        fun showCustomAlertDialog(
+            context: Context,
             layout: Int,
             checkCancel: Boolean,
-            state: Boolean
-        ) {
-            val dialog = Dialog(activity)
-            if (state) {
-                dialog.setContentView(activity.layoutInflater.inflate(layout, null))
-                dialog.setCancelable(checkCancel)
-                dialog.show()
-            } else dialog.dismiss()
+
+            ) {
+            dialog = Dialog(context)
+            dialog.setContentView(layout)
+            val loader: CamomileSpinner = dialog.findViewById(R.id.progress)
+            loader.start()
+            dialog.setCancelable(checkCancel)
+            dialog.show()
 
 
         }
 
+        fun hideCustomAlertDialog() {
+            dialog.cancel()
+        }
 
     }
 }

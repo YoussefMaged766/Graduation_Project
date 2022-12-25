@@ -1,28 +1,24 @@
 package com.example.graduationproject.ui.auth.login
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
@@ -31,9 +27,7 @@ import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentLoginBinding
 import com.example.graduationproject.models.User
-import com.example.graduationproject.ui.main.MainActivity
 import com.example.graduationproject.ui.main.home.HomeActivity
-import com.example.graduationproject.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,6 +43,7 @@ class LoginFragment : Fragment() {
     val viewModel: LoginViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
     private var RUN_ONCE = true
+    lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,22 +124,15 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
-//                    val dialog = Dialog(requireActivity())
-//                    if (it){
-//                        dialog.setContentView(activity?.layoutInflater!!.inflate(R.layout.custom_alert_dailog, null))
-//                        dialog.setCancelable(false)
-//                        dialog.show()
-//                        Log.e( "collectProgress12: ", "true")
-//                    } else{
-//                        dialog.hide()
-//
-//                        Log.e( "collectProgress12: ", "false")
-//                    }
-
-
-
-//                    Constants.customAlertDialog(requireActivity(),R.layout.custom_alert_dailog,true , it)
-                    binding.frameLoading.isVisible = it
+                    if (it){
+                        Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                        Log.e( "collectProgress12: ", "true")
+                    } else{
+//                        dialog.cancel()
+                        Constants.hideCustomAlertDialog()
+                        Log.e( "collectProgress12: ", "false")
+                    }
+//                    binding.frameLoading.isVisible = it
                     Log.i(ContentValues.TAG, "collectProgress: $it")
                 }
             }
@@ -243,7 +231,8 @@ class LoginFragment : Fragment() {
             val dataStoreKey = stringPreferencesKey("userToken")
             dataStore.edit {
                 if (it.contains(dataStoreKey)) {
-                    binding.frameLoading.visibility = View.VISIBLE
+                    Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+//                    binding.frameLoading.visibility = View.VISIBLE
                     delay(1000L)
                     startActivity(Intent(requireActivity(), HomeActivity::class.java))
                     activity?.finish()
@@ -253,9 +242,12 @@ class LoginFragment : Fragment() {
                             Constants.customToast(requireContext(), requireActivity(), "Welcome ")
                             Log.e( "onStart: ",getIsLogging("Logging").toString() )
                         }else{
-                            binding.frameLoading.visibility = View.VISIBLE
+                            Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+//                            binding.frameLoading.visibility = View.VISIBLE
+                            Constants
                             delay(1000L)
-                            binding.frameLoading.visibility = View.GONE
+//                            binding.frameLoading.visibility = View.GONE
+                            Constants.hideCustomAlertDialog()
                             Constants.customToast(requireContext(), requireActivity(), "isn't sign in")
                             Log.e("onStartafter: ", RUN_ONCE.toString())
                         }

@@ -102,7 +102,9 @@ class CreateNewPasswordFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
-                    binding.frameLoading.isVisible = it
+//                    binding.frameLoading.isVisible = it
+                    if (it)   Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                    else Constants.hideCustomAlertDialog()
                     Log.i(ContentValues.TAG, "collectProgress: $it")
                 }
             }

@@ -14,18 +14,20 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/imgLogo"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:src="@drawable/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="64dp"
+                android:src="@drawable/logo2"
+                app:layout_constraintDimensionRatio="4:1"
                 app:layout_constraintEnd_toEndOf="@id/pathTop"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/pathTop"
-                app:layout_constraintTop_toBottomOf="@id/pathTop" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/primary_gray" />
 
             <TextView
                 android:id="@+id/txtWelcome"
@@ -74,11 +76,11 @@
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:endIconMode="clear_text"
+                app:endIconTint="@color/cardview_dark_background"
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img1"
-                app:endIconTint="@color/cardview_dark_background">
+                app:layout_constraintTop_toBottomOf="@id/img1">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtFirstName"
@@ -101,11 +103,11 @@
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:endIconMode="clear_text"
+                app:endIconTint="@color/cardview_dark_background"
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer"
-                app:endIconTint="@color/cardview_dark_background">
+                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtLastName"
@@ -128,11 +130,11 @@
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:endIconMode="clear_text"
+                app:endIconTint="@color/cardview_dark_background"
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer"
-                app:endIconTint="@color/cardview_dark_background">
+                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtEmail"
@@ -158,11 +160,11 @@
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:endIconMode="password_toggle"
+                app:endIconTint="@color/cardview_dark_background"
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer"
-                app:endIconTint="@color/cardview_dark_background">
+                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtPassword"
@@ -186,12 +188,11 @@
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:endIconMode="password_toggle"
+                app:endIconTint="@color/cardview_dark_background"
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer"
-                app:endIconTint="@color/cardview_dark_background"
-                >
+                app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtPasswordConfirm"
@@ -243,9 +244,9 @@
                 app:layout_constraintVertical_bias="0.0" />
 
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
     <FrameLayout
         android:id="@+id/frameLoading"
         android:layout_width="match_parent"

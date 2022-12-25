@@ -71,17 +71,20 @@ class VerifyAccountFragment : Fragment() {
 
     private suspend  fun verify() {
         withContext(Dispatchers.Main){
-            binding.frameLoading.visibility =View.VISIBLE
+            Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+//            binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }
         if (getCode("code").toString() == binding.pin.text.toString()) {
             Constants.customToast(requireContext(), requireActivity(), "Verified Success")
             findNavController().navigate(R.id.action_verifyAccountFragment_to_createNewPasswordFragment)
-            binding.frameLoading.visibility =View.GONE
+            Constants.hideCustomAlertDialog()
+//            binding.frameLoading.visibility =View.GONE
             clearDataStore()
         } else {
             Constants.customToast(requireContext(), requireActivity(), "Code Isn't Correct")
-            binding.frameLoading.visibility =View.GONE
+            Constants.hideCustomAlertDialog()
+//            binding.frameLoading.visibility =View.GONE
         }
 
     }
