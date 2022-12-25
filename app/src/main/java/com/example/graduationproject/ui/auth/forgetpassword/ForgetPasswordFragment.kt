@@ -72,6 +72,7 @@ class ForgetPasswordFragment : Fragment() {
             btnFindAccount.setOnClickListener {
                 if (emailValidation(getUserData())) {
                     viewModel.forgetPassword(getUserData())
+
                 }
             }
         }
@@ -94,10 +95,11 @@ class ForgetPasswordFragment : Fragment() {
 
                 it.code?.let { it1 -> saveCode("code", it1) }
                 it.token?.let { it1 -> saveToken("token", it1) }
-                Log.e("collectResponse: ", it.toString())
-                viewModel.eventFlow.collect {
-                    findNavController().navigate(it)
-                }
+//                viewModel.eventFlow.collect {
+//                    findNavController().navigate(it)
+//                }
+                findNavController().navigate(ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToVerifyAccountFragment(getUserData()))
+
 
             }
         }

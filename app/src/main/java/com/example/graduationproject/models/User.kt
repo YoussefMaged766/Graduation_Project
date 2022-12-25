@@ -13,7 +13,7 @@ data class User(
     val newPassword: String? = null
 
 
-)
+):java.io.Serializable
 
 data class UserResponseSignUp(
 

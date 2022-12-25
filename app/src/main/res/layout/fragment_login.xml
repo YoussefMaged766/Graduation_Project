@@ -72,7 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img1"
-        app:endIconTint="@color/cardview_dark_background">
+        app:endIconTint="@color/cardview_dark_background"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtEmail"
@@ -80,7 +81,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/edittext_border"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:maxLines="1"/>
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -108,7 +110,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/edittext_border"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:maxLines="1"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

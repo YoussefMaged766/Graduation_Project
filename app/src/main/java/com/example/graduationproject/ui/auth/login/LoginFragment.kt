@@ -1,5 +1,7 @@
 package com.example.graduationproject.ui.auth.login
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
@@ -127,6 +129,21 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
+//                    val dialog = Dialog(requireActivity())
+//                    if (it){
+//                        dialog.setContentView(activity?.layoutInflater!!.inflate(R.layout.custom_alert_dailog, null))
+//                        dialog.setCancelable(false)
+//                        dialog.show()
+//                        Log.e( "collectProgress12: ", "true")
+//                    } else{
+//                        dialog.hide()
+//
+//                        Log.e( "collectProgress12: ", "false")
+//                    }
+
+
+
+//                    Constants.customAlertDialog(requireActivity(),R.layout.custom_alert_dailog,true , it)
                     binding.frameLoading.isVisible = it
                     Log.i(ContentValues.TAG, "collectProgress: $it")
                 }

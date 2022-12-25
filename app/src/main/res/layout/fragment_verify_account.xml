@@ -39,9 +39,22 @@
         android:text="@string/please_enter_your_6_Digits_sent_to"
         android:textSize="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pin" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        android:fontFamily="@font/poppins"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8sdp"
+        android:fontFamily="@font/poppins"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/enter_codetxt" />
 
     <com.chaos.view.PinView
         android:id="@+id/pin"
@@ -49,7 +62,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView3"
+        app:layout_constraintTop_toBottomOf="@id/txtEmail"
         android:layout_margin="@dimen/_8sdp"
         android:inputType="number"
         android:padding="@dimen/_10sdp"
@@ -82,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_codetxt" />
+        app:layout_constraintTop_toBottomOf="@+id/pin" />
 
     <FrameLayout
         android:id="@+id/frameLoading"

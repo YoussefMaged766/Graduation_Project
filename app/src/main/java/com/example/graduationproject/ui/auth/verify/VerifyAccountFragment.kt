@@ -16,6 +16,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
@@ -34,7 +35,7 @@ class VerifyAccountFragment : Fragment() {
 
     lateinit var binding: FragmentVerifyAccountBinding
     private lateinit var dataStore: DataStore<Preferences>
-    var txtCode = ""
+    private val args : VerifyAccountFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -63,6 +64,7 @@ class VerifyAccountFragment : Fragment() {
 
             }
         }
+        binding.txtEmail.text = args.email.email
 
 
     }
@@ -81,6 +83,7 @@ class VerifyAccountFragment : Fragment() {
             Constants.customToast(requireContext(), requireActivity(), "Code Isn't Correct")
             binding.frameLoading.visibility =View.GONE
         }
+
     }
 
 

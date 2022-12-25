@@ -79,6 +79,10 @@
         <action
             android:id="@+id/action_verifyAccountFragment_to_createNewPasswordFragment"
             app:destination="@id/createNewPasswordFragment" />
+        <argument
+            android:name="email"
+            app:argType="com.example.graduationproject.models.User" />
+
     </fragment>
     <fragment
         android:id="@+id/createNewPasswordFragment"

@@ -1,6 +1,8 @@
 package com.example.graduationproject.constants
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +16,7 @@ import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 
 class Constants {
-    companion object{
+    companion object {
         fun String.validateEmail(): Boolean {
             return if (this.isEmpty()) {
                 false
@@ -34,6 +36,7 @@ class Constants {
         fun String.validateLastname(): Boolean {
             return !(this.isEmpty() || this.length < 4)
         }
+
         fun customToast(context: Context, activity: Activity, msg: String) {
             val inflater: LayoutInflater = activity.layoutInflater
             val layout: View = inflater.inflate(
@@ -51,6 +54,23 @@ class Constants {
         }
 
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
+
+        fun customAlertDialog(
+            activity: Activity,
+            layout: Int,
+            checkCancel: Boolean,
+            state: Boolean
+        ) {
+            val dialog = Dialog(activity)
+            if (state) {
+                dialog.setContentView(activity.layoutInflater.inflate(layout, null))
+                dialog.setCancelable(checkCancel)
+                dialog.show()
+            } else dialog.dismiss()
+
+
+        }
+
 
     }
 }
