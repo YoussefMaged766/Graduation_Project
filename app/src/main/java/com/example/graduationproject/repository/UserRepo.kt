@@ -2,6 +2,7 @@ package com.example.graduationproject.repository
 
 import android.util.Log
 import com.example.graduationproject.models.*
+import com.example.graduationproject.utils.NetworkState
 import com.example.graduationproject.utils.Resource
 import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
@@ -14,15 +15,21 @@ import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
-class UserRepo @Inject constructor(private val webServices: WebServices) {
+class UserRepo @Inject constructor(private val webServices: WebServices ) {
     private val gson = Gson()
+    private val networkState = NetworkState
     fun loginUser(user: User) = flow {
+
         try {
             emit(Resource.loading(null))
-            val response = webServices.loginUser(user)
-            emit(Resource.success(response))
+            if (networkState.isOnline()){
+                val response = webServices.loginUser(user)
+                emit(Resource.success(response))
 
-            Log.e("loginUser: ", response.toString())
+                Log.e("loginUser: ", response.toString())
+            } else{
+                emit(Resource.error(null,"no Internet"))
+            }
         } catch (e: Throwable) {
             when (e) {
                 is HttpException -> {
@@ -45,8 +52,13 @@ class UserRepo @Inject constructor(private val webServices: WebServices) {
 
         try {
             emit(Resource.loading(null))
-            val response = webServices.signUpUser(user)
-            emit(Resource.success(response))
+            if (networkState.isOnline()){
+                val response = webServices.signUpUser(user)
+                emit(Resource.success(response))
+            }else{
+                emit(Resource.error(null,"no Internet"))
+            }
+
 
         } catch (e: Throwable) {
             when(e){
@@ -70,8 +82,13 @@ class UserRepo @Inject constructor(private val webServices: WebServices) {
 
         try {
             emit(Resource.loading(null))
-            val response = webServices.forgetPassword(user)
-            emit(Resource.success(response))
+            if (networkState.isOnline()){
+                val response = webServices.forgetPassword(user)
+                emit(Resource.success(response))
+            }else{
+                emit(Resource.error(null,"no Internet"))
+            }
+
 
         } catch (e: Throwable) {
             when (e) {
@@ -96,8 +113,13 @@ class UserRepo @Inject constructor(private val webServices: WebServices) {
 
         try {
             emit(Resource.loading(null))
-            val response = webServices.newPassword(user)
-            emit(Resource.success(response))
+            if (networkState.isOnline()){
+                val response = webServices.newPassword(user)
+                emit(Resource.success(response))
+            }else{
+                emit(Resource.error(null,"no Internet"))
+            }
+
 
         } catch (e: Throwable) {
             when (e) {

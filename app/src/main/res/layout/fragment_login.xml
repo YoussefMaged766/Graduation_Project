@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     tools:context=".ui.auth.login.LoginFragment"
-    android:id="@+id/cl">
-
+    android:id="@+id/cl"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:id="@+id/imgLogo"
@@ -113,7 +113,8 @@
             android:background="@drawable/edittext_border"
             android:fontFamily="@font/poppins"
             android:textColor="@color/black"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:inputType="textPassword"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,7 +145,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginTop="20dp"
         android:background="@drawable/edittext_border"
         android:enabled="false"
         android:fontFamily="@font/poppins"
@@ -154,18 +154,11 @@
         android:textColor="#7d7771"
         android:textSize="@dimen/_16sdp"
         app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
-
-<!--    <ImageView-->
-<!--        android:id="@+id/imageView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:scaleType="fitXY"-->
-<!--        android:src="@drawable/wave"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent" />-->
 
     <ImageView
         android:id="@+id/pathTop"
@@ -174,30 +167,13 @@
         android:scaleType="fitXY"
         android:src="@drawable/path_top2"
         app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/pathBottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/path_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-    <ImageView
-        android:id="@+id/pathBottom"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/path_bottom"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <FrameLayout
-        android:id="@+id/frameLoading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#60050505"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/white"
-            android:padding="@dimen/_8sdp" />
-    </FrameLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>

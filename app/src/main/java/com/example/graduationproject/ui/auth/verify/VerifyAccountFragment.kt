@@ -1,6 +1,7 @@
 package com.example.graduationproject.ui.auth.verify
 
 import android.content.ContentValues.TAG
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doOnTextChanged
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -103,6 +106,9 @@ class VerifyAccountFragment : Fragment() {
                 binding.btnVerify.setBackgroundResource(R.drawable.checkbox_checked)
                 binding.btnVerify.isEnabled = true
                 binding.btnVerify.setTextColor(Color.WHITE)
+                val inputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                // on below line hiding our keyboard.
+                inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
             } else {
                 binding.btnVerify.setBackgroundResource(R.drawable.edittext_border)
                 binding.btnVerify.isEnabled = false
