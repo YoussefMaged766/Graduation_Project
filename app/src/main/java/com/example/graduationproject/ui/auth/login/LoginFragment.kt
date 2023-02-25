@@ -27,7 +27,7 @@ import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validatePass
 import com.example.graduationproject.databinding.FragmentLoginBinding
 import com.example.graduationproject.models.User
-import com.example.graduationproject.ui.main.home.HomeActivity
+import com.example.graduationproject.ui.main.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

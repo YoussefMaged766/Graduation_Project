@@ -1,4 +1,4 @@
-package com.example.graduationproject.ui.main.home
+package com.example.graduationproject.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
