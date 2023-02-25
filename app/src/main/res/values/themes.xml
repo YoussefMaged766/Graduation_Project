@@ -19,4 +19,9 @@
         <item name="android:background">@drawable/checkbox_background</item>
 
     </style>
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/white</item>
+        <item name="layout_scrollFlags">exitUntilCollapsed</item>
+    </style>
 </resources>

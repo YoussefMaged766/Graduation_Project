@@ -32,5 +32,6 @@
     <string name="home">Home</string>
     <string name="profile">Profile</string>
     <string name="whislist">Whislist</string>
+    <string name="logout">Logout</string>
 
 </resources>

@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
+        android:background="@color/primary_gray"
+        android:theme="@style/ToolbarTheme"
         >
 
         <androidx.appcompat.widget.Toolbar

@@ -10,18 +10,12 @@
         android:name="com.example.graduationproject.ui.main.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_wishlistFragment"
-            app:destination="@id/wishlistFragment" />
     </fragment>
     <fragment
         android:id="@+id/wishlistFragment"
         android:name="com.example.graduationproject.WishlistFragment"
         android:label="fragment_wishlist"
         tools:layout="@layout/fragment_wishlist" >
-        <action
-            android:id="@+id/action_wishlistFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

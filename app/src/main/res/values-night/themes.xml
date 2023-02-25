@@ -14,4 +14,9 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/primary_gray</item>
     </style>
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/white</item>
+
+    </style>
 </resources>
