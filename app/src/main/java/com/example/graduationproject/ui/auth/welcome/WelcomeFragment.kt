@@ -65,7 +65,6 @@ class WelcomeFragment : Fragment() {
 //            }
 //        }
 
-
     }
 
     private suspend fun saveIsLogging(key: String, value: Boolean) {
