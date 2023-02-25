@@ -29,5 +29,8 @@
     <string name="verify_your_email">Verify your Email</string>
     <string name="create_new_password">Create new password</string>
     <string name="Your_new_password">Your new password must be Different \n from previously used password</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="whislist">Whislist</string>
 
 </resources>
