@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.HomeActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
     android:id="@+id/drawerLayout"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +30,9 @@
         android:background="@color/brown2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        app:itemRippleColor="@color/white"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -45,6 +46,7 @@
             android:background="@drawable/custom_drawer"
             app:itemTextColor="@color/black"
             app:layout_constraintTop_toTopOf="parent"
+            app:itemRippleColor="@color/primary_gray"
 
             />
 

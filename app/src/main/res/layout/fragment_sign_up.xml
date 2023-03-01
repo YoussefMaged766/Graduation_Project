@@ -82,13 +82,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/img1"
+                android:background="@drawable/edittext_border"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/edittext_border"
+
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -109,13 +110,14 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtFirstNameContainer"
+                android:background="@drawable/edittext_border">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtLastName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/edittext_border"
+
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -136,13 +138,13 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer"
+                android:background="@drawable/edittext_border">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/edittext_border"
                     android:fontFamily="@font/poppins"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/black" />
@@ -166,13 +168,13 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtEmailContainer"
+                android:background="@drawable/edittext_border">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/edittext_border"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black"
                     android:inputType="textPassword"/>
@@ -195,13 +197,13 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer">
+                app:layout_constraintTop_toBottomOf="@id/txtPasswordContainer"
+                android:background="@drawable/edittext_border">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtPasswordConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/edittext_border"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black"
                     android:inputType="textPassword"/>
@@ -250,19 +252,4 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/frameLoading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#60050505"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/white"
-            android:padding="@dimen/_8sdp" />
-    </FrameLayout>
 </RelativeLayout>
