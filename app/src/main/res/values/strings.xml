@@ -33,5 +33,9 @@
     <string name="profile">Profile</string>
     <string name="whislist">Whislist</string>
     <string name="logout">Logout</string>
+    <string name="reads">Reads</string>
+    <string name="rating">Rating</string>
+    <string name="reviews">Reviews</string>
+    <string name="overview">Overview</string>
 
 </resources>
