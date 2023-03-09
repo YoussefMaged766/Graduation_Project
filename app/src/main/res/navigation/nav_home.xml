@@ -35,4 +35,9 @@
         android:name="com.example.graduationproject.BookFragment"
         android:label="fragment_book"
         tools:layout="@layout/fragment_book" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.graduationproject.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
 </navigation>
