@@ -1,27 +1,29 @@
 package com.example.graduationproject.ui.main.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.graduationproject.constants.Constants.Companion.dataStore
+import com.example.graduationproject.adapter.SearchHistoryAdapter
+import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.databinding.FragmentSearchBinding
+import com.example.graduationproject.db.HistorySearchEntity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
     lateinit var binding: FragmentSearchBinding
+     var adapter=SearchHistoryAdapter(this)
+    val viewModel:SearchViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,14 +45,17 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getQuery()
+        getAllHistory()
+
     }
 
     private fun getQuery() {
-        lifecycleScope.launch {
+
             binding.searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(query!!)
                     findNavController().navigate(action)
+                    saveHistorySearch(HistorySearchEntity(Calendar.getInstance().timeInMillis,query))
                     return true
                 }
 
@@ -59,9 +64,43 @@ class SearchFragment : Fragment() {
                 }
 
             })
+
+    }
+
+    fun saveHistorySearch(query:HistorySearchEntity){
+        viewModel.saveSearchHistory(query)
+        lifecycleScope.launch {
+            viewModel.error.collect{
+                Constants.customToast(requireContext(),requireActivity(),it)
+            }
         }
     }
 
+    fun getAllHistory(){
+        viewModel.getAllHistorySearch()
+        lifecycleScope.launch {
+            viewModel.searchResponse.collect{
+
+                adapter.submitList(it)
+                binding.recyclerSearch.adapter = adapter
+
+            }
+        }
+    }
+
+    fun deleteHistorySearch(query:String){
+        viewModel.deleteHistorySearch(query)
+        lifecycleScope.launch {
+            viewModel.successDelete.collect{
+                Constants.customToast(requireContext(),requireActivity(),it)
+            }
+
+        }
+    }
+
+    override fun onItemClick(query: String) {
+       deleteHistorySearch(query)
+    }
 
 
 }

@@ -1,9 +1,13 @@
 package com.example.graduationproject.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.graduationproject.db.SearchDatabase
 import com.example.graduationproject.utils.WebServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,5 +55,15 @@ object AppModule {
     @Singleton
     fun getJson():GsonConverterFactory{
         return GsonConverterFactory.create()
+    }
+
+    @Provides
+    @Singleton
+    fun databaseProvider(
+        @ApplicationContext context : Context
+    ) : SearchDatabase {
+        return  Room.databaseBuilder(context,SearchDatabase::class.java,"Search_DB")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

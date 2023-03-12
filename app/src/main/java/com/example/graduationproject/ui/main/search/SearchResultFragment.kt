@@ -20,6 +20,7 @@ import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentSearchResultBinding
 import com.example.graduationproject.models.BooksItem
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -57,6 +58,7 @@ class SearchResultFragment : Fragment() {
         getListedBook(args.query)
         collectResponse()
         collectProgress()
+
     }
 
     fun getListedBook(query: String) {
@@ -103,6 +105,7 @@ class SearchResultFragment : Fragment() {
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
+
 
 
 
