@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.graduationproject.ui.main.home.HomeFragment"
-        android:label="Our Top Picks"
+        android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_bookFragment"
@@ -16,35 +16,23 @@
     </fragment>
     <fragment
         android:id="@+id/wishlistFragment"
-        android:name="com.example.graduationproject.ui.main.wishlist.WishlistFragment"
+        android:name="com.example.graduationproject.WishlistFragment"
         android:label="fragment_wishlist"
         tools:layout="@layout/fragment_wishlist" >
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.graduationproject.ui.main.profile.ProfileFragment"
+        android:name="com.example.graduationproject.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.graduationproject.ui.main.search.SearchFragment"
-        tools:layout="@layout/fragment_search" >
-        <action
-            android:id="@+id/action_searchFragment_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
+        android:name="com.example.graduationproject.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/bookFragment"
         android:name="com.example.graduationproject.BookFragment"
         android:label="fragment_book"
         tools:layout="@layout/fragment_book" />
-    <fragment
-        android:id="@+id/searchResultFragment"
-        android:name="com.example.graduationproject.ui.main.search.SearchResultFragment"
-        android:label="fragment_search_result"
-        tools:layout="@layout/fragment_search_result" >
-        <argument
-            android:name="query"
-            app:argType="string" />
-    </fragment>
 </navigation>
