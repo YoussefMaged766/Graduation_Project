@@ -31,11 +31,12 @@ object AppModule {
             .build()
     }
 
+
     @Provides
     @Singleton
     fun retrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://reco-books.onrender.com/")
+            .baseUrl("http://192.168.1.6:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

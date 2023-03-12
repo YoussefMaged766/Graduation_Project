@@ -58,7 +58,6 @@ class Constants {
             context: Context,
             layout: Int,
             checkCancel: Boolean,
-
             ) {
             dialog = Dialog(context)
             dialog.setContentView(layout)
@@ -66,13 +65,12 @@ class Constants {
             loader.start()
             dialog.setCancelable(checkCancel)
             dialog.show()
-
-
         }
-
         fun hideCustomAlertDialog() {
             dialog.cancel()
         }
+
+
 
     }
 }

@@ -127,7 +127,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="@color/brown2"
                     android:scaleType="fitXY"
-                    android:src="@drawable/baseline_star_24" />
+                    />
 
                 <TextView
                     android:id="@+id/textView11"

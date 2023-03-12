@@ -126,14 +126,11 @@ class LoginFragment : Fragment() {
                 viewModel.progress.collectLatest {
                     if (it){
                         Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
-                        Log.e( "collectProgress12: ", "true")
                     } else{
 //                        dialog.cancel()
                         Constants.hideCustomAlertDialog()
-                        Log.e( "collectProgress12: ", "false")
                     }
 //                    binding.frameLoading.isVisible = it
-                    Log.i(ContentValues.TAG, "collectProgress: $it")
                 }
             }
         }
