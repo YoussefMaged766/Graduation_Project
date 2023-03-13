@@ -57,7 +57,7 @@ class SearchHistoryAdapter(private val listener: OnItemClickListener) :
     override fun onBindViewHolder(holder: viewholder, position: Int) {
         holder.bind(getItem(position))
         holder.binding.iconClose.setOnClickListener {
-            listener.onItemClick(getItem(position).query.toString())
+            listener.onItemClick(getItem(holder.adapterPosition).query.toString())
 
         }
         holder.binding.root.setOnClickListener {
