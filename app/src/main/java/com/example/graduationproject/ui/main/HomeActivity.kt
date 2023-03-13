@@ -13,6 +13,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -43,6 +44,7 @@ class HomeActivity : AppCompatActivity() {
         setUpBotNav()
         setUpDrawer()
         actionDrawer()
+
 
     }
 
@@ -85,6 +87,7 @@ class HomeActivity : AppCompatActivity() {
                     Constants.customToast(applicationContext, this, "logout")
                     lifecycleScope.launch {
                         clearDataStore()
+                        clearDataStoreID()
                     }
                     startActivity(Intent(this, MainActivity::class.java))
 
@@ -103,6 +106,14 @@ class HomeActivity : AppCompatActivity() {
     private suspend fun clearDataStore() {
         dataStore = applicationContext.dataStore
         val dataStoreKey: Preferences.Key<Int> = intPreferencesKey("userToken")
+        dataStore.edit {
+            it.remove(dataStoreKey)
+        }
+    }
+
+    private suspend fun clearDataStoreID() {
+        dataStore = applicationContext.dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey("userId")
         dataStore.edit {
             it.remove(dataStoreKey)
         }

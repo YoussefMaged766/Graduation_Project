@@ -7,14 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.adapter.SearchHistoryAdapter
 import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentSearchBinding
 import com.example.graduationproject.db.HistorySearchEntity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -24,6 +31,7 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
     lateinit var binding: FragmentSearchBinding
      var adapter=SearchHistoryAdapter(this)
     val viewModel:SearchViewModel by viewModels()
+    private lateinit var dataStore: DataStore<Preferences>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,18 +52,27 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getQuery()
-        getAllHistory()
+
+        lifecycleScope.launch {
+            getQuery()
+            getAllHistory()
+            Log.e( "onViewCreated: ", getUserId("userId").toString())
+        }
+
+
 
     }
 
-    private fun getQuery() {
+    private suspend fun getQuery() {
 
             binding.searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(query!!)
                     findNavController().navigate(action)
-                    saveHistorySearch(HistorySearchEntity(Calendar.getInstance().timeInMillis,query))
+                    lifecycleScope.launch{
+                        saveHistorySearch(HistorySearchEntity(Calendar.getInstance().timeInMillis,query,getUserId("userId")!!))
+                    }
+
                     return true
                 }
 
@@ -64,6 +81,7 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
                 }
 
             })
+
 
     }
 
@@ -76,8 +94,8 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
         }
     }
 
-    fun getAllHistory(){
-        viewModel.getAllHistorySearch()
+   suspend fun getAllHistory(){
+       getUserId("userId")?.let { viewModel.getAllHistorySearch(it) }
         lifecycleScope.launch {
             viewModel.searchResponse.collect{
 
@@ -88,6 +106,8 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
         }
     }
 
+
+
     fun deleteHistorySearch(query:String){
         viewModel.deleteHistorySearch(query)
         lifecycleScope.launch {
@@ -97,9 +117,27 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
         }
     }
+//    private suspend fun getToken(key: String): String? {
+//        dataStore = requireContext().dataStore
+//        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+//        val preference = dataStore.data.first()
+//        return preference[dataStoreKey]
+//    }
+
+    private suspend fun getUserId(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
+    }
+
+
+
 
     override fun onItemClick(query: String) {
        deleteHistorySearch(query)
+
+
     }
 
 

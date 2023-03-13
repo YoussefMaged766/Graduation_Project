@@ -91,9 +91,14 @@ class SearchResultFragment : Fragment() {
     fun collectResponse(){
         lifecycleScope.launch {
             viewModel.response.collect{
-                adapter = SearchResultAdapter(it?.books!!)
-                binding.recyclerSearch.adapter =adapter
-                Log.e( "collectResponse: ", it.books.toString())
+                if (it?.books!!.isEmpty()){
+                    binding.lottieNoResult.visibility =View.VISIBLE
+                } else{
+                    adapter = SearchResultAdapter(it?.books!!)
+                    binding.recyclerSearch.adapter =adapter
+                    Log.e( "collectResponse: ", it.books.toString())
+                }
+
             }
         }
 

@@ -64,8 +64,8 @@ class BookRepo @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-   suspend fun getAllHistorySearch()  =
-         database.searchDao().getAllHistorySearch()
+   suspend fun getAllHistorySearch(userId: String)  =
+         database.searchDao().getAllHistorySearch(userId)
 
 //        try {
 //            emit(Resource.loading(null))

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class HistorySearchEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Long? = null,
-
-    val query: String? = null
+    val query: String? = null,
+    val userId: String? = null
 
 )

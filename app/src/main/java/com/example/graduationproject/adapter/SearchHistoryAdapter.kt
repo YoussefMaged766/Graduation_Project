@@ -3,11 +3,14 @@ package com.example.graduationproject.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.graduationproject.databinding.SearchHistoryItemBinding
 import com.example.graduationproject.db.HistorySearchEntity
+import com.example.graduationproject.ui.main.search.SearchFragmentDirections
 import java.util.Calendar
 
 class SearchHistoryAdapter(private val listener: OnItemClickListener) :
@@ -56,6 +59,10 @@ class SearchHistoryAdapter(private val listener: OnItemClickListener) :
         holder.binding.iconClose.setOnClickListener {
             listener.onItemClick(getItem(position).query.toString())
 
+        }
+        holder.binding.root.setOnClickListener {
+            val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(getItem(position).query.toString())
+            it.findNavController().navigate(action)
         }
 
     }

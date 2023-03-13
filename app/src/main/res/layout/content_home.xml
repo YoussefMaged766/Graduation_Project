@@ -14,9 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/nav_home"
-            />
+            app:navGraph="@navigation/nav_home" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

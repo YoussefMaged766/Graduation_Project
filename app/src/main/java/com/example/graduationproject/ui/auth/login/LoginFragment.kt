@@ -44,6 +44,7 @@ class LoginFragment : Fragment() {
     private lateinit var dataStore: DataStore<Preferences>
     private var RUN_ONCE = true
     lateinit var dialog: Dialog
+    var id:String?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,13 +90,18 @@ class LoginFragment : Fragment() {
     private fun ocClicks() {
         binding.apply {
             btnSignIn.setOnClickListener {
-                if (emailAndPassValidation(getUserData()))
+                if (emailAndPassValidation(getUserData())){
                     viewModel.loginUser(
                         getUserData(),
                         requireContext(),
                         HomeActivity::class.java,
                         requireActivity()
                     )
+
+
+
+                }
+
 
             }
             forgetPassword.setOnClickListener {
@@ -116,9 +122,16 @@ class LoginFragment : Fragment() {
                 )
                 Log.e("collectResponse: ", it.toString())
                 handleCheckBox(it.token.toString())
+                saveUserId("userId",it.userId.toString())
             }
         }
     }
+
+
+
+
+
+
 
     private fun collectProgress() {
         lifecycleScope.launch {
@@ -205,15 +218,23 @@ class LoginFragment : Fragment() {
 
     }
 
-    private suspend fun handleCheckBox(value: String) {
+    private suspend fun handleCheckBox(value: String){
 
         if (binding.checkBox.isChecked) {
             saveToken("userToken", value)
-        }
 
+        }
     }
 
     private suspend fun saveToken(key: String, value: String) {
+        dataStore = requireContext().dataStore
+        val dataStoreKey = stringPreferencesKey(key)
+        dataStore.edit {
+            it[dataStoreKey] = value
+        }
+    }
+
+    private suspend fun saveUserId(key: String, value: String) {
         dataStore = requireContext().dataStore
         val dataStoreKey = stringPreferencesKey(key)
         dataStore.edit {
