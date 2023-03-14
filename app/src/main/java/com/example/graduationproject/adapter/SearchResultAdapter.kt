@@ -1,20 +1,16 @@
 package com.example.graduationproject.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
-import android.widget.ListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.example.graduationproject.R
 import com.example.graduationproject.databinding.BookItemBinding
-import com.example.graduationproject.models.BookX
 import com.example.graduationproject.models.BooksItem
 
-class SearchResultAdapter(var items :List<BooksItem>) :RecyclerView.Adapter<SearchResultAdapter.viewholder>() {
+class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewholder>(DiffCallBack()) {
 
 
 
@@ -30,11 +26,21 @@ class SearchResultAdapter(var items :List<BooksItem>) :RecyclerView.Adapter<Sear
         return viewholder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+
 
     override fun onBindViewHolder(holder: viewholder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position)!!)
+    }
+
+    class DiffCallBack : DiffUtil.ItemCallback<BooksItem>() {
+        override fun areItemsTheSame(oldItem: BooksItem, newItem: BooksItem): Boolean {
+            return oldItem.id == newItem.id && oldItem.title == newItem.title
+        }
+
+        override fun areContentsTheSame(oldItem: BooksItem, newItem: BooksItem): Boolean {
+            return oldItem.id == newItem.id && oldItem.title == newItem.title
+        }
+
+
     }
 }

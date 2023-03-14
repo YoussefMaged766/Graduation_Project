@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.models.User
 import com.example.graduationproject.models.UserResponseLogin
-import com.example.graduationproject.repository.UserRepo
+import com.example.graduationproject.data.repository.UserRepo
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +47,7 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
                         _progress.send(false)
                         _error.send(it.message.toString())
                     }
+                    Status.NO_DATA->{}
                 }
             }
         }

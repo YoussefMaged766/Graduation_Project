@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.R
 import com.example.graduationproject.models.GenerationCodeResponse
 import com.example.graduationproject.models.User
-import com.example.graduationproject.repository.UserRepo
+import com.example.graduationproject.data.repository.UserRepo
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -60,6 +60,7 @@ class ForgetPasswordViewModel @Inject constructor(private val userRepo: UserRepo
                     _progress.send(false)
                     _error.send(it.message.toString())
                 }
+                Status.NO_DATA->{}
             }
 
         }

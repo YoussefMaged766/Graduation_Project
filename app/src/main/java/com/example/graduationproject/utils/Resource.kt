@@ -10,6 +10,9 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
 
         fun <T> loading(data: T?): Resource<T> =
             Resource(status = Status.LOADING, data = data, message = null)
+
+        fun <T> noData(message: String): Resource<T> =
+            Resource(status = Status.NO_DATA, data = null, message = message)
     }
 
 }

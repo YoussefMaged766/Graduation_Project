@@ -3,8 +3,13 @@ package com.example.graduationproject.models
 import com.google.gson.annotations.SerializedName
 
 data class BookResponse(
+    @field:SerializedName("count")
+    val count: Int? = null,
 
-    @field:SerializedName("BOOKS")
+    @field:SerializedName("page")
+    val page: String? = null,
+
+    @field:SerializedName("results")
     val books: List<BooksItem>
 )
 

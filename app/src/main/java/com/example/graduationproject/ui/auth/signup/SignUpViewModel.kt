@@ -8,7 +8,7 @@ import com.example.graduationproject.R
 import com.example.graduationproject.models.GenerationCodeResponse
 import com.example.graduationproject.models.User
 import com.example.graduationproject.models.UserResponseSignUp
-import com.example.graduationproject.repository.UserRepo
+import com.example.graduationproject.data.repository.UserRepo
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +60,8 @@ class SignUpViewModel @Inject constructor(val userRepo: UserRepo) : ViewModel() 
                     _error.send(it.message.toString())
 //                    activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
+
+                Status.NO_DATA->{}
             }
 
         }

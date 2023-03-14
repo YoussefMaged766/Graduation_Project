@@ -10,6 +10,7 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface WebServices {
 
@@ -28,7 +29,7 @@ interface WebServices {
 
 
     @GET("book/search/{query}")
-    suspend fun search(@Path("query") query:String,@Header("token") token:String): BookResponse
+    suspend fun search(@Path("query") query:String,@Header("token") token:String , @Query("page") page:Int): BookResponse
 
 
 }
