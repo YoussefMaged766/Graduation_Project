@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -55,19 +56,40 @@ class BookRepo @Inject constructor(
 //
 //    }.flowOn(Dispatchers.IO)
 
-    fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> {
-        return Pager(PagingConfig(pageSize = 20,enablePlaceholders = true)) {
-            SearchPagingSource(webServices, query, token)
-        }.flow.map {
+//    fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> {
+//
+//        return Pager(PagingConfig(pageSize = 20,enablePlaceholders = true)) {
+//            SearchPagingSource(webServices, query, token)
+//        }.flow.map { pagingData ->
+//            Resource.success(pagingData)
+//        }
+//
+////            .onStart { emit(Resource.loading(null)) }
+//            .catch {
+//                emit(Resource.error(null, it.message.toString()))
+//            }
+//            .flowOn(Dispatchers.IO)
+//    }
 
-            Resource.success(it)
-        }
-
-            .onStart { emit(Resource.loading(null)) }
-            .catch {
-                emit(Resource.error(null, it.message.toString()))
+    fun search(query: String, token: String) : Flow<Resource<PagingData<BooksItem>>> = flow {
+        emit(Resource.loading(null))
+        kotlinx.coroutines.delay(2000)
+        try {
+            val page = Pager(PagingConfig(pageSize = 20, enablePlaceholders = true)) {
+                SearchPagingSource(webServices, query, token)
             }
-            .flowOn(Dispatchers.IO)
+
+            page.flow.map { pagingData ->
+               emit(Resource.success(pagingData))
+            }.collect()
+
+        } catch (e: IOException){
+            Log.e("search: ", e.toString())
+            emit(Resource.error(null, e.message.toString()))
+        } catch (e: HttpException){
+            Log.e("search: ", e.toString())
+            emit(Resource.error(null, e.message.toString()))
+        }
     }
 
 

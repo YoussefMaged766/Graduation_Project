@@ -33,6 +33,7 @@ object AppModule {
             .writeTimeout(5, TimeUnit.MINUTES)
             .addInterceptor(httpLoggingInterceptor)
             .build()
+
     }
 
 
@@ -45,6 +46,7 @@ object AppModule {
             .client(okHttpClient)
             .build()
     }
+
 
     @Provides
     @Singleton

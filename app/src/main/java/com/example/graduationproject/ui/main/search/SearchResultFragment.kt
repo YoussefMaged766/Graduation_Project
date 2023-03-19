@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -36,7 +37,7 @@ class SearchResultFragment : Fragment() {
     private val args: SearchResultFragmentArgs by navArgs()
     private val viewModel: SearchResultViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
-    lateinit var adapter: SearchResultAdapter
+  private  val  adapter: SearchResultAdapter by lazy {SearchResultAdapter()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +59,10 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getListedBook(args.query)
-        collectResponse()
-        collectProgress()
+//        collectResponse()
+//        collectProgress()
 //        observe()
+        collectState()
     }
 
     fun getListedBook(query: String) {
@@ -90,30 +92,7 @@ class SearchResultFragment : Fragment() {
 
                 }
 
-//                viewModel.noData.collectLatest {
-//                    if (it){
-//                        binding.lottieNoResult.visibility =View.VISIBLE
-//                    } else{
-//                        binding.lottieNoResult.visibility =View.GONE
-//                    }
-//                }
 
-//                adapter.loadStateFlow.collect{
-//                    if (it.refresh is LoadState.Loading){
-//                        Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
-//                    }
-//                    if (adapter.itemCount == 0){
-//                        binding.lottieNoResult.visibility =View.VISIBLE
-//
-//                    }
-//                    else if (it.refresh is LoadState.Error){
-//                        Constants.hideCustomAlertDialog()
-//                    }
-//                    else{
-//                        binding.lottieNoResult.visibility =View.GONE
-//                    }
-//
-//                }
             }
         }
 
@@ -123,27 +102,12 @@ class SearchResultFragment : Fragment() {
     fun collectResponse() {
         lifecycleScope.launch {
             viewModel.response.collect {
-//                if (it?.books!!.isEmpty()){
-//                    binding.lottieNoResult.visibility =View.VISIBLE
-//                } else{
-                adapter = SearchResultAdapter()
+
+//                adapter = SearchResultAdapter()
                 adapter.submitData(lifecycle, it!!)
                 binding.recyclerSearch.adapter = adapter
 //                    Log.e( "collectResponse: ", it.books.toString())
-//                }
-             adapter.loadStateFlow.map { it.refresh }
-                    .distinctUntilChanged()
-                    .collect {
-                        if (it is LoadState.NotLoading) {
-                            // PagingDataAdapter.itemCount here
-                            if (adapter.itemCount == 0) {
-                                binding.lottieNoResult.visibility = View.VISIBLE
-                            } else {
-                                binding.lottieNoResult.visibility = View.GONE
-                            }
-                            Log.e("collectResponse: ", adapter.itemCount.toString())
-                        }
-                    }
+
 
 
             }
@@ -199,5 +163,44 @@ class SearchResultFragment : Fragment() {
 //
 //    }
 
+/***/
 
+
+private fun collectState(){
+        lifecycleScope.launch {
+            viewModel.state.collectLatest { bookState ->
+
+             withContext(Dispatchers.Main){
+                 if (bookState.isLoading){
+                     Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                 }
+                 if (!bookState.isLoading){
+                     Constants.hideCustomAlertDialog()
+                 }
+
+//                 binding.progressBar.isVisible = bookState.isLoading
+                 bookState.allBooks?.let { adapter.submitData(it) }
+                 binding.recyclerSearch.adapter = adapter
+
+                 adapter.loadStateFlow.map { it.refresh }
+                     .distinctUntilChanged()
+                     .collect {
+                         if (it is LoadState.NotLoading) {
+
+                             // PagingDataAdapter.itemCount here
+                             if (adapter.itemCount == 0) {
+                                 binding.lottieNoResult.visibility = View.VISIBLE
+                                 Constants.hideCustomAlertDialog()
+                             } else {
+                                 binding.lottieNoResult.visibility = View.GONE
+                                 Constants.hideCustomAlertDialog()
+                             }
+                             Log.e("collectResponse: ", adapter.itemCount.toString())
+                         }
+                     }
+               }
+
+            }
+        }
+    }
 }

@@ -4,24 +4,26 @@ package com.example.graduationproject.ui.main.search
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
-import com.example.graduationproject.models.BookResponse
 import com.example.graduationproject.data.repository.BookRepo
 import com.example.graduationproject.models.BooksItem
-import com.example.graduationproject.utils.Resource
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.switchMap
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchResultViewModel @Inject constructor(private val bookRepo: BookRepo) : ViewModel(){
+class SearchResultViewModel @Inject constructor(
+    private val bookRepo: BookRepo
+    ) : ViewModel(){
 
     private val _response = MutableSharedFlow<PagingData<BooksItem>?>()
     val response : MutableSharedFlow<PagingData<BooksItem>?> get() = _response
+
+    private val _state = MutableStateFlow(BookState())
+    val state = _state.asStateFlow()
 
     private val _progress = Channel<Boolean>()
     val progress = _progress.receiveAsFlow()
@@ -40,7 +42,33 @@ class SearchResultViewModel @Inject constructor(private val bookRepo: BookRepo) 
 //    }
 
     fun search(query:String,token:String) = viewModelScope.launch(Dispatchers.IO) {
+        bookRepo.search(query, token).collectLatest { resource ->
+            when(resource.status){
+                Status.LOADING-> {
 
+                 _state.value = state.value.copy(
+                     isLoading = true
+                 )
+                }
+
+                Status.SUCCESS-> {
+                    _state.value = state.value.copy(
+                        allBooks = resource.data,
+                        isLoading = false
+                    )
+                }
+
+                Status.ERROR-> {
+                    _state.value = state.value.copy(
+                        isLoading = false
+                    )
+                    Log.e( "searchError: ", resource.message ?: "Unknown Error")
+                }
+
+                else->{}
+            }
+
+        }
         bookRepo.search(query, token).collect {
             when (it.status) {
                 Status.LOADING -> _progress.send(true)
