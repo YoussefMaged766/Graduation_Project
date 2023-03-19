@@ -23,6 +23,8 @@ data class BooksItem(
 
     @field:SerializedName("book_id")
     val bookId: Int? = null,
+    @field:SerializedName("description")
+    val description: String? = null,
 
     @field:SerializedName("cover_image")
     val coverImage: String? = null,

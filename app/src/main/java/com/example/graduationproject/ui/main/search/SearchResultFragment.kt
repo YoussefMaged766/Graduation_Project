@@ -59,113 +59,20 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getListedBook(args.query)
-//        collectResponse()
-//        collectProgress()
-//        observe()
         collectState()
     }
 
-    fun getListedBook(query: String) {
+    private fun getListedBook(query: String) {
         lifecycleScope.launch {
             viewModel.search(query, "Bearer ${getToken("userToken")}")
         }
     }
-
-    private fun collectProgress() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-                viewModel.progress.collectLatest {
-                    if (it) {
-                        Constants.showCustomAlertDialog(
-                            requireContext(),
-                            R.layout.custom_alert_dailog,
-                            false
-                        )
-                        Log.e("collectProgress12345: ", "true")
-                    } else {
-//                        dialog.cancel()
-                        Constants.hideCustomAlertDialog()
-                        Log.e("collectProgress12: ", "false")
-                    }
-//                    binding.frameLoading.isVisible = it
-                    Log.i(ContentValues.TAG, "collectProgress: $it")
-
-                }
-
-
-            }
-        }
-
-
-    }
-
-    fun collectResponse() {
-        lifecycleScope.launch {
-            viewModel.response.collect {
-
-//                adapter = SearchResultAdapter()
-                adapter.submitData(lifecycle, it!!)
-                binding.recyclerSearch.adapter = adapter
-//                    Log.e( "collectResponse: ", it.books.toString())
-
-
-
-            }
-
-        }
-
-    }
-
     private suspend fun getToken(key: String): String? {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
-
-//     fun observe() {
-//         lifecycleScope.launch{
-//             viewModel.result.collect{
-//                 when(it.status){
-//                     Status.SUCCESS->{
-//                         adapter = SearchResultAdapter()
-//                         adapter.submitData(lifecycle, it.data!!)
-//                         binding.recyclerSearch.adapter = adapter
-//                         Constants.hideCustomAlertDialog()
-//                         adapter.loadStateFlow.map { it.refresh }
-//                             .distinctUntilChanged()
-//                             .collect {
-//                                 if (it is LoadState.NotLoading) {
-//                                     // PagingDataAdapter.itemCount here
-//                                     if (adapter.itemCount == 0) {
-//                                         binding.lottieNoResult.visibility = View.VISIBLE
-//                                     } else {
-//                                         binding.lottieNoResult.visibility = View.GONE
-//                                     }
-//                                     Log.e("collectResponse: ", adapter.itemCount.toString())
-//                                 }
-//                             }
-//
-//                     }
-//                     Status.LOADING->{
-//                         Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
-//                     }
-//                     Status.ERROR->{
-//                         Constants.hideCustomAlertDialog()
-//                         Log.e( "observe: ",it.message.toString() )
-//                     }
-//                     Status.NO_DATA->{}
-//                 }
-//             }
-//         }
-//
-//
-//
-//    }
-
-/***/
-
-
 private fun collectState(){
         lifecycleScope.launch {
             viewModel.state.collectLatest { bookState ->
@@ -177,8 +84,6 @@ private fun collectState(){
                  if (!bookState.isLoading){
                      Constants.hideCustomAlertDialog()
                  }
-
-//                 binding.progressBar.isVisible = bookState.isLoading
                  bookState.allBooks?.let { adapter.submitData(it) }
                  binding.recyclerSearch.adapter = adapter
 
