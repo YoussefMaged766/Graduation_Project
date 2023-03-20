@@ -33,13 +33,10 @@ class HomePagingSource (private val webServices: WebServices, private val token:
                 val nextPageNumber = if (data.isNotEmpty()) currentPage + 1 else null
 
                 LoadResult.Page(data, prevKey = null, nextKey = nextPageNumber)
-            } catch (e: HttpException) {
-             val gson = Gson()
-            val type = object : TypeToken<UserResponseLogin>() {}.type
-            val errorResponse: UserResponseLogin? =
-                gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
-            Log.e( "load: ", errorResponse?.message.toString())
-               return LoadResult.Error(e)
+            } catch (e: Throwable) {
+                Log.e("load: ", e.message.toString())
+                return LoadResult.Error(e)
+
             }
         }
 }

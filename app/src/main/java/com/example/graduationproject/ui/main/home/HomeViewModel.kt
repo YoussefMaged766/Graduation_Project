@@ -1,6 +1,7 @@
 package com.example.graduationproject.ui.main.home
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -25,10 +26,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val bookRepo: BookRepo,
+    private val webServices: WebServices
 ) : ViewModel() {
     private val _state = MutableStateFlow(BookState())
      val state = _state.asStateFlow()
 
+    val data:MutableLiveData<PagingData<BooksItem>> = MutableLiveData()
 
 
     suspend fun getAllBooks( token: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -58,4 +61,19 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+     fun Books(token: String){
+        viewModelScope.launch {
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = { HomePagingSource( webServices,token) }
+            ).flow.cachedIn(viewModelScope).collectLatest {
+                data.postValue(it)
+            }
+        }
+    }
+
 }

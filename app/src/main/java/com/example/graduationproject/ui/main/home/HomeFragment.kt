@@ -1,10 +1,12 @@
 package com.example.graduationproject.ui.main.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
@@ -16,21 +18,28 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import com.example.graduationproject.R
+import com.example.graduationproject.adapter.LoadStateAdapter
+import com.example.graduationproject.adapter.LoadStateViewHolder
 import com.example.graduationproject.adapter.SearchResultAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentHomeBinding
+import com.example.graduationproject.models.BooksItem
+import com.example.graduationproject.models.UserResponseLogin
 import com.example.graduationproject.ui.main.HomeActivity
+import com.example.graduationproject.ui.main.MainActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -59,13 +68,45 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getListedBook()
-        collectState()
+        recycler()
+        binding.swipeRefresh.setOnRefreshListener {
+            getListedBook()
+            lifecycleScope.launch {
+                delay(1000)
+
+            }
+
+
+        }
     }
 
     private fun getListedBook() {
         lifecycleScope.launch {
-            viewModel.getAllBooks("Bearer ${getToken("userToken")}")
+
+            viewModel.Books("Bearer ${getToken("userToken")}")
+
         }
+        viewModel.data.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+
+            }
+
+        }
+
+    }
+
+    fun recycler() {
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter { adapter.retry() },
+            footer = LoadStateAdapter { adapter.retry() }
+        )
+        binding.recyclerHome.adapter = adapter
+        adapter.addLoadStateListener {
+            binding.swipeRefresh.isRefreshing = it.source.refresh is LoadState.Loading
+            handelError(it)
+        }
+
     }
 
     private suspend fun getToken(key: String): String? {
@@ -75,63 +116,22 @@ class HomeFragment : Fragment() {
         return preference[dataStoreKey]
     }
 
-    private fun collectState(){
-        lifecycleScope.launch {
-            viewModel.state.collectLatest { bookState ->
-
-                withContext(Dispatchers.Main){
-                    if (bookState.isLoading){
-                        Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
-                    }
-                    if (!bookState.isLoading){
-                        Constants.hideCustomAlertDialog()
-                    }
-
-                    bookState.allBooks?.let { adapter.submitData(it) }
-                    binding.recyclerHome.adapter = adapter
-
-                    if (bookState.error=="Token is not valid!"){
-                        showExitDialog()
-                    }
-                }
-
-            }
-            adapter.loadStateFlow.collectLatest{
-
-             binding.error.isVisible = it.refresh is LoadState.Error
-
-            }
-            adapter.addLoadStateListener {
-                if (it.prepend is LoadState.Error){ // if there is an error
-                    binding.error.isVisible = true
-                    Log.e("collectState: ","error" )
-            }
-            }
-        }
-    }
-
     private fun showExitDialog() {
         AlertDialog.Builder(requireContext())
             .setMessage("Session Expired!")
-            .setMessage("please login again")
             .setCancelable(false)
-            .setPositiveButton("No") { _, _ ->
-                requireActivity().finish()
-            }
-            .setNegativeButton("Login"){
+            .setPositiveButton("Login") {
                     _, _ ->
-                findNavController().navigate(R.id.action_homeFragment_to_nav_graph)
+                requireActivity().startActivity(Intent(requireContext(), MainActivity::class.java))
                 lifecycleScope.launch {
                     clearDataStore()
                     clearDataStoreID()
                 }
-
-
-
+                requireActivity().finish()
             }
+
             .show()
     }
-
     private suspend fun clearDataStore() {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<Int> = intPreferencesKey("userToken")
@@ -139,12 +139,30 @@ class HomeFragment : Fragment() {
             it.remove(dataStoreKey)
         }
     }
-
     private suspend fun clearDataStoreID() {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey("userId")
         dataStore.edit {
             it.remove(dataStoreKey)
+        }
+    }
+
+    private fun handelError(loadStates: CombinedLoadStates) {
+        val errorState = loadStates.source.refresh as? LoadState.Error
+            ?: loadStates.source.prepend as? LoadState.Error
+        errorState?.let {
+            when(val error = it.error) {
+                is HttpException -> {
+                    val gson = Gson()
+                    val type = object : TypeToken<BooksItem>() {}.type
+                    val errorResponse: BooksItem? =
+                        gson.fromJson(error.response()?.errorBody()!!.charStream(), type)
+                    if (errorResponse?.message.toString()=="Token is not valid!"){
+                        showExitDialog()
+                    }
+                }
+                else -> {}
+            }
         }
     }
 

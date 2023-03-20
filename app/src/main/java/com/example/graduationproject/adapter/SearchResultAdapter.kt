@@ -18,6 +18,7 @@ class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewh
 
         fun bind(bookX: BooksItem){
             Glide.with(binding.root).load(bookX.coverImage).into(binding.bookImg)
+
         }
     }
 
@@ -30,6 +31,7 @@ class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewh
 
     override fun onBindViewHolder(holder: viewholder, position: Int) {
         holder.bind(getItem(position)!!)
+
     }
 
     class DiffCallBack : DiffUtil.ItemCallback<BooksItem>() {
