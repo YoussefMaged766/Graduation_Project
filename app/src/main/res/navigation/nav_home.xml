@@ -45,8 +45,8 @@
         android:label="fragment_book"
         tools:layout="@layout/fragment_book" >
         <argument
-            android:name="bookId"
-            app:argType="string" />
+            android:name="bookObject"
+            app:argType="com.example.graduationproject.models.BooksItem" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"

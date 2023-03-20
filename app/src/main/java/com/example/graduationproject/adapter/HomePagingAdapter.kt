@@ -35,7 +35,7 @@ class HomePagingAdapter :PagingDataAdapter<BooksItem,HomePagingAdapter.viewholde
     override fun onBindViewHolder(holder: viewholder, position: Int) {
         holder.bind(getItem(position)!!)
         holder.itemView.setOnClickListener(View.OnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToBookFragment2(getItem(position)!!.id.toString())
+            val action = HomeFragmentDirections.actionHomeFragmentToBookFragment2(getItem(position)!!)
             it.findNavController().navigate(action)
         })
     }
