@@ -60,7 +60,8 @@ class SearchResultViewModel @Inject constructor(
 
                 Status.ERROR-> {
                     _state.value = state.value.copy(
-                        isLoading = false
+                        isLoading = false,
+                        error = resource.message
                     )
                     Log.e( "searchError: ", resource.message ?: "Unknown Error")
                 }

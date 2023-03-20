@@ -13,6 +13,11 @@
         <action
             android:id="@+id/action_homeFragment_to_bookFragment"
             app:destination="@id/bookFragment" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_nav_graph"
+            app:destination="@id/action_homeFragment_to_nav_graph"
+            />
     </fragment>
     <fragment
         android:id="@+id/wishlistFragment"
@@ -48,4 +53,5 @@
             android:name="query"
             app:argType="string" />
     </fragment>
+    <include app:graph="@navigation/nav_graph" />
 </navigation>

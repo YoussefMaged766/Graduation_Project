@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.graduationproject.data.paging.HomePagingSource
 import com.example.graduationproject.data.paging.SearchPagingSource
 import com.example.graduationproject.db.HistorySearchEntity
 import com.example.graduationproject.db.SearchDatabase
@@ -14,8 +16,11 @@ import com.example.graduationproject.utils.Status
 import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -56,22 +61,38 @@ class BookRepo @Inject constructor(
 //
 //    }.flowOn(Dispatchers.IO)
 
-//    fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> {
-//
-//        return Pager(PagingConfig(pageSize = 20,enablePlaceholders = true)) {
-//            SearchPagingSource(webServices, query, token)
-//        }.flow.map { pagingData ->
-//            Resource.success(pagingData)
-//        }
-//
-////            .onStart { emit(Resource.loading(null)) }
-//            .catch {
-//                emit(Resource.error(null, it.message.toString()))
-//            }
-//            .flowOn(Dispatchers.IO)
-//    }
 
-    fun search(query: String, token: String) : Flow<Resource<PagingData<BooksItem>>> = flow {
+    suspend fun getAllBooks(token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
+
+        emit(Resource.loading(null))
+        delay(2000)
+
+            val page = Pager(PagingConfig(pageSize = 20, enablePlaceholders = true)) {
+                HomePagingSource(webServices, token)
+            }
+            page.flow.map { pagingData ->
+                emit(Resource.success(pagingData))
+            }.catch  {e->
+                if (e is HttpException){
+                    val type = object : TypeToken<UserResponseLogin>() {}.type
+                    val errorResponse: UserResponseLogin? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeeerrrrr: ", e.message().toString())
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                }
+                else if (e is IOException){
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Resource.error(null, e.message.toString()))
+                }
+                Log.e( "getAllBooks: ",e.message.toString() )
+
+        } .collect()
+
+
+    }
+
+
+    fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
         emit(Resource.loading(null))
         kotlinx.coroutines.delay(2000)
         try {
@@ -80,15 +101,23 @@ class BookRepo @Inject constructor(
             }
 
             page.flow.map { pagingData ->
-               emit(Resource.success(pagingData))
+                emit(Resource.success(pagingData))
             }.collect()
 
-        } catch (e: IOException){
-            Log.e("search: ", e.toString())
-            emit(Resource.error(null, e.message.toString()))
-        } catch (e: HttpException){
-            Log.e("search: ", e.toString())
-            emit(Resource.error(null, e.message.toString()))
+        } catch (e: Throwable) {
+            when (e) {
+                is HttpException -> {
+                    val type = object : TypeToken<BooksItem>() {}.type
+                    val errorResponse: BooksItem? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                }
+                is Exception -> {
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Resource.error(null, e.message.toString()))
+                }
+            }
         }
     }
 
