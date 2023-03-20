@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.example.graduationproject.R
+import com.example.graduationproject.adapter.HomePagingAdapter
 import com.example.graduationproject.adapter.SearchResultAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
@@ -36,7 +37,7 @@ import kotlinx.coroutines.withContext
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
-    val adapter: SearchResultAdapter by lazy { SearchResultAdapter() }
+    val adapter: HomePagingAdapter by lazy { HomePagingAdapter() }
     val viewModel: HomeViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +53,7 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
         return binding.root
     }
 
