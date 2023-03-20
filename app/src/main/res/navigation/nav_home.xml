@@ -10,14 +10,14 @@
         android:name="com.example.graduationproject.ui.main.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_bookFragment"
-            app:destination="@id/bookFragment" />
 
         <action
             android:id="@+id/action_homeFragment_to_nav_graph"
             app:destination="@id/action_homeFragment_to_nav_graph"
             />
+        <action
+            android:id="@+id/action_homeFragment_to_bookFragment2"
+            app:destination="@id/bookFragment" />
     </fragment>
     <fragment
         android:id="@+id/wishlistFragment"
@@ -43,7 +43,11 @@
         android:id="@+id/bookFragment"
         android:name="com.example.graduationproject.BookFragment"
         android:label="fragment_book"
-        tools:layout="@layout/fragment_book" />
+        tools:layout="@layout/fragment_book" >
+        <argument
+            android:name="bookObject"
+            app:argType="com.example.graduationproject.models.BooksItem" />
+    </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
         android:name="com.example.graduationproject.ui.main.search.SearchResultFragment"
@@ -54,4 +58,13 @@
             app:argType="string" />
     </fragment>
     <include app:graph="@navigation/nav_graph" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.graduationproject.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_bookFragment2"
+            app:destination="@id/bookFragment" />
+    </fragment>
 </navigation>

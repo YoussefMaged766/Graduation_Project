@@ -30,6 +30,8 @@ interface WebServices {
 
     @GET("book/search/{query}")
     suspend fun search(@Path("query") query:String,@Header("token") token:String , @Query("page") page:Int): BookResponse
+//    @GET("list/favorits")
+//    suspend fun favorits()
 
     @GET("book")
     suspend fun getAllBooks(@Header("token") token:String,@Query("page") page:Int): BookResponse

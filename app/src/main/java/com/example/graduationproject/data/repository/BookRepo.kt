@@ -161,5 +161,9 @@ class BookRepo @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    fun addFavorite(key:String,bookId:String){
+    
+    }
+
 
 }
