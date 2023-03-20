@@ -2,13 +2,10 @@ package com.example.graduationproject.ui.main.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -17,35 +14,28 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import com.example.graduationproject.R
-import com.example.graduationproject.adapter.LoadStateAdapter
-import com.example.graduationproject.adapter.LoadStateViewHolder
+import com.example.graduationproject.adapter.HomePagingAdapter
+import com.example.graduationproject.adapter.loadState.LoadStateAdapter
 import com.example.graduationproject.adapter.SearchResultAdapter
-import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentHomeBinding
 import com.example.graduationproject.models.BooksItem
-import com.example.graduationproject.models.UserResponseLogin
-import com.example.graduationproject.ui.main.HomeActivity
 import com.example.graduationproject.ui.main.MainActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
-    val adapter: SearchResultAdapter by lazy { SearchResultAdapter() }
+    val adapter: HomePagingAdapter by lazy { HomePagingAdapter() }
     val viewModel: HomeViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
     override fun onCreate(savedInstanceState: Bundle?) {

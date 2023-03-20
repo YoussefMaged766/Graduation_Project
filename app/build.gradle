@@ -101,6 +101,8 @@ dependencies {
     //heart button
     implementation 'pub.hanks:smallbang:1.2.2'
 
+    implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
+
 }
 kapt {
     correctErrorTypes true

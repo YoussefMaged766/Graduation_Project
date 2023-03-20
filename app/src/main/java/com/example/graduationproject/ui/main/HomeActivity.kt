@@ -73,6 +73,7 @@ class HomeActivity : AppCompatActivity() {
             title = destination.label
             when (destination.id) {
                 R.id.searchResultFragment -> binding.navViewBot.visibility = View.GONE
+                R.id.bookFragment-> binding.navViewBot.visibility = View.GONE
                 else -> binding.navViewBot.visibility = View.VISIBLE
             }
 

@@ -33,21 +33,37 @@ class BookFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
        binding = FragmentBookBinding.inflate(layoutInflater)
-//        data.bookObject
-       Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
+
+
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        show()
+        selectHeart()
+    }
+
+    fun selectHeart(){
+        binding.imageViewHeart.setOnClickListener {
+            if (binding.imageViewAnimation.isSelected){
+                binding.imageViewAnimation.isSelected = false
+            }else{
+                binding.imageViewAnimation.isSelected = true
+                binding.imageViewAnimation.likeAnimation()
+            }
+        }
+    }
+
+    fun show(){
+        Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
         binding.txtBookTitle.text = data.bookObject.title
-//        binding.txtAuthor.text = data.bookObject.
+
         binding.txtDescription.text =data.bookObject.description
         binding.txtRating.text = data.bookObject.ratings.toString()
-        binding.imageViewHeart.setOnClickListener(View.OnClickListener {
-        lifecycleScope.launch{
-            getToken("userToken")
-
-        }
-        })
-        return binding.root
     }
 
     private suspend fun getToken(key: String): String? {

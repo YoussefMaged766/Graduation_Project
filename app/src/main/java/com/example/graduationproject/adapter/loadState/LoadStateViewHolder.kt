@@ -1,4 +1,4 @@
-package com.example.graduationproject.adapter
+package com.example.graduationproject.adapter.loadState
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package com.example.graduationproject.adapter
+package com.example.graduationproject.adapter.loadState
 
 import android.view.ViewGroup
 import androidx.paging.LoadState
@@ -9,7 +9,7 @@ class LoadStateAdapter(private  val retry:()->Unit):androidx.paging.LoadStateAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder {
-        return LoadStateViewHolder.create(parent,retry)
+        return LoadStateViewHolder.create(parent, retry)
     }
 
 

@@ -57,7 +57,6 @@
             android:name="query"
             app:argType="string" />
     </fragment>
-    <include app:graph="@navigation/nav_graph" />
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.graduationproject.FavoriteFragment"
