@@ -1,4 +1,4 @@
-package com.example.graduationproject
+package com.example.graduationproject.ui.main.favorite
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

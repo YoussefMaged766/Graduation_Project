@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.graduationproject.data.paging.HomePagingSource
 import com.example.graduationproject.data.paging.SearchPagingSource
 import com.example.graduationproject.db.HistorySearchEntity
@@ -12,15 +11,12 @@ import com.example.graduationproject.db.SearchDatabase
 import com.example.graduationproject.models.*
 import com.example.graduationproject.utils.NetworkState
 import com.example.graduationproject.utils.Resource
-import com.example.graduationproject.utils.Status
 import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -161,8 +157,22 @@ class BookRepo @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    fun addFavorite(key:String,bookId:String){
-    
+    suspend fun addFavorite(key:String, bookId:String) = flow{
+        try {
+            emit(Resource.loading(null))
+            if (networkState.isOnline()) {
+                val response = webServices.addFavoirate(key,bookId)
+                emit(Resource.success(response))
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Resource.error(null, "no Internet"))
+            }
+
+        }catch (e: Exception){
+            emit(Resource.error(null, e.message.toString()))
+        }
+        webServices.addFavoirate(key,bookId)
     }
 
 

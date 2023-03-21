@@ -1,28 +1,32 @@
 package com.example.graduationproject
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
+import com.example.graduationproject.ui.main.favorite.FavoriteViewModel
+import com.example.graduationproject.ui.main.home.HomeViewModel
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class BookFragment : Fragment() {
 
     lateinit var binding: FragmentBookBinding
     private lateinit var dataStore: DataStore<Preferences>
     private val data : BookFragmentArgs by navArgs()
+    val viewModel: FavoriteViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -45,19 +49,23 @@ class BookFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         show()
         selectHeart()
-        addMenu()
     }
 
     fun selectHeart(){
         binding.imageViewHeart.setOnClickListener {
             if (binding.imageViewAnimation.isSelected){
                 binding.imageViewAnimation.isSelected = false
+
             }else{
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
+                lifecycleScope.launch {
+                    addFavoriate()
+                }
             }
         }
     }
+
 
     fun show(){
         Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
@@ -72,25 +80,5 @@ class BookFragment : Fragment() {
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
-    }
-
-    fun addMenu(){
-        requireActivity().addMenuProvider(object :MenuProvider{
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.optional_menu,menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId){
-                    R.id.action_whishlist ->{
-                        Constants.customToast(requireContext(),requireActivity(),"WishList")
-                        return true
-                    }
-
-                }
-                return false
-            }
-
-        },viewLifecycleOwner,Lifecycle.State.RESUMED)
     }
 }
