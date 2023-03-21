@@ -21,6 +21,7 @@ import com.example.graduationproject.ui.main.favorite.FavoriteViewModel
 import com.example.graduationproject.ui.main.home.HomeViewModel
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -55,22 +56,17 @@ class BookFragment : Fragment() {
         show()
         selectHeart()
         addMenu()
-        binding.imageViewHeart.setOnClickListener {
-
-        }
     }
 
     fun selectHeart(){
         binding.imageViewHeart.setOnClickListener {
             if (binding.imageViewAnimation.isSelected){
                 binding.imageViewAnimation.isSelected = false
-
+                    collectState()
             }else{
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
-                lifecycleScope.launch {
-                    addFavoriate()
-                }
+
             }
         }
     }
@@ -98,7 +94,16 @@ class BookFragment : Fragment() {
         Log.d(TAG, "addFavoriate: i'm here")
         //test
     }
+    private fun collectState(){
+        lifecycleScope.launch {
+            viewModel.state.collectLatest {
+                Constants.customToast(requireContext(),requireActivity(),it.success.toString())
+                viewModel.setFavorite(getToken("userToken").toString(),
+                    data.bookObject.bookId.toString())
+            }
+        }
 
+    }
     fun addMenu(){
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

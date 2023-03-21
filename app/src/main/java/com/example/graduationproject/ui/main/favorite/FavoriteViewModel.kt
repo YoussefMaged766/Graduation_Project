@@ -37,4 +37,31 @@ class FavoriteViewModel @Inject constructor(
             bookRepo.addFavorite(token,bookId)
         }
     }
+    suspend fun setFavorite( token: String,bookId :String) = viewModelScope.launch(Dispatchers.IO) {
+
+        bookRepo.addFavorite(token,bookId).collectLatest { resource ->
+            when(resource.status){
+                Status.LOADING-> {
+                    _state.value = state.value.copy(
+                        isLoading = true
+                    )
+                }
+                Status.SUCCESS-> {
+                    _state.value = state.value.copy(
+                        isLoading = false,
+                        success = resource.message.toString()
+                    )
+                }
+                Status.ERROR-> {
+                    _state.value = state.value.copy(
+                        error = resource.message,
+                        isLoading = false
+
+                    )
+                    Log.e( "getAllBooks: ", resource.message.toString())
+                }
+                else -> {}
+            }
+        }
+    }
 }

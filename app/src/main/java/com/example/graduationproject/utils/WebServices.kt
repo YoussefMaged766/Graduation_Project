@@ -35,6 +35,6 @@ interface WebServices {
     suspend fun getAllBooks(@Header("Authorization") token:String,@Query("page") page:Int): BookResponse
 
     @PUT("list/addToFavorits")
-    suspend fun addFavoirate(@Header("token") token:String, @Body book: String)
+    suspend fun addFavoirate(@Header("Authorization") token:String, @Body book: String):BooksItem
 
 }

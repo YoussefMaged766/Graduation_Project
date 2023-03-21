@@ -6,5 +6,6 @@ import com.example.graduationproject.models.BooksItem
 data class BookState(
     val allBooks: PagingData<BooksItem>? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val success : String? = null
 )
