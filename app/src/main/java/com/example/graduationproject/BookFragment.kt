@@ -3,17 +3,18 @@ package com.example.graduationproject
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
 import com.example.graduationproject.ui.main.favorite.FavoriteViewModel
@@ -53,6 +54,7 @@ class BookFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         show()
         selectHeart()
+        addMenu()
         binding.imageViewHeart.setOnClickListener {
 
         }
@@ -95,5 +97,25 @@ class BookFragment : Fragment() {
         )
         Log.d(TAG, "addFavoriate: i'm here")
         //test
+    }
+
+    fun addMenu(){
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.optional_menu,menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId){
+                    R.id.action_whishlist ->{
+                        Constants.customToast(requireContext(),requireActivity(),"WishList")
+                        return true
+                    }
+
+                }
+                return false
+            }
+
+        },viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 }
