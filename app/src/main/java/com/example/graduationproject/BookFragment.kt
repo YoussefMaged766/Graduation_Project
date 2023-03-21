@@ -94,5 +94,6 @@ class BookFragment : Fragment() {
             data.bookObject.bookId.toString()
         )
         Log.d(TAG, "addFavoriate: i'm here")
+        //test
     }
 }
