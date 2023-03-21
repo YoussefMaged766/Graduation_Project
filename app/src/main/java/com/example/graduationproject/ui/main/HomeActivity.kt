@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity() {
     lateinit var navController: NavController
     lateinit var binding: ActivityHomeBinding
-    private lateinit var actionBarToggle: ActionBarDrawerToggle
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var appBarConfiguration: AppBarConfiguration
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,15 +55,6 @@ class HomeActivity : AppCompatActivity() {
         )
         setSupportActionBar(binding.appBarHome.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
-
-
-//        actionBarToggle = ActionBarDrawerToggle(this, binding.drawerLayout, 0, 0)
-//        binding.drawerLayout.addDrawerListener(actionBarToggle)
-//
-//        // Display the hamburger icon to launch the drawer
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        actionBarToggle.syncState()
-
     }
 
     private fun setUpBotNav() {
@@ -81,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
         binding.navViewBot.setupWithNavController(navController)
     }
 
-    fun actionDrawer() {
+    private fun actionDrawer() {
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_logout -> {

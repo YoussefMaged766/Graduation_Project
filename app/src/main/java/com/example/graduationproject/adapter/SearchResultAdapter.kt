@@ -43,11 +43,11 @@ class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewh
 
     class DiffCallBack : DiffUtil.ItemCallback<BooksItem>() {
         override fun areItemsTheSame(oldItem: BooksItem, newItem: BooksItem): Boolean {
-            return oldItem.id == newItem.id && oldItem.title == newItem.title
+            return oldItem.bookId == newItem.bookId && oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: BooksItem, newItem: BooksItem): Boolean {
-            return oldItem.id == newItem.id && oldItem.title == newItem.title
+            return oldItem.bookId == newItem.bookId && oldItem.title == newItem.title
         }
 
 

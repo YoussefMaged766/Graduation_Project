@@ -25,16 +25,13 @@ interface WebServices {
     @POST("auth/new-password")
     suspend fun newPassword(@Body user: User) : NewPasswordResponse
 
-
     @GET("book/search/{query}")
     suspend fun search(@Path("query") query:String,@Header("Authorization") token:String , @Query("page") page:Int): BookResponse
-//    @GET("list/favorits")
-//    suspend fun favorits()
 
     @GET("book")
     suspend fun getAllBooks(@Header("Authorization") token:String,@Query("page") page:Int): BookResponse
 
     @PUT("list/addToFavorits")
-    suspend fun addFavoirate(@Header("Authorization") token:String, @Body book: String):BooksItem
+    suspend fun addFavoirate(@Header("Authorization") token:String, @Body bookId: BookIdResponse):BookIdResponse
 
 }

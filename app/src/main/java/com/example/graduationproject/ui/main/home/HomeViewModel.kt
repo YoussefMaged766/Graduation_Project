@@ -33,35 +33,6 @@ class HomeViewModel @Inject constructor(
 
     val data:MutableLiveData<PagingData<BooksItem>> = MutableLiveData()
 
-
-    suspend fun getAllBooks( token: String) = viewModelScope.launch(Dispatchers.IO) {
-
-        bookRepo.getAllBooks(token).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
-                    _state.value = state.value.copy(
-                        isLoading = true
-                    )
-                }
-                Status.SUCCESS-> {
-                    _state.value = state.value.copy(
-                        allBooks = resource.data,
-                        isLoading = false
-                    )
-                }
-                Status.ERROR-> {
-                    _state.value = state.value.copy(
-                        error = resource.message,
-                        isLoading = false
-
-                    )
-                    Log.e( "getAllBooks: ", resource.message.toString())
-                }
-                else -> {}
-            }
-        }
-    }
-
      fun Books(token: String){
         viewModelScope.launch {
             Pager(

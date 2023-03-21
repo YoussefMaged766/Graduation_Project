@@ -10,6 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.graduationproject.data.paging.HomePagingSource
 import com.example.graduationproject.data.repository.BookRepo
+import com.example.graduationproject.models.BookIdResponse
 import com.example.graduationproject.models.BooksItem
 import com.example.graduationproject.ui.main.search.BookState
 import com.example.graduationproject.utils.Status
@@ -31,13 +32,8 @@ class FavoriteViewModel @Inject constructor(
     private val _state = MutableStateFlow(BookState())
      val state = _state.asStateFlow()
 
-    fun addFavorite(token: String,bookId :String){
-        viewModelScope.launch {
 
-            bookRepo.addFavorite(token,bookId)
-        }
-    }
-    suspend fun setFavorite( token: String,bookId :String) = viewModelScope.launch(Dispatchers.IO) {
+    suspend fun setFavorite( token: String,bookId : BookIdResponse) = viewModelScope.launch(Dispatchers.IO) {
 
         bookRepo.addFavorite(token,bookId).collectLatest { resource ->
             when(resource.status){
@@ -49,7 +45,7 @@ class FavoriteViewModel @Inject constructor(
                 Status.SUCCESS-> {
                     _state.value = state.value.copy(
                         isLoading = false,
-                        success = resource.message.toString()
+                        success = resource.data?.message.toString()
                     )
                 }
                 Status.ERROR-> {

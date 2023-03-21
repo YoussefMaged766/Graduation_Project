@@ -2,6 +2,7 @@ package com.example.graduationproject.ui.main.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +41,7 @@ class HomeFragment : Fragment() {
     private lateinit var dataStore: DataStore<Preferences>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e( "onCreate: ","alo" )
         arguments?.let {
 
         }
@@ -86,12 +88,12 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun recycler() {
-        adapter.withLoadStateHeaderAndFooter(
+  private  fun recycler() {
+        binding.recyclerHome.adapter = adapter.withLoadStateHeaderAndFooter(
             header = LoadStateAdapter { adapter.retry() },
             footer = LoadStateAdapter { adapter.retry() }
         )
-        binding.recyclerHome.adapter = adapter
+
         adapter.addLoadStateListener {
             binding.swipeRefresh.isRefreshing = it.source.refresh is LoadState.Loading
             handelError(it)

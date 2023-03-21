@@ -27,36 +27,6 @@ class BookRepo @Inject constructor(
 ) {
     private val gson = Gson()
     private val networkState = NetworkState
-//    fun search(query: String, token: String, page:Int) = flow {
-//        try {
-//            emit(Resource.loading(null))
-//
-//            if (networkState.isOnline()) {
-//                val response = webServices.search(query, token,page)
-//                emit(Resource.success(response))
-//
-//                Log.e("loginUser: ", response.toString())
-//            } else {
-//                emit(Resource.error(null, "no Internet"))
-//            }
-//        } catch (e: Throwable) {
-//            when (e) {
-//                is HttpException -> {
-//                    val type = object : TypeToken<BooksItem>() {}.type
-//                    val errorResponse: BooksItem? =
-//                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
-//                    Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
-//                    emit(Resource.error(null, errorResponse?.message.toString()))
-//                }
-//                is Exception -> {
-//                    Log.e("loginUsereeeee: ", e.message.toString())
-//                    emit(Resource.error(null, e.message.toString()))
-//                }
-//            }
-//        }
-//
-//    }.flowOn(Dispatchers.IO)
-
 
     suspend fun getAllBooks(token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
 
@@ -90,7 +60,7 @@ class BookRepo @Inject constructor(
 
     fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
         emit(Resource.loading(null))
-        kotlinx.coroutines.delay(2000)
+        delay(2000)
         try {
             val page = Pager(PagingConfig(pageSize = 20, enablePlaceholders = true)) {
                 SearchPagingSource(webServices, query, token)
@@ -133,18 +103,6 @@ class BookRepo @Inject constructor(
     suspend fun getAllHistorySearch(userId: String) =
         database.searchDao().getAllHistorySearch(userId)
 
-//        try {
-//            emit(Resource.loading(null))
-//            val mDao = database.searchDao()
-//            val historySearch = mDao.getAllHistorySearch()
-//            Log.e( "getAllHistorySearch: ",historySearch.toString() )
-//            emit(Resource.success(historySearch))
-//        } catch (e: Exception) {
-//            emit(Resource.error(null, e.message.toString()))
-//
-//        }
-
-
     fun deleteHistorySearch(query: String) = flow {
         try {
             emit(Resource.loading(null))
@@ -157,7 +115,7 @@ class BookRepo @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun addFavorite(key:String, bookId:String) = flow{
+    suspend fun addFavorite(key:String, bookId:BookIdResponse) = flow{
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
@@ -172,7 +130,7 @@ class BookRepo @Inject constructor(
         }catch (e: Exception){
             emit(Resource.error(null, e.message.toString()))
         }
-        webServices.addFavoirate(key,bookId)
+
     }
 
 

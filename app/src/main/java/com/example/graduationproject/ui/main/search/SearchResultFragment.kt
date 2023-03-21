@@ -38,7 +38,7 @@ class SearchResultFragment : Fragment() {
     private val args: SearchResultFragmentArgs by navArgs()
     private val viewModel: SearchResultViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
-  private  val  adapter: SearchResultAdapter by lazy {SearchResultAdapter()}
+    private val adapter: SearchResultAdapter by lazy { SearchResultAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,11 +60,11 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getListedBook(args.query)
-//        collectState()
         recycler()
     }
 
     private fun getListedBook(query: String) {
+        (activity as AppCompatActivity?)!!.supportActionBar!!.title = query
         lifecycleScope.launch {
             delay(2000)
             viewModel.searchResult(query, "Bearer ${getToken("userToken")}")
@@ -73,12 +73,12 @@ class SearchResultFragment : Fragment() {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
-            (activity as AppCompatActivity?)!!.supportActionBar!!.title = query
+
         }
 
     }
 
-    fun recycler() {
+    private fun recycler() {
         adapter.withLoadStateHeaderAndFooter(
             header = LoadStateAdapter { adapter.retry() },
             footer = LoadStateAdapter { adapter.retry() }
@@ -86,49 +86,27 @@ class SearchResultFragment : Fragment() {
         binding.recyclerSearch.adapter = adapter
         adapter.addLoadStateListener {
             binding.lottieSearch.isVisible = it.source.refresh is LoadState.Loading
+            if (it.refresh is LoadState.NotLoading) {
+                // PagingDataAdapter.itemCount here
+                if (adapter.itemCount == 0) {
+                    binding.lottieNoResult.visibility = View.VISIBLE
+                    Constants.hideCustomAlertDialog()
+                } else {
+                    binding.lottieNoResult.visibility = View.GONE
+                    Constants.hideCustomAlertDialog()
+                }
+                Log.e("collectResponse: ", adapter.itemCount.toString())
+            }
 
         }
 
     }
+
     private suspend fun getToken(key: String): String? {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
-private fun collectState(){
-        lifecycleScope.launch {
-            viewModel.state.collectLatest { bookState ->
 
-             withContext(Dispatchers.Main){
-                 if (bookState.isLoading){
-                     Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
-                 }
-                 if (!bookState.isLoading){
-                     Constants.hideCustomAlertDialog()
-                 }
-                 bookState.allBooks?.let { adapter.submitData(it) }
-                 binding.recyclerSearch.adapter = adapter
-
-                 adapter.loadStateFlow.map { it.refresh }
-                     .distinctUntilChanged()
-                     .collect {
-                         if (it is LoadState.NotLoading) {
-
-                             // PagingDataAdapter.itemCount here
-                             if (adapter.itemCount == 0) {
-                                 binding.lottieNoResult.visibility = View.VISIBLE
-                                 Constants.hideCustomAlertDialog()
-                             } else {
-                                 binding.lottieNoResult.visibility = View.GONE
-                                 Constants.hideCustomAlertDialog()
-                             }
-                             Log.e("collectResponse: ", adapter.itemCount.toString())
-                         }
-                     }
-               }
-
-            }
-        }
-    }
 }

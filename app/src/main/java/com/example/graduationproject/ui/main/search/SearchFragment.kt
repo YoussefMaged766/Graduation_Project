@@ -58,9 +58,6 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
             getAllHistory()
             Log.e( "onViewCreated: ", getUserId("userId").toString())
         }
-
-
-
     }
 
     private suspend fun getQuery() {
@@ -94,7 +91,7 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
         }
     }
 
-   suspend fun getAllHistory(){
+   private suspend fun getAllHistory(){
        getUserId("userId")?.let { viewModel.getAllHistorySearch(it) }
         lifecycleScope.launch {
             viewModel.searchResponse.collect{
@@ -108,7 +105,7 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
 
 
-    fun deleteHistorySearch(query:String){
+    private fun deleteHistorySearch(query:String){
         viewModel.deleteHistorySearch(query)
         lifecycleScope.launch {
             viewModel.successDelete.collect{
@@ -117,12 +114,6 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
         }
     }
-//    private suspend fun getToken(key: String): String? {
-//        dataStore = requireContext().dataStore
-//        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
-//        val preference = dataStore.data.first()
-//        return preference[dataStoreKey]
-//    }
 
     private suspend fun getUserId(key: String): String? {
         dataStore = requireContext().dataStore
@@ -130,10 +121,6 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
-
-
-
-
     override fun onItemClick(query: String) {
        deleteHistorySearch(query)
 

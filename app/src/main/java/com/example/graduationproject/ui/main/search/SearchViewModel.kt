@@ -41,14 +41,6 @@ class SearchViewModel @Inject constructor(var bookRepo: BookRepo) : ViewModel() 
      fun getAllHistorySearch(userId:String)=viewModelScope.launch(Dispatchers.IO) {
         bookRepo.getAllHistorySearch(userId).collect{
             _searchResponse.send(it)
-//            when(it.status){
-//                Status.SUCCESS -> _searchResponse.send(it.data!!)
-//                Status.ERROR -> {
-//                    _error.send(it.message.toString())
-//                    Log.e("getAllHistorySearch: ",it.toString() )
-//                }
-//                else->{}
-//            }
         }
     }
 

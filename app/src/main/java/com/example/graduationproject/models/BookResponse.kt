@@ -15,7 +15,7 @@ data class BookResponse(
 
 )
 
-data class BooksItem (
+data class BooksItem(
 
     @field:SerializedName("ratings")
     val ratings: Int? = null,
@@ -42,4 +42,11 @@ data class BooksItem (
 
     @field:SerializedName("message")
     val message: String? = null
-): java.io.Serializable
+) : java.io.Serializable
+
+data class BookIdResponse(
+    @field:SerializedName("bookId")
+    val bookId: String? = null,
+    @field:SerializedName("message")
+    val message: String? = null
+)
