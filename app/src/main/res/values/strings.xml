@@ -37,5 +37,6 @@
     <string name="rating">Rating</string>
     <string name="reviews">Reviews</string>
     <string name="overview">Overview</string>
+    <string name="add_to_wishlist">add to Wishlist</string>
 
 </resources>

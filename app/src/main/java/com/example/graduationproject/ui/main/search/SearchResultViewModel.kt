@@ -3,10 +3,16 @@ package com.example.graduationproject.ui.main.search
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.graduationproject.data.paging.HomePagingSource
+import com.example.graduationproject.data.paging.SearchPagingSource
 import com.example.graduationproject.data.repository.BookRepo
 import com.example.graduationproject.models.BooksItem
 import com.example.graduationproject.utils.Status
+import com.example.graduationproject.utils.WebServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultViewModel @Inject constructor(
-    private val bookRepo: BookRepo
+    private val bookRepo: BookRepo,
+    private val webServices: WebServices
     ) : ViewModel(){
 
     private val _response = MutableSharedFlow<PagingData<BooksItem>?>()
@@ -35,17 +42,26 @@ class SearchResultViewModel @Inject constructor(
     private val _error = Channel<String>()
     val error = _error.receiveAsFlow()
 
-//     var result: Flow<Resource<PagingData<BooksItem>>> = MutableSharedFlow()
-//
-//    fun search1(query: String,token:String){
-//        result = bookRepo.search(query,token)
-//    }
+    val data:MutableLiveData<PagingData<BooksItem>> = MutableLiveData()
+
+    fun searchResult(token: String , query:String){
+        viewModelScope.launch(Dispatchers.IO) {
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = { SearchPagingSource( webServices,token,query) }
+            ).flow.cachedIn(viewModelScope).collectLatest {
+                data.postValue(it)
+            }
+        }
+    }
 
     fun search(query:String,token:String) = viewModelScope.launch(Dispatchers.IO) {
         bookRepo.search(query, token).collectLatest { resource ->
             when(resource.status){
                 Status.LOADING-> {
-
                  _state.value = state.value.copy(
                      isLoading = true
                  )

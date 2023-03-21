@@ -2,6 +2,7 @@ package com.example.graduationproject.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.graduationproject.databinding.BookItemBinding
 import com.example.graduationproject.models.BooksItem
+import com.example.graduationproject.ui.main.home.HomeFragmentDirections
+import com.example.graduationproject.ui.main.search.SearchResultFragmentDirections
 
 class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewholder>(DiffCallBack()) {
 
@@ -31,6 +34,10 @@ class SearchResultAdapter :PagingDataAdapter<BooksItem,SearchResultAdapter.viewh
 
     override fun onBindViewHolder(holder: viewholder, position: Int) {
         holder.bind(getItem(position)!!)
+        holder.itemView.setOnClickListener {
+            val action = SearchResultFragmentDirections.actionSearchResultFragmentToBookFragment(getItem(position)!!)
+            it.findNavController().navigate(action)
+        }
 
     }
 

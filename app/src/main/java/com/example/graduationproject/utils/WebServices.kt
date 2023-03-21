@@ -27,12 +27,12 @@ interface WebServices {
 
 
     @GET("book/search/{query}")
-    suspend fun search(@Path("query") query:String,@Header("token") token:String , @Query("page") page:Int): BookResponse
+    suspend fun search(@Path("query") query:String,@Header("Authorization") token:String , @Query("page") page:Int): BookResponse
 //    @GET("list/favorits")
 //    suspend fun favorits()
 
     @GET("book")
-    suspend fun getAllBooks(@Header("token") token:String,@Query("page") page:Int): BookResponse
+    suspend fun getAllBooks(@Header("Authorization") token:String,@Query("page") page:Int): BookResponse
 
     @PUT("list/addToFavorits")
     suspend fun addFavoirate(@Header("token") token:String, @Body book: String)

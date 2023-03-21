@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.search.SearchResultFragment">
 
-
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearch"
         android:layout_width="match_parent"
@@ -30,5 +26,18 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/no_result" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/searching" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
