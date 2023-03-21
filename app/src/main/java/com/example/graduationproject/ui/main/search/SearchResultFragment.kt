@@ -1,35 +1,36 @@
 package com.example.graduationproject.ui.main.search
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
-import androidx.paging.PagingSource
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.SearchResultAdapter
+import com.example.graduationproject.adapter.loadState.LoadStateAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentSearchResultBinding
-import com.example.graduationproject.models.BooksItem
-import com.example.graduationproject.utils.Status
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 @AndroidEntryPoint
 class SearchResultFragment : Fragment() {
@@ -59,13 +60,35 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getListedBook(args.query)
-        collectState()
+//        collectState()
+        recycler()
     }
 
     private fun getListedBook(query: String) {
         lifecycleScope.launch {
-            viewModel.search(query, "Bearer ${getToken("userToken")}")
+            delay(2000)
+            viewModel.searchResult(query, "Bearer ${getToken("userToken")}")
         }
+        viewModel.data.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+            }
+            (activity as AppCompatActivity?)!!.supportActionBar!!.title = query
+        }
+
+    }
+
+    fun recycler() {
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter { adapter.retry() },
+            footer = LoadStateAdapter { adapter.retry() }
+        )
+        binding.recyclerSearch.adapter = adapter
+        adapter.addLoadStateListener {
+            binding.lottieSearch.isVisible = it.source.refresh is LoadState.Loading
+
+        }
+
     }
     private suspend fun getToken(key: String): String? {
         dataStore = requireContext().dataStore
