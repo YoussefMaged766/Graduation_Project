@@ -62,7 +62,6 @@ class SearchResultViewModel @Inject constructor(
         bookRepo.search(query, token).collectLatest { resource ->
             when(resource.status){
                 Status.LOADING-> {
-
                  _state.value = state.value.copy(
                      isLoading = true
                  )
