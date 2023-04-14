@@ -7,37 +7,29 @@
     tools:context=".ui.main.wishlist.WishlistFragment">
 
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Sign"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerWishlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/book_item"
         />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieEmpty"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="enter the name"
-        app:layout_constraintBottom_toTopOf="@id/button"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/history_icon"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/empty"
+        android:visibility="gone"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.graduationproject.databinding.BookListsItemBinding
+import com.bumptech.glide.Glide
+import com.example.graduationproject.databinding.BookItemBinding
 import com.example.graduationproject.models.BooksItem
 
-class BookListsAdapter(private val listener: BookListsAdapter.OnItemClickListener) :
-    ListAdapter<BooksItem, BookListsAdapter.viewholder>(BookListsAdapter) {
+class WishlistAdapter() :
+    ListAdapter<BooksItem, WishlistAdapter.viewholder>(WishlistAdapter) {
 
       companion object : DiffUtil.ItemCallback<BooksItem>() {
         override fun areItemsTheSame(
@@ -30,10 +31,10 @@ class BookListsAdapter(private val listener: BookListsAdapter.OnItemClickListene
     }
 
 
-    class viewholder(var binding: BookListsItemBinding) :
+    class viewholder(var binding: BookItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: BooksItem) {
-//            binding.bookt.text = data.query
+        Glide.with(binding.root).load(data.coverImage).into(binding.bookImg)
 
         }
 
@@ -45,7 +46,7 @@ class BookListsAdapter(private val listener: BookListsAdapter.OnItemClickListene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewholder {
         val binding =
-            BookListsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            BookItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return viewholder(binding)
     }
 

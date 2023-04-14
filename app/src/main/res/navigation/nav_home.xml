@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.graduationproject.ui.main.home.HomeFragment"
-        android:label="fragment_home"
+        android:label="Out Top Picks"
         tools:layout="@layout/fragment_home" >
 
         <action
@@ -22,18 +22,18 @@
     <fragment
         android:id="@+id/wishlistFragment"
         android:name="com.example.graduationproject.ui.main.wishlist.WishlistFragment"
-        android:label="fragment_wishlist"
+        android:label="Wishlist"
         tools:layout="@layout/fragment_wishlist" >
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.graduationproject.ui.main.profile.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="My Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.graduationproject.ui.main.search.SearchFragment"
-        android:label="fragment_search"
+        android:label="Search"
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_searchResultFragment"
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/bookFragment"
-        android:name="com.example.graduationproject.BookFragment"
+        android:name="com.example.graduationproject.ui.main.book.BookFragment"
         android:label=" "
         tools:layout="@layout/fragment_book" >
         <argument

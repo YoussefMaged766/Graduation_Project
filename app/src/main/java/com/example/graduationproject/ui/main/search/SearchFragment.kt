@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +17,7 @@ import com.example.graduationproject.adapter.SearchHistoryAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentSearchBinding
-import com.example.graduationproject.db.HistorySearchEntity
+import com.example.graduationproject.models.HistorySearchEntity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -82,7 +80,7 @@ class SearchFragment : Fragment(),SearchHistoryAdapter.OnItemClickListener {
 
     }
 
-    fun saveHistorySearch(query:HistorySearchEntity){
+    fun saveHistorySearch(query: HistorySearchEntity){
         viewModel.saveSearchHistory(query)
         lifecycleScope.launch {
             viewModel.error.collect{

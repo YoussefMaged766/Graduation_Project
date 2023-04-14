@@ -26,12 +26,25 @@ interface WebServices {
     suspend fun newPassword(@Body user: User) : NewPasswordResponse
 
     @GET("book/search/{query}")
-    suspend fun search(@Path("query") query:String,@Header("Authorization") token:String , @Query("page") page:Int): BookResponse
+    suspend fun search(@Path("query") query:String,@Header("token") token:String , @Query("page") page:Int): BookResponse
 
     @GET("book")
-    suspend fun getAllBooks(@Header("Authorization") token:String,@Query("page") page:Int): BookResponse
+    suspend fun getAllBooks(@Header("token") token:String,@Query("page") page:Int): BookResponse
 
     @PUT("list/addToFavorits")
-    suspend fun addFavoirate(@Header("Authorization") token:String, @Body bookId: BookIdResponse):BookIdResponse
+    suspend fun addFavourite(@Header("token") token:String, @Body bookId: BookIdResponse):BookIdResponse
+    @GET("list/favorits")
+    suspend fun getAllFavourite(@Header("token") token:String): WishAndFavResponse
+
+    @PUT("list/removeFromFavorits")
+    suspend fun removeFavourite(@Header("token") token:String, @Body bookId: BookIdResponse):BookIdResponse
+
+    @PUT("list/addToWishlist ")
+    suspend fun addToWishlist (@Header("token") token:String, @Body bookId: BookIdResponse):BookIdResponse
+    @GET("list/wishlist")
+    suspend fun getAllWishlist(@Header("token") token:String): WishAndFavResponse
+
+    @PUT("list/RemoveFromWishlist")
+    suspend fun removeWishlist(@Header("token") token:String, @Body bookId: BookIdResponse):BookIdResponse
 
 }

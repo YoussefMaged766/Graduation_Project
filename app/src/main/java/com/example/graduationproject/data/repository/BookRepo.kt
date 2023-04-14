@@ -6,7 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.graduationproject.data.paging.HomePagingSource
 import com.example.graduationproject.data.paging.SearchPagingSource
-import com.example.graduationproject.db.HistorySearchEntity
+import com.example.graduationproject.models.HistorySearchEntity
 import com.example.graduationproject.db.SearchDatabase
 import com.example.graduationproject.models.*
 import com.example.graduationproject.utils.NetworkState
@@ -119,7 +119,115 @@ class BookRepo @Inject constructor(
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
-                val response = webServices.addFavoirate(key,bookId)
+                val response = webServices.addFavourite(key,bookId)
+                emit(Resource.success(response))
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Resource.error(null, "no Internet"))
+            }
+
+        }catch (e: Exception){
+            emit(Resource.error(null, e.message.toString()))
+        }
+
+    }
+
+    suspend fun removeFavorite(key:String, bookId:BookIdResponse) = flow{
+        try {
+            emit(Resource.loading(null))
+            if (networkState.isOnline()) {
+                val response = webServices.removeFavourite(key,bookId)
+                emit(Resource.success(response))
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Resource.error(null, "no Internet"))
+            }
+
+        }catch (e: Exception){
+            emit(Resource.error(null, e.message.toString()))
+        }
+
+    }
+    suspend fun getAllFavorite(token:String) = flow{
+        emit(Resource.loading(null))
+
+        try {
+            if (networkState.isOnline()){
+                val response = webServices.getAllFavourite(token)
+                emit(Resource.success(response))
+
+            }
+
+        }catch (e: Throwable){
+            when(e){
+                is HttpException -> {
+                    val type = object : TypeToken<BooksItem>() {}.type
+                    val errorResponse: BooksItem? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                }
+                is Exception -> {
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Resource.error(null, e.message.toString()))
+                }
+            }
+
+        }
+    }
+    suspend fun addToWishlist (key:String, bookId:BookIdResponse) = flow{
+        try {
+            emit(Resource.loading(null))
+            if (networkState.isOnline()) {
+                val response = webServices.addToWishlist(key,bookId)
+                emit(Resource.success(response))
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Resource.error(null, "no Internet"))
+            }
+
+        }catch (e: Exception){
+            emit(Resource.error(null, e.message.toString()))
+        }
+
+    }
+
+    suspend fun getAllWishlist(token:String) = flow{
+        emit(Resource.loading(null))
+
+        try {
+            if (networkState.isOnline()){
+                val response = webServices.getAllWishlist(token)
+                emit(Resource.success(response))
+
+            }
+
+        }catch (e: Throwable){
+            when(e){
+                is HttpException -> {
+                    val type = object : TypeToken<BooksItem>() {}.type
+                    val errorResponse: BooksItem? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
+                    emit(Resource.error(null, errorResponse?.message.toString()))
+                }
+                is Exception -> {
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Resource.error(null, e.message.toString()))
+                }
+            }
+
+        }
+    }
+
+    suspend fun removeWishlist(key:String, bookId:BookIdResponse) = flow{
+        try {
+            emit(Resource.loading(null))
+            if (networkState.isOnline()) {
+                val response = webServices.removeWishlist(key,bookId)
                 emit(Resource.success(response))
 
                 Log.e("loginUser: ", response.toString())

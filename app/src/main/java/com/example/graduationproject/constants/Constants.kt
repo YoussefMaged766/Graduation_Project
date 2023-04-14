@@ -54,7 +54,7 @@ class Constants {
 
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
         lateinit var dialog: Dialog
-        fun showCustomAlertDialog(
+       fun showCustomAlertDialog(
             context: Context,
             layout: Int,
             checkCancel: Boolean,
@@ -65,11 +65,14 @@ class Constants {
             loader.start()
             dialog.setCancelable(checkCancel)
             dialog.show()
+
         }
         fun hideCustomAlertDialog() {
             dialog.cancel()
         }
 
+       const val userToken = "userToken"
+        const val userId="userId"
 
 
     }

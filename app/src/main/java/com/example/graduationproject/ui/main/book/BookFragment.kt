@@ -1,6 +1,7 @@
-package com.example.graduationproject
+package com.example.graduationproject.ui.main.book
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuProvider
@@ -12,13 +13,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
 import com.example.graduationproject.models.BookIdResponse
-import com.example.graduationproject.ui.main.favorite.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -28,7 +28,7 @@ class BookFragment : Fragment() {
     lateinit var binding: FragmentBookBinding
     private lateinit var dataStore: DataStore<Preferences>
     private val data : BookFragmentArgs by navArgs()
-    private val viewModel: FavoriteViewModel by viewModels()
+    private val viewModel: BookViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -47,6 +47,7 @@ class BookFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         show()
         selectHeart()
         addMenu()
@@ -60,7 +61,9 @@ class BookFragment : Fragment() {
             }else{
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
+                setFavourite()
                 collectState()
+                Log.e( "selectHeart: ", "click")
 
             }
         }
@@ -81,16 +84,43 @@ class BookFragment : Fragment() {
         return preference[dataStoreKey]
     }
 
+
+    private fun setFavourite(){
+        lifecycleScope.launch {
+            viewModel.setFavorite("Bearer ${getToken("userToken")}",
+                BookIdResponse(bookId = data.bookObject.id.toString())
+            )
+        }
+    }
+
+    private fun setWishlist(){
+        lifecycleScope.launch {
+            viewModel.setWishlist("Bearer ${getToken("userToken")}",
+                BookIdResponse(bookId = data.bookObject.id.toString())
+            )
+        }
+    }
     private fun collectState(){
         lifecycleScope.launch {
-            viewModel.state.collectLatest {
-                Constants.customToast(requireContext(),requireActivity(),it.success.toString())
-                viewModel.setFavorite("Bearer ${getToken("userToken")}",
-                    BookIdResponse(bookId = data.bookObject.id.toString())
-                )
+            viewModel.stateFavourite.collect {
+                if (it.success!=null){
+                        Constants.customToast(requireContext(),requireActivity(),it.success.toString())
+                    }
+
+
             }
         }
+    }
 
+    private fun collectStateWishlist(){
+        lifecycleScope.launch {
+            viewModel.stateWishlist.collect {
+                if (it.success!=null){
+                    Constants.customToast(requireContext(),requireActivity(),it.success.toString())
+                }
+
+            }
+        }
     }
    private fun addMenu(){
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -101,7 +131,8 @@ class BookFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId){
                     R.id.action_whishlist ->{
-                        Constants.customToast(requireContext(),requireActivity(),"WishList")
+                        setWishlist()
+                        collectStateWishlist()
                         return true
                     }
 

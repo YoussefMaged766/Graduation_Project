@@ -122,7 +122,7 @@ class LoginFragment : Fragment() {
                 )
                 Log.e("collectResponse: ", it.toString())
                 handleCheckBox(it.token.toString())
-                saveUserId("userId",it.userId.toString())
+                saveUserId(Constants.userId,it.userId.toString())
             }
         }
     }
@@ -221,7 +221,7 @@ class LoginFragment : Fragment() {
     private suspend fun handleCheckBox(value: String){
 
         if (binding.checkBox.isChecked) {
-            saveToken("userToken", value)
+            saveToken(Constants.userToken, value)
 
         }
     }
@@ -246,7 +246,7 @@ class LoginFragment : Fragment() {
         super.onStart()
         lifecycleScope.launch {
             dataStore = requireContext().dataStore
-            val dataStoreKey = stringPreferencesKey("userToken")
+            val dataStoreKey = stringPreferencesKey(Constants.userToken)
             dataStore.edit {
                 if (it.contains(dataStoreKey)) {
                     Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)

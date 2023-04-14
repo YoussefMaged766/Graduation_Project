@@ -50,3 +50,17 @@ data class BookIdResponse(
     @field:SerializedName("message")
     val message: String? = null
 )
+data class WishAndFavResponse(
+
+    @field:SerializedName("message")
+    val message: String? = null,
+
+    @field:SerializedName("results")
+    val results: Results? = null
+)
+
+data class Results(
+
+    @field:SerializedName("books")
+    val books: List<BooksItem>? = null
+)

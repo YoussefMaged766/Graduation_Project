@@ -1,11 +1,8 @@
 package com.example.graduationproject.ui.main.search
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.graduationproject.db.HistorySearchEntity
+import com.example.graduationproject.models.HistorySearchEntity
 import com.example.graduationproject.data.repository.BookRepo
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
