@@ -7,8 +7,9 @@ import androidx.paging.PagingData
 import com.example.graduationproject.data.paging.HomePagingSource
 import com.example.graduationproject.data.paging.SearchPagingSource
 import com.example.graduationproject.models.HistorySearchEntity
-import com.example.graduationproject.db.SearchDatabase
+import com.example.graduationproject.db.BookDatabase
 import com.example.graduationproject.models.*
+import com.example.graduationproject.models.mappers.toBookEntity
 import com.example.graduationproject.utils.NetworkState
 import com.example.graduationproject.utils.Resource
 import com.example.graduationproject.utils.WebServices
@@ -23,8 +24,9 @@ import javax.inject.Inject
 
 class BookRepo @Inject constructor(
     private val webServices: WebServices,
-    private val database: SearchDatabase
-) {
+    private val database: BookDatabase,
+
+    ) {
     private val gson = Gson()
     private val networkState = NetworkState
 
@@ -115,16 +117,21 @@ class BookRepo @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun addFavorite(key:String, bookId:BookIdResponse) = flow{
+    suspend fun addFavorite(key:String, bookId:BookIdResponse, booksItem: BooksItem,userId: String) = flow{
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
                 val response = webServices.addFavourite(key,bookId)
-                emit(Resource.success(response))
 
+                emit(Resource.success(response))
+                database.searchDao().insertBook(booksItem.toBookEntity(userId))
+                database.searchDao().setFavoriteBook(booksItem.bookId!!,userId)
                 Log.e("loginUser: ", response.toString())
             } else {
+
                 emit(Resource.error(null, "no Internet"))
+                Log.e( "addFavorite: ","no Internet" )
+
             }
 
         }catch (e: Exception){
@@ -133,12 +140,13 @@ class BookRepo @Inject constructor(
 
     }
 
-    suspend fun removeFavorite(key:String, bookId:BookIdResponse) = flow{
+    suspend fun removeFavorite(key:String, bookId:BookIdResponse,booksItem: BooksItem,userId: String) = flow{
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
                 val response = webServices.removeFavourite(key,bookId)
                 emit(Resource.success(response))
+                database.searchDao().unFavoriteBook(booksItem.bookId!!,userId)
 
                 Log.e("loginUser: ", response.toString())
             } else {
@@ -150,13 +158,20 @@ class BookRepo @Inject constructor(
         }
 
     }
-    suspend fun getAllFavorite(token:String) = flow{
+    suspend fun getAllFavorite(token:String,userId: String) = flow{
         emit(Resource.loading(null))
 
         try {
             if (networkState.isOnline()){
-                val response = webServices.getAllFavourite(token)
-                emit(Resource.success(response))
+                val  response = webServices.getAllFavourite(token)
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
+
+                emit(Resource.success(books))
+            } else{
+                val books = database.searchDao().getAllFavoriteBooksLocal(userId).map { it }
+                books.collect{
+                    emit(Resource.success(it))
+                }
 
             }
 

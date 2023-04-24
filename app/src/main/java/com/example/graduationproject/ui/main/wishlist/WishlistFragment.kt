@@ -62,17 +62,17 @@ class WishlistFragment : Fragment() {
 
         viewModel.stateWishlist.collect {
 
-            if (it.isLoading){
-                Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
-            }else{
-                Constants.hideCustomAlertDialog()
-            }
+//            if (it.isLoading){
+//                Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
+//            }else{
+//                Constants.hideCustomAlertDialog()
+//            }
 
             if (it.allBooks.isNullOrEmpty()){
                 binding.lottieEmpty.visibility= View.VISIBLE
             } else{
                 binding.lottieEmpty.visibility= View.GONE
-                adapter.submitList( it.allBooks)
+                adapter.submitList( it.allLocalBooks)
                 binding.recyclerWishlist.adapter =adapter
 
             }

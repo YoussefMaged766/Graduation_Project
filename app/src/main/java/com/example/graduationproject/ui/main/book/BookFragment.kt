@@ -3,6 +3,7 @@ package com.example.graduationproject.ui.main.book
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
@@ -18,7 +19,10 @@ import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
 import com.example.graduationproject.models.BookIdResponse
+import com.example.graduationproject.models.mappers.toBookEntity
+import com.example.graduationproject.utils.NetworkState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -27,8 +31,10 @@ class BookFragment : Fragment() {
 
     lateinit var binding: FragmentBookBinding
     private lateinit var dataStore: DataStore<Preferences>
-    private val data : BookFragmentArgs by navArgs()
+    private val data: BookFragmentArgs by navArgs()
     private val viewModel: BookViewModel by viewModels()
+    private val networkState = NetworkState
+    var like: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -41,7 +47,7 @@ class BookFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-       binding = FragmentBookBinding.inflate(layoutInflater)
+        binding = FragmentBookBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -51,29 +57,33 @@ class BookFragment : Fragment() {
         show()
         selectHeart()
         addMenu()
+        checkFav()
+//        checkLocalFav()
+
+
     }
 
-   private fun selectHeart(){
+    private fun selectHeart() {
         binding.imageViewHeart.setOnClickListener {
-            if (binding.imageViewAnimation.isSelected){
-                binding.imageViewAnimation.isSelected = false
+            if (binding.imageViewAnimation.isSelected) {
 
-            }else{
+                binding.imageViewAnimation.isSelected = false
+                setUnFavourite()
+            } else {
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
                 setFavourite()
                 collectState()
-                Log.e( "selectHeart: ", "click")
 
             }
         }
     }
 
 
-  private  fun show(){
+    private fun show() {
         Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
         binding.txtBookTitle.text = data.bookObject.title
-        binding.txtDescription.text =data.bookObject.description
+        binding.txtDescription.text = data.bookObject.description
         binding.txtRating.text = data.bookObject.ratings.toString()
     }
 
@@ -84,53 +94,87 @@ class BookFragment : Fragment() {
         return preference[dataStoreKey]
     }
 
+    private suspend fun getUserId(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
+    }
 
-    private fun setFavourite(){
+
+    private fun setFavourite() {
         lifecycleScope.launch {
-            viewModel.setFavorite("Bearer ${getToken("userToken")}",
+            viewModel.setFavorite(
+                "Bearer ${getToken("userToken")}",
+                BookIdResponse(bookId = data.bookObject.id.toString()),
+                data.bookObject,
+                getUserId(Constants.userId)!!
+            )
+
+        }
+    }
+
+    private fun setUnFavourite() {
+        lifecycleScope.launch {
+            viewModel.removeFavorite(
+                "Bearer ${getToken("userToken")}",
+                BookIdResponse(bookId = data.bookObject.id.toString()),
+                data.bookObject,
+                getUserId(Constants.userId)!!
+            )
+
+        }
+    }
+
+    private fun setWishlist() {
+        lifecycleScope.launch {
+            viewModel.setWishlist(
+                "Bearer ${getToken("userToken")}",
                 BookIdResponse(bookId = data.bookObject.id.toString())
             )
         }
     }
 
-    private fun setWishlist(){
-        lifecycleScope.launch {
-            viewModel.setWishlist("Bearer ${getToken("userToken")}",
-                BookIdResponse(bookId = data.bookObject.id.toString())
-            )
-        }
-    }
-    private fun collectState(){
+    private fun collectState() {
         lifecycleScope.launch {
             viewModel.stateFavourite.collect {
-                if (it.success!=null){
-                        Constants.customToast(requireContext(),requireActivity(),it.success.toString())
-                    }
+                if (it.success != null) {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        it.success.toString()
+                    )
 
-
-            }
-        }
-    }
-
-    private fun collectStateWishlist(){
-        lifecycleScope.launch {
-            viewModel.stateWishlist.collect {
-                if (it.success!=null){
-                    Constants.customToast(requireContext(),requireActivity(),it.success.toString())
                 }
 
             }
         }
     }
-   private fun addMenu(){
+
+    private fun collectStateWishlist() {
+        lifecycleScope.launch {
+            viewModel.stateWishlist.collect {
+                if (it.success != null) {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        it.success.toString()
+                    )
+                }
+
+            }
+        }
+    }
+
+    private fun addMenu() {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.optional_menu,menu)
+                menuInflater.inflate(R.menu.optional_menu, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId){
-                    R.id.action_whishlist ->{
+                when (menuItem.itemId) {
+                    R.id.action_whishlist -> {
                         setWishlist()
                         collectStateWishlist()
                         return true
@@ -140,6 +184,59 @@ class BookFragment : Fragment() {
                 return false
             }
 
-        },viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
+
+    private fun checkFav() {
+        lifecycleScope.launch {
+            viewModel.getAllFavorite(
+                "Bearer ${getToken("userToken")}",
+                getUserId(Constants.userId)!!
+            )
+            viewModel.stateFav.collect {
+                if (!it.allLocalBooks.isNullOrEmpty()) {
+                    // check if id in list
+                    binding.imageViewAnimation.isSelected =
+                        it.allLocalBooks.contains(data.bookObject.toBookEntity(getUserId(Constants.userId)!!))
+
+
+                }
+
+                if (it.allLocalBooks != null) {
+                    if (it.allLocalBooks.any { it.bookId == data.bookObject.bookId }) {
+                        binding.imageViewAnimation.isSelected = true
+
+                    }
+                }
+
+
+
+
+//                if (it.isLoading){
+//                    Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
+//                }else{
+//                    Constants.hideCustomAlertDialog()
+//                    binding.container.visibility = View.VISIBLE
+//                }
+
+
+            }
+        }
+    }
+
+//private  fun checkLocalFav(){
+//    lifecycleScope.launch {
+//        viewModel.getAllFavorite("Bearer ${getToken("userToken")}" ,getUserId(Constants.userId)!!)
+//
+//        viewModel.stateFav.collect {
+//            if (!it.allLocalBooks.isNullOrEmpty() ) {
+//                // check if id in list
+//                binding.imageViewAnimation.isSelected = it.allLocalBooks.contains(data.bookObject.toBookEntity(getUserId(Constants.userId)!!))
+//
+//            }
+//        }
+//    }
+//
+//}
+
 }

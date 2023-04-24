@@ -51,19 +51,19 @@ class FavoriteFragment : Fragment() {
 
 
     private suspend fun collectStates(){
-        viewModel.getAllFavorite("Bearer ${getToken(Constants.userToken)}")
+        viewModel.getAllFavorite("Bearer ${getToken(Constants.userToken)}", getUserId(Constants.userId)!!)
         viewModel.stateFav.collect{
-            if (it.isLoading){
-                Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
-            }else{
-                Constants.hideCustomAlertDialog()
-            }
+//            if (it.isLoading){
+//                Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
+//            }else{
+//                Constants.hideCustomAlertDialog()
+//            }
 
-            if (it.allBooks.isNullOrEmpty()){
+            if (it.allLocalBooks.isNullOrEmpty()){
                 binding.lottieEmpty.visibility= View.VISIBLE
             } else{
                 binding.lottieEmpty.visibility= View.GONE
-                adapter.submitList( it.allBooks)
+                adapter.submitList( it.allLocalBooks)
                 binding.recyclerFav.adapter =adapter
 
             }
@@ -71,6 +71,13 @@ class FavoriteFragment : Fragment() {
     }
 
     private suspend fun getToken(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
+    }
+
+    private suspend fun getUserId(key: String): String? {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()

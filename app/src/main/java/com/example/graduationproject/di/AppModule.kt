@@ -2,7 +2,7 @@ package com.example.graduationproject.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.graduationproject.db.SearchDatabase
+import com.example.graduationproject.db.BookDatabase
 import com.example.graduationproject.utils.WebServices
 import dagger.Module
 import dagger.Provides
@@ -41,7 +41,7 @@ object AppModule {
     @Singleton
     fun retrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.8:5000/")
+            .baseUrl("http://192.168.1.2:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -63,9 +63,11 @@ object AppModule {
     @Singleton
     fun databaseProvider(
         @ApplicationContext context : Context
-    ) : SearchDatabase {
-        return  Room.databaseBuilder(context,SearchDatabase::class.java,"Search_DB")
+    ) : BookDatabase {
+        return  Room.databaseBuilder(context,BookDatabase::class.java,"Search_DB")
             .fallbackToDestructiveMigration()
             .build()
     }
+
+
 }

@@ -7,23 +7,24 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.graduationproject.databinding.BookItemBinding
+import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BooksItem
 
 class WishlistAdapter() :
-    ListAdapter<BooksItem, WishlistAdapter.viewholder>(WishlistAdapter) {
+    ListAdapter<BookEntity, WishlistAdapter.viewholder>(WishlistAdapter) {
 
-      companion object : DiffUtil.ItemCallback<BooksItem>() {
+      companion object : DiffUtil.ItemCallback<BookEntity>() {
         override fun areItemsTheSame(
-            oldItem: BooksItem,
-            newItem: BooksItem
+            oldItem: BookEntity,
+            newItem: BookEntity
         ): Boolean {
 
             return oldItem.bookId == newItem.bookId
         }
 
         override fun areContentsTheSame(
-            oldItem: BooksItem,
-            newItem: BooksItem
+            oldItem: BookEntity,
+            newItem: BookEntity
         ): Boolean {
             return oldItem.bookId == newItem.bookId
         }
@@ -33,7 +34,7 @@ class WishlistAdapter() :
 
     class viewholder(var binding: BookItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: BooksItem) {
+        fun bind(data: BookEntity) {
         Glide.with(binding.root).load(data.coverImage).into(binding.bookImg)
 
         }
