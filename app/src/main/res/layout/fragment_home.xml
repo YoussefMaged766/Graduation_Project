@@ -28,7 +28,8 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            tools:listitem="@layout/book_item" />
+            tools:listitem="@layout/book_item"
+            android:layoutAnimation="@anim/recycler_book_anim"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

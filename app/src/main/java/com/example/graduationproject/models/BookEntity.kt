@@ -34,6 +34,9 @@ data class BookEntity(
     @ColumnInfo(name = "is_favorite")
     val IsFavorite: Int = 0,
 
+    @ColumnInfo(name = "is_Wish")
+    val IsWish: Int = 0,
+
     val userId: String? = null
 
 

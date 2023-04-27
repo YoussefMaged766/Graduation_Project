@@ -1,6 +1,7 @@
 package com.example.graduationproject.ui.main.favorite
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -65,6 +66,7 @@ class FavoriteFragment : Fragment() {
                 binding.lottieEmpty.visibility= View.GONE
                 adapter.submitList( it.allLocalBooks)
                 binding.recyclerFav.adapter =adapter
+                Log.e( "collectStates: ",it.allLocalBooks.toString() )
 
             }
         }

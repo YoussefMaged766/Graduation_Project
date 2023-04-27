@@ -21,6 +21,7 @@ import com.example.graduationproject.databinding.FragmentBookBinding
 import com.example.graduationproject.models.BookIdResponse
 import com.example.graduationproject.models.mappers.toBookEntity
 import com.example.graduationproject.utils.NetworkState
+import com.noowenz.showmoreless.ShowMoreLess
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -59,7 +60,7 @@ class BookFragment : Fragment() {
         addMenu()
         checkFav()
 //        checkLocalFav()
-
+showMoreAndLess()
 
     }
 
@@ -222,6 +223,36 @@ class BookFragment : Fragment() {
 
             }
         }
+    }
+
+    fun showMoreAndLess(){
+        ShowMoreLess.Builder(requireContext())
+            .textLengthAndLengthType(length = 5, textLengthType = ShowMoreLess.TYPE_LINE)
+            .showMoreLabel("Show More")
+            .showLessLabel("Show Less")
+            .showMoreLabelColor(R.color.brown2)
+            .showLessLabelColor(R.color.brown2)
+            .labelBold(true)
+            .expandAnimation(true)
+            .enableLinkify(false)
+            .textClickable(textClickableInExpand = true, textClickableInCollapse = true)
+            .build().apply {
+                addShowMoreLess(
+                    binding.txtDescription,
+                    data.bookObject.description.toString(),
+                    isContentExpanded = false
+                    )
+                setListener(object :ShowMoreLess.OnShowMoreLessClickedListener{
+                    override fun onShowLessClicked() {
+                        addShowMoreLess(binding.txtDescription, data.bookObject.description.toString(), isContentExpanded = false)
+                    }
+
+                    override fun onShowMoreClicked() {
+                        addShowMoreLess(binding.txtDescription, data.bookObject.description.toString(), isContentExpanded = true)
+                    }
+
+                })
+            }
     }
 
 //private  fun checkLocalFav(){

@@ -36,7 +36,6 @@ class HomePagingSource (private val webServices: WebServices, private val token:
             } catch (e: Throwable) {
                 Log.e("load: ", e.message.toString())
                 return LoadResult.Error(e)
-
             }
         }
 }

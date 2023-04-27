@@ -48,6 +48,8 @@ class WishlistAdapter() :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewholder {
         val binding =
             BookItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val params = binding.root.layoutParams
+        params.width = (parent.width * 0.47).toInt()
         return viewholder(binding)
     }
 

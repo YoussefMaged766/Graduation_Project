@@ -75,6 +75,7 @@ class WishlistFragment : Fragment() {
                 adapter.submitList( it.allLocalBooks)
                 binding.recyclerWishlist.adapter =adapter
 
+
             }
 
 

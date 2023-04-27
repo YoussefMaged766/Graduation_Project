@@ -105,6 +105,9 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    // show more and less text
+    implementation 'com.github.noowenz:ShowMoreLess:1.0.3'
+
 }
 kapt {
     correctErrorTypes true

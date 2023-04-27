@@ -97,6 +97,8 @@ class HomeFragment : Fragment() {
         adapter.addLoadStateListener {
             binding.swipeRefresh.isRefreshing = it.source.refresh is LoadState.Loading
             handelError(it)
+
+
         }
 
     }
