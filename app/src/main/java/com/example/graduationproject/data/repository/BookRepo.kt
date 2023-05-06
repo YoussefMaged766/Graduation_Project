@@ -124,8 +124,15 @@ class BookRepo @Inject constructor(
                 val response = webServices.addFavourite(key,bookId)
 
                 emit(Resource.success(response))
-                database.searchDao().insertBook(booksItem.toBookEntity(userId))
-                database.searchDao().setFavoriteBook(booksItem.bookId!!,userId)
+                if (database.searchDao().bookExist(booksItem.bookId!!,userId)){
+                    database.searchDao().setFavoriteBook(booksItem.bookId,userId)
+                }
+                else{
+                    database.searchDao().insertBook(booksItem.toBookEntity(userId))
+                    database.searchDao().setFavoriteBook(booksItem.bookId,userId)
+                }
+
+//                database.searchDao().setFavoriteBook(booksItem.bookId!!,userId)
                 Log.e("loginUser: ", response.toString())
             } else {
 
@@ -192,12 +199,20 @@ class BookRepo @Inject constructor(
 
         }
     }
-    suspend fun addToWishlist (key:String, bookId:BookIdResponse) = flow{
+    suspend fun addToWishlist (key:String, bookId:BookIdResponse,booksItem: BooksItem,userId: String) = flow{
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
                 val response = webServices.addToWishlist(key,bookId)
                 emit(Resource.success(response))
+                if (database.searchDao().bookExist(booksItem.bookId!!,userId)){
+                    database.searchDao().setWishBook(booksItem.bookId,userId)
+                }
+                else{
+                    database.searchDao().insertBook(booksItem.toBookEntity(userId))
+                    database.searchDao().setWishBook(booksItem.bookId,userId)
+                }
+//                database.searchDao().setWishBook(booksItem.bookId!!,userId)
 
                 Log.e("loginUser: ", response.toString())
             } else {
@@ -210,14 +225,23 @@ class BookRepo @Inject constructor(
 
     }
 
-    suspend fun getAllWishlist(token:String) = flow{
+    suspend fun insertBookLocal(booksItem: BooksItem,userId: String)= database.searchDao().insertBook(booksItem.toBookEntity(userId))
+    suspend fun getAllBooksLocal(userId: String) = database.searchDao().getAllBooksLocal(userId)
+
+    suspend fun getAllWishlist(token:String,userId: String) = flow{
         emit(Resource.loading(null))
 
         try {
             if (networkState.isOnline()){
                 val response = webServices.getAllWishlist(token)
-                emit(Resource.success(response))
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
+                emit(Resource.success(books))
 
+            } else{
+                val books = database.searchDao().getAllWishListBooksLocal(userId).map { it }
+                books.collect{
+                    emit(Resource.success(it))
+                }
             }
 
         }catch (e: Throwable){
@@ -238,12 +262,13 @@ class BookRepo @Inject constructor(
         }
     }
 
-    suspend fun removeWishlist(key:String, bookId:BookIdResponse) = flow{
+    suspend fun removeWishlist(key:String, bookId:BookIdResponse,bookIdInRoom: Int,userId: String) = flow{
         try {
             emit(Resource.loading(null))
             if (networkState.isOnline()) {
                 val response = webServices.removeWishlist(key,bookId)
                 emit(Resource.success(response))
+                database.searchDao().unWishBook(bookIdInRoom,userId)
 
                 Log.e("loginUser: ", response.toString())
             } else {

@@ -13,6 +13,10 @@ import com.example.graduationproject.models.BooksItem
 class WishlistAdapter() :
     ListAdapter<BookEntity, WishlistAdapter.viewholder>(WishlistAdapter) {
 
+    interface OnItemLongClickListener {
+        fun onItemLongClick(position: Int, data: BookEntity)
+    }
+    var onItemLongClickListener: OnItemLongClickListener? = null
       companion object : DiffUtil.ItemCallback<BookEntity>() {
         override fun areItemsTheSame(
             oldItem: BookEntity,
@@ -56,6 +60,10 @@ class WishlistAdapter() :
     override fun onBindViewHolder(holder: viewholder, position: Int) {
         holder.bind(getItem(position))
 
+        holder.itemView.setOnLongClickListener {
+            onItemLongClickListener?.onItemLongClick(position, getItem(position))
+            true
+        }
         holder.binding.root.setOnClickListener {
 //            val action = FavoriteFragmentDirections.actionFavoriteFragmentToBookFragment()
 //            it.findNavController().navigate(action)

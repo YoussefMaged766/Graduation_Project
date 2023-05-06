@@ -129,9 +129,9 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    suspend fun setWishlist( token: String,bookId : BookIdResponse) = viewModelScope.launch(Dispatchers.IO) {
+    suspend fun setWishlist( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
 
-        bookRepo.addToWishlist(token,bookId).collectLatest { resource ->
+        bookRepo.addToWishlist(token,bookId,booksItem, userId).collectLatest { resource ->
             when(resource.status){
                 Status.LOADING-> {
                     _stateWishlist.value = stateWishlist.value.copy(
@@ -157,4 +157,12 @@ class BookViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun insertBookLocal(booksItem: BooksItem,userId: String) =
+        bookRepo.insertBookLocal(booksItem,userId)
+
+
+    suspend fun getAllBooksLocal(userId: String) =
+        bookRepo.getAllBooksLocal(userId)
+
 }

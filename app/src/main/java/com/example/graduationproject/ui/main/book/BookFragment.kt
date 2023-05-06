@@ -18,11 +18,13 @@ import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
+import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BookIdResponse
 import com.example.graduationproject.models.mappers.toBookEntity
 import com.example.graduationproject.utils.NetworkState
 import com.noowenz.showmoreless.ShowMoreLess
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -34,8 +36,10 @@ class BookFragment : Fragment() {
     private lateinit var dataStore: DataStore<Preferences>
     private val data: BookFragmentArgs by navArgs()
     private val viewModel: BookViewModel by viewModels()
-    private val networkState = NetworkState
-    var like: Int? = null
+  private var bookEntity=BookEntity()
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -60,7 +64,7 @@ class BookFragment : Fragment() {
         addMenu()
         checkFav()
 //        checkLocalFav()
-showMoreAndLess()
+        showMoreAndLess()
 
     }
 
@@ -70,9 +74,11 @@ showMoreAndLess()
 
                 binding.imageViewAnimation.isSelected = false
                 setUnFavourite()
+
             } else {
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
+//                addFavourite()
                 setFavourite()
                 collectState()
 
@@ -113,6 +119,7 @@ showMoreAndLess()
             )
 
         }
+
     }
 
     private fun setUnFavourite() {
@@ -127,11 +134,14 @@ showMoreAndLess()
         }
     }
 
+
     private fun setWishlist() {
         lifecycleScope.launch {
             viewModel.setWishlist(
                 "Bearer ${getToken("userToken")}",
-                BookIdResponse(bookId = data.bookObject.id.toString())
+                BookIdResponse(bookId = data.bookObject.id.toString()),
+                data.bookObject,
+                getUserId(Constants.userId)!!
             )
         }
     }
@@ -149,6 +159,47 @@ showMoreAndLess()
                 }
 
             }
+        }
+    }
+    private fun addFavourite() {
+        lifecycleScope.launch {
+            viewModel.getAllBooksLocal(getUserId(Constants.userId)!!).collect {
+                it.map {
+                    bookEntity = it
+                }
+            }
+            delay(500)
+        }
+
+        if (bookEntity.bookId == data.bookObject.bookId) {
+            setFavourite()
+        } else {
+            insetBookLocal()
+            setFavourite()
+        }
+
+    }
+    private fun addWishList() {
+        lifecycleScope.launch {
+            viewModel.getAllBooksLocal(getUserId(Constants.userId)!!).collect {
+                it.map {
+                    bookEntity = it
+                }
+            }
+            delay(500)
+        }
+
+        if (bookEntity.bookId == data.bookObject.bookId) {
+           setWishlist()
+        } else {
+            insetBookLocal()
+            setWishlist()
+        }
+
+    }
+    private fun insetBookLocal(){
+        lifecycleScope.launch {
+            viewModel.insertBookLocal(data.bookObject, getUserId(Constants.userId)!!)
         }
     }
 
@@ -176,6 +227,7 @@ showMoreAndLess()
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.action_whishlist -> {
+//                        addWishList()
                         setWishlist()
                         collectStateWishlist()
                         return true
@@ -199,8 +251,6 @@ showMoreAndLess()
                     // check if id in list
                     binding.imageViewAnimation.isSelected =
                         it.allLocalBooks.contains(data.bookObject.toBookEntity(getUserId(Constants.userId)!!))
-
-
                 }
 
                 if (it.allLocalBooks != null) {
@@ -209,8 +259,6 @@ showMoreAndLess()
 
                     }
                 }
-
-
 
 
 //                if (it.isLoading){
@@ -225,7 +273,7 @@ showMoreAndLess()
         }
     }
 
-    fun showMoreAndLess(){
+    private fun showMoreAndLess() {
         ShowMoreLess.Builder(requireContext())
             .textLengthAndLengthType(length = 5, textLengthType = ShowMoreLess.TYPE_LINE)
             .showMoreLabel("Show More")
@@ -241,33 +289,27 @@ showMoreAndLess()
                     binding.txtDescription,
                     data.bookObject.description.toString(),
                     isContentExpanded = false
-                    )
-                setListener(object :ShowMoreLess.OnShowMoreLessClickedListener{
+                )
+                setListener(object : ShowMoreLess.OnShowMoreLessClickedListener {
                     override fun onShowLessClicked() {
-                        addShowMoreLess(binding.txtDescription, data.bookObject.description.toString(), isContentExpanded = false)
+                        addShowMoreLess(
+                            binding.txtDescription,
+                            data.bookObject.description.toString(),
+                            isContentExpanded = false
+                        )
                     }
 
                     override fun onShowMoreClicked() {
-                        addShowMoreLess(binding.txtDescription, data.bookObject.description.toString(), isContentExpanded = true)
+                        addShowMoreLess(
+                            binding.txtDescription,
+                            data.bookObject.description.toString(),
+                            isContentExpanded = true
+                        )
                     }
 
                 })
             }
     }
 
-//private  fun checkLocalFav(){
-//    lifecycleScope.launch {
-//        viewModel.getAllFavorite("Bearer ${getToken("userToken")}" ,getUserId(Constants.userId)!!)
-//
-//        viewModel.stateFav.collect {
-//            if (!it.allLocalBooks.isNullOrEmpty() ) {
-//                // check if id in list
-//                binding.imageViewAnimation.isSelected = it.allLocalBooks.contains(data.bookObject.toBookEntity(getUserId(Constants.userId)!!))
-//
-//            }
-//        }
-//    }
-//
-//}
 
 }

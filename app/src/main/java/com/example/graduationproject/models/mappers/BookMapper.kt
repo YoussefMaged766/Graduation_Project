@@ -14,6 +14,7 @@ fun BooksItem.toBookEntity(userId:String) = BookEntity(
     ratings = this.ratings,
     bookId = this.bookId,
     userId = userId,
+    bookIdMongo = this.id
 )
 
 

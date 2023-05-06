@@ -32,8 +32,14 @@ interface BookDao {
     @Query("SELECT * FROM BookEntity where userId=:userId and is_favorite=1")
     fun getAllFavoriteBooksLocal(userId: String): Flow<List<BookEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insetAllBooks(books: List<BookEntity>)
+    @Query("SELECT * FROM BookEntity where userId=:userId and is_Wish=1")
+    fun getAllWishListBooksLocal(userId: String): Flow<List<BookEntity>>
+
+    @Query("SELECT * FROM BookEntity where userId=:userId")
+    fun getAllBooksLocal(userId: String): Flow<List<BookEntity>>
+
+    @Insert()
+    suspend fun insetAllBooks(books: List<BookEntity>)
 
     @Query("UPDATE BookEntity SET is_favorite = 1 WHERE bookId = :bookId and userId=:userId")
     suspend fun setFavoriteBook(bookId: Int, userId: String)
@@ -41,6 +47,12 @@ interface BookDao {
     @Query("UPDATE BookEntity SET is_favorite = 0 WHERE bookId =:bookId and userId=:userId")
     suspend fun unFavoriteBook(bookId: Int, userId: String)
 
+    @Query("UPDATE BookEntity SET is_Wish = 1 WHERE bookId = :bookId and userId=:userId")
+    suspend fun setWishBook(bookId: Int, userId: String)
 
+    @Query("UPDATE BookEntity SET is_Wish = 0 WHERE bookId =:bookId and userId=:userId")
+    suspend fun unWishBook(bookId: Int, userId: String)
+@Query("SELECT EXISTS( SELECT * FROM BookEntity WHERE bookId = :bookId and userId=:userId)")
+    suspend fun bookExist(bookId: Int, userId: String):Boolean
 
 }
