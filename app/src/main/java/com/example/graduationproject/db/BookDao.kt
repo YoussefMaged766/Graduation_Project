@@ -52,7 +52,7 @@ interface BookDao {
 
     @Query("UPDATE BookEntity SET is_Wish = 0 WHERE bookId =:bookId and userId=:userId")
     suspend fun unWishBook(bookId: Int, userId: String)
-@Query("SELECT EXISTS( SELECT * FROM BookEntity WHERE bookId = :bookId and userId=:userId)")
+    @Query("SELECT EXISTS( SELECT * FROM BookEntity WHERE bookId = :bookId and userId=:userId)")
     suspend fun bookExist(bookId: Int, userId: String):Boolean
 
 }

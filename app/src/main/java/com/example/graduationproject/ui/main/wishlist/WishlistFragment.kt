@@ -31,6 +31,7 @@ import com.example.graduationproject.databinding.FragmentWishlistBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BookIdResponse
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -42,9 +43,10 @@ class WishlistFragment : Fragment() {
     lateinit var binding: FragmentWishlistBinding
     val adapter: WishlistAdapter by lazy { WishlistAdapter() }
     private val viewModel: WishlistViewModel by viewModels()
-    val position1: Int = 0
     val hash = HashMap<Int, BookEntity>()
     private lateinit var dataStore: DataStore<Preferences>
+    var selectionMode: Boolean = false
+    lateinit var menuItem: MenuItem
     val networkState = com.example.graduationproject.utils.NetworkState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class WishlistFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentWishlistBinding.inflate(layoutInflater)
 
@@ -70,7 +72,7 @@ class WishlistFragment : Fragment() {
             getAllWishlist()
         }
         longClick()
-//        addMenu()
+
 
     }
 
@@ -106,35 +108,34 @@ class WishlistFragment : Fragment() {
 
     private fun remove(bookId: BookIdResponse, bookEntity: BookEntity) {
 
-            lifecycleScope.launch {
-                viewModel.removeWishlist(
-                    "Bearer ${getToken(Constants.userToken)}",
-                    userId = getUserId(Constants.userId)!!,
-                    bookId = bookId,
-                    booksItem = bookEntity.bookId!!
-                )
-            }
-            lifecycleScope.launch {
-                viewModel.stateRemoveWishlist.collect {
-                    if (it.isLoading) {
-                        Constants.showCustomAlertDialog(
-                            requireContext(),
-                            R.layout.custom_alert_dailog,
-                            false
-                        )
-                    } else {
-                        Constants.hideCustomAlertDialog()
-                    }
-                    if (it.success != null) {
-                        Constants.customToast(requireContext(), requireActivity(), it.success)
-                        adapter.notifyDataSetChanged()
-                        lifecycleScope.launch {
-                            getAllWishlist()
-                        }
+        lifecycleScope.launch {
+            viewModel.removeWishlist(
+                "Bearer ${getToken(Constants.userToken)}",
+                userId = getUserId(Constants.userId)!!,
+                bookId = bookId,
+                booksItem = bookEntity.bookId!!
+            )
+        }
+        lifecycleScope.launch {
+            viewModel.stateRemoveWishlist.collect {
+//                    if (it.isLoading) {
+//                        Constants.showCustomAlertDialog(
+//                            requireContext(),
+//                            R.layout.custom_alert_dailog,
+//                            false
+//                        )
+//                    } else {
+//                        Constants.hideCustomAlertDialog()
+//                    }
+                if (it.success != null) {
+                    Constants.customToast(requireContext(), requireActivity(), it.success)
+                    adapter.notifyDataSetChanged()
+                    lifecycleScope.launch {
+                        getAllWishlist()
                     }
                 }
             }
-
+        }
 
 
     }
@@ -155,8 +156,25 @@ class WishlistFragment : Fragment() {
                 } else {
                     vibrator.vibrate(50)
                 }
-                hash[position] = data
-                addMenu()
+
+                if (hash.isEmpty()){
+                    hash[position] = data
+                }else{
+                    hash.clear()
+                    hash[position] = data
+                }
+                if (adapter.selectedItem ==-1) {
+                    Log.e("onItemLongClick: ", "alo")
+                    requireActivity().findViewById<Toolbar>(R.id.toolbar).menu.clear()
+
+                }
+
+
+                if (!selectionMode) {
+                    addMenu()
+                    selectionMode = true
+                }
+                Log.e( "onItemLongClick: ", hash.values.toString())
             }
 
         }
@@ -164,24 +182,35 @@ class WishlistFragment : Fragment() {
     }
 
     private fun addMenu() {
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.remove_menu, menu)
+
             }
+
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.action_delete -> {
-                        if (networkState.isOnline()){
-                            val bookId = hash[position1]?.bookIdMongo
-                            val bookEntity = hash[position1]
-                            remove(BookIdResponse(bookId = bookId), bookEntity!!)
-                        } else{
-                            Constants.customToast(requireContext(), requireActivity(), "check your internet connection")
-                            Log.e( "onMenuItemSelected: ","no Internet" )
+                        for (i in hash.values) {
+                            if (networkState.isOnline()) {
+
+                                remove(BookIdResponse(bookId = i.bookIdMongo), i)
+                                hash.clear()
+
+                                menuItem.isVisible = false
+                                selectionMode = false
+
+                            } else {
+                                Constants.customToast(
+                                    requireContext(),
+                                    requireActivity(),
+                                    "check your internet connection"
+                                )
+                                Log.e("onMenuItemSelected: ", "no Internet")
+                            }
                         }
-
-
                         return true
                     }
 
@@ -190,6 +219,20 @@ class WishlistFragment : Fragment() {
             }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    fun removeMenu() {
+        requireActivity().removeMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.remove_menu, menu)
+
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                menuItem.isVisible = false
+                return true
+            }
+        })
     }
 
     private suspend fun getToken(key: String): String? {

@@ -1,20 +1,24 @@
 package com.example.graduationproject.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.graduationproject.R
 import com.example.graduationproject.databinding.BookItemBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BooksItem
 
 class WishlistAdapter() :
     ListAdapter<BookEntity, WishlistAdapter.viewholder>(WishlistAdapter) {
-
+    var selectedItem = -1
     interface OnItemLongClickListener {
+
         fun onItemLongClick(position: Int, data: BookEntity)
+
     }
     var onItemLongClickListener: OnItemLongClickListener? = null
       companion object : DiffUtil.ItemCallback<BookEntity>() {
@@ -38,9 +42,14 @@ class WishlistAdapter() :
 
     class viewholder(var binding: BookItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(data: BookEntity) {
         Glide.with(binding.root).load(data.coverImage).into(binding.bookImg)
-
+//        if (selected) {
+//            binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.purple_200))
+//        } else {
+//            binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.white))
+//        }
         }
 
     }
@@ -61,9 +70,30 @@ class WishlistAdapter() :
         holder.bind(getItem(position))
 
         holder.itemView.setOnLongClickListener {
+//            if (selectedItem.contains(position)) {
+//                selectedItem.remove(position)
+//                holder.itemView.setBackgroundColor(holder.itemView.context.resources.getColor(R.color.background))
+//            } else {
+//                selectedItem.add(position)
+//                holder.itemView.setBackgroundColor(holder.itemView.context.resources.getColor(R.color.purple_200))
+//            }
+            if (selectedItem == position){
+                selectedItem = -1
+            } else {
+                selectedItem = position
+            }
+            notifyDataSetChanged()
+
+
             onItemLongClickListener?.onItemLongClick(position, getItem(position))
             true
         }
+        if (position == selectedItem){
+            holder.binding.frameLayout.setBackgroundColor(holder.itemView.context.getColor(R.color.selected_background))
+        } else {
+            holder.binding.frameLayout.setBackgroundColor(Color.TRANSPARENT)
+        }
+
         holder.binding.root.setOnClickListener {
 //            val action = FavoriteFragmentDirections.actionFavoriteFragmentToBookFragment()
 //            it.findNavController().navigate(action)

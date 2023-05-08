@@ -15,4 +15,6 @@
     <color name="brown2">#967355</color>
     <color name="brown_background">#D9CDC1 </color>
     <color name="brown_verify">#707070</color>
+
+    <color name="selected_background">#66BB86FC</color>
 </resources>
