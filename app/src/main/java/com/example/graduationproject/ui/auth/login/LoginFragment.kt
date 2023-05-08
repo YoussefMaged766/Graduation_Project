@@ -138,7 +138,7 @@ class LoginFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
                     if (it){
-                        Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                        Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
                     } else{
 //                        dialog.cancel()
                         Constants.hideCustomAlertDialog()
@@ -249,7 +249,7 @@ class LoginFragment : Fragment() {
             val dataStoreKey = stringPreferencesKey(Constants.userToken)
             dataStore.edit {
                 if (it.contains(dataStoreKey)) {
-                    Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                    Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
 //                    binding.frameLoading.visibility = View.VISIBLE
                     delay(1000L)
                     startActivity(Intent(requireActivity(), HomeActivity::class.java))
@@ -260,7 +260,7 @@ class LoginFragment : Fragment() {
                             Constants.customToast(requireContext(), requireActivity(), "Welcome ")
                             Log.e( "onStart: ",getIsLogging("Logging").toString() )
                         }else{
-                            Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                            Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
 //                            binding.frameLoading.visibility = View.VISIBLE
                             Constants
                             delay(1000L)

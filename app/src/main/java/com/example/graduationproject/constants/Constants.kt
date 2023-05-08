@@ -3,6 +3,7 @@ package com.example.graduationproject.constants
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,20 +56,33 @@ class Constants {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
         lateinit var dialog: Dialog
        fun showCustomAlertDialog(
-            context: Context,
+           activity: Activity,
             layout: Int,
             checkCancel: Boolean,
             ) {
-            dialog = Dialog(context)
-            dialog.setContentView(layout)
-            val loader: CamomileSpinner = dialog.findViewById(R.id.progress)
-            loader.start()
-            dialog.setCancelable(checkCancel)
-            dialog.show()
+           if (!activity.isFinishing && !activity.isDestroyed) {
+               dialog = Dialog(activity)
+               dialog.setContentView(layout)
+               val loader: CamomileSpinner = dialog.findViewById(R.id.progress)
+               loader.start()
+               dialog.setCancelable(checkCancel)
+
+               dialog.show()
+
+           }
 
         }
         fun hideCustomAlertDialog() {
-            dialog.cancel()
+            try {
+                if (::dialog.isInitialized && dialog.isShowing) {
+                    dialog.dismiss()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e( "hideCustomAlertDialog: ",e.message.toString() )
+            }
+
+
         }
 
        const val userToken = "userToken"

@@ -47,20 +47,20 @@ class ForgetPasswordViewModel @Inject constructor(private val userRepo: UserRepo
     fun forgetPassword(user: User) = viewModelScope.launch(Dispatchers.IO) {
 
         userRepo.forgetPassword(user).collect {
-            when (it.status) {
-                Status.LOADING -> _progress.send(true)
+            when (it) {
+               is Status.Loading -> _progress.send(true)
 
-                Status.SUCCESS -> {
+               is Status.Success -> {
                     _progress.send(false)
                     _response.send(it.data!!)
                     eventChannel.send(R.id.action_forgetPasswordFragment_to_verifyAccountFragment)
                 }
 
-                Status.ERROR -> {
+               is Status.Error -> {
                     _progress.send(false)
                     _error.send(it.message.toString())
                 }
-                Status.NO_DATA->{}
+
             }
 
         }

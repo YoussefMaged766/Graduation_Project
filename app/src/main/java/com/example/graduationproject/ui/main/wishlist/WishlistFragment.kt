@@ -13,6 +13,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 
 import androidx.core.content.ContextCompat.getSystemService
@@ -46,7 +47,7 @@ class WishlistFragment : Fragment() {
     val hash = HashMap<Int, BookEntity>()
     private lateinit var dataStore: DataStore<Preferences>
     var selectionMode: Boolean = false
-    lateinit var menuItem: MenuItem
+
     val networkState = com.example.graduationproject.utils.NetworkState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,9 @@ class WishlistFragment : Fragment() {
             getAllWishlist()
         }
         longClick()
+//        addMenu()
+//        requireActivity().findViewById<Toolbar>(R.id.toolbar).menu.clear()
+        delete()
 
 
     }
@@ -87,18 +91,19 @@ class WishlistFragment : Fragment() {
         viewModel.stateWishlist.collect {
 
 //            if (it.isLoading){
-//                Constants.showCustomAlertDialog(requireContext(), R.layout.custom_alert_dailog, false)
+//                Constants.showCustomAlertDialog(requireActivity(), R.layout.custom_alert_dailog, false)
 //            }else{
 //                Constants.hideCustomAlertDialog()
 //            }
 
             if (it.allLocalBooks.isNullOrEmpty()) {
                 binding.lottieEmpty.visibility = View.VISIBLE
+                binding.recyclerWishlist.visibility = View.GONE
             } else {
                 binding.lottieEmpty.visibility = View.GONE
                 adapter.submitList(it.allLocalBooks)
                 binding.recyclerWishlist.adapter = adapter
-
+                binding.recyclerWishlist.visibility = View.VISIBLE
 
             }
 
@@ -120,7 +125,7 @@ class WishlistFragment : Fragment() {
             viewModel.stateRemoveWishlist.collect {
 //                    if (it.isLoading) {
 //                        Constants.showCustomAlertDialog(
-//                            requireContext(),
+//                            requireActivity(),
 //                            R.layout.custom_alert_dailog,
 //                            false
 //                        )
@@ -135,6 +140,7 @@ class WishlistFragment : Fragment() {
                     }
                 }
             }
+
         }
 
 
@@ -163,17 +169,21 @@ class WishlistFragment : Fragment() {
                     hash.clear()
                     hash[position] = data
                 }
-                if (adapter.selectedItem ==-1) {
-                    Log.e("onItemLongClick: ", "alo")
-                    requireActivity().findViewById<Toolbar>(R.id.toolbar).menu.clear()
-
-                }
-
 
                 if (!selectionMode) {
-                    addMenu()
+//                    addMenu()
+                    requireActivity().findViewById<ImageView>(R.id.imgDelete).visibility = View.VISIBLE
                     selectionMode = true
                 }
+               else if (adapter.selectedItem ==-1) {
+                    Log.e("onItemLongClick: ", "alo")
+
+                    requireActivity().findViewById<ImageView>(R.id.imgDelete).visibility = View.GONE
+                    selectionMode = false
+                }
+
+
+
                 Log.e( "onItemLongClick: ", hash.values.toString())
             }
 
@@ -186,6 +196,7 @@ class WishlistFragment : Fragment() {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.remove_menu, menu)
+                menu.findItem(R.id.action_delete).isVisible = false
 
             }
 
@@ -221,18 +232,27 @@ class WishlistFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    fun removeMenu() {
-        requireActivity().removeMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.remove_menu, menu)
 
-            }
+    fun delete(){
+        requireActivity().findViewById<ImageView>(R.id.imgDelete).setOnClickListener {
+            for (i in hash.values) {
+                if (networkState.isOnline()) {
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                menuItem.isVisible = false
-                return true
+                    remove(BookIdResponse(bookId = i.bookIdMongo), i)
+                    hash.clear()
+                    selectionMode = false
+                    requireActivity().findViewById<ImageView>(R.id.imgDelete).visibility = View.GONE
+
+                } else {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        "check your internet connection"
+                    )
+                    Log.e("onMenuItemSelected: ", "no Internet")
+                }
             }
-        })
+        }
     }
 
     private suspend fun getToken(key: String): String? {

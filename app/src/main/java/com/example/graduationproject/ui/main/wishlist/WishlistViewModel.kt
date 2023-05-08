@@ -27,13 +27,13 @@ class WishlistViewModel @Inject constructor(private val bookRepo: BookRepo):View
 
     suspend fun getAllWishlist(token:String,userId: String)=viewModelScope.launch {
         bookRepo.getAllWishlist(token,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+              is  Status.Loading-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+              is  Status.Success-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         isLoading = false,
                         allLocalBooks = resource.data
@@ -41,13 +41,12 @@ class WishlistViewModel @Inject constructor(private val bookRepo: BookRepo):View
 
 
                 }
-                Status.ERROR-> {
+                is   Status.Error-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         error = resource.message,
                         isLoading = false
                     )
                 }
-                else -> {}
             }
         }
     }
@@ -56,20 +55,20 @@ class WishlistViewModel @Inject constructor(private val bookRepo: BookRepo):View
         Dispatchers.IO) {
 
         bookRepo.removeWishlist(token,bookId,booksItem,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+                is    Status.Loading-> {
                     _stateRemoveWishlist.value = stateRemoveWishlist.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is Status.Success-> {
                     _stateRemoveWishlist.value = stateRemoveWishlist.value.copy(
                         isLoading = false,
                         success = resource.data?.message.toString()
                     )
                     Log.e( "getAllBooks: ", resource.data?.message.toString())
                 }
-                Status.ERROR-> {
+                is  Status.Error-> {
                     _stateRemoveWishlist.value = stateRemoveWishlist.value.copy(
                         error = resource.message,
                         isLoading = false
@@ -77,7 +76,7 @@ class WishlistViewModel @Inject constructor(private val bookRepo: BookRepo):View
                     )
 
                 }
-                else -> {}
+
             }
         }
     }

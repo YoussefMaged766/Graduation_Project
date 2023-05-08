@@ -74,7 +74,7 @@ class VerifyAccountFragment : Fragment() {
 
     private suspend  fun verify() {
         withContext(Dispatchers.Main){
-            Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+            Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
 //            binding.frameLoading.visibility =View.VISIBLE
             delay(500)
         }

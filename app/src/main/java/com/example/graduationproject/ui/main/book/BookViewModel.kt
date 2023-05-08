@@ -42,13 +42,13 @@ class BookViewModel @Inject constructor(
 
     suspend fun getAllFavorite(token:String, userId: String)=viewModelScope.launch {
         bookRepo.getAllFavorite(token,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+                is Status.Loading-> {
                     _stateFav.value = stateFav.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is  Status.Success-> {
                     _stateFav.value = stateFav.value.copy(
                         isLoading = false,
                         allLocalBooks = resource.data
@@ -56,13 +56,13 @@ class BookViewModel @Inject constructor(
 
 
                 }
-                Status.ERROR-> {
+                is  Status.Error-> {
                     _stateFav.value = stateFav.value.copy(
                         error = resource.message,
                         isLoading = false
                     )
                 }
-                else -> {}
+
             }
         }
     }
@@ -74,20 +74,20 @@ class BookViewModel @Inject constructor(
     suspend fun setFavorite( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
 
         bookRepo.addFavorite(token,bookId,booksItem,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+             is   Status.Loading-> {
                     _stateFavourite.value = stateFavourite.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is   Status.Success-> {
                     _stateFavourite.value = stateFavourite.value.copy(
                         isLoading = false,
                         success = resource.data?.message.toString()
                     )
                     Log.e( "getAllBooks: ", resource.data?.message.toString())
                 }
-                Status.ERROR-> {
+                is   Status.Error-> {
                     _stateFavourite.value = stateFavourite.value.copy(
                         error = resource.message,
                         isLoading = false
@@ -95,7 +95,7 @@ class BookViewModel @Inject constructor(
                     )
 
                 }
-                else -> {}
+
             }
         }
     }
@@ -103,20 +103,20 @@ class BookViewModel @Inject constructor(
     suspend fun removeFavorite( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
 
         bookRepo.removeFavorite(token,bookId,booksItem,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+                is   Status.Loading-> {
                     _stateRemoveFavourite.value = stateRemoveFavourite.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is  Status.Success-> {
                     _stateRemoveFavourite.value = stateRemoveFavourite.value.copy(
                         isLoading = false,
                         success = resource.data?.message.toString()
                     )
                     Log.e( "getAllBooks: ", resource.data?.message.toString())
                 }
-                Status.ERROR-> {
+                is  Status.Error-> {
                     _stateRemoveFavourite.value = stateRemoveFavourite.value.copy(
                         error = resource.message,
                         isLoading = false
@@ -124,7 +124,7 @@ class BookViewModel @Inject constructor(
                     )
 
                 }
-                else -> {}
+
             }
         }
     }
@@ -132,20 +132,20 @@ class BookViewModel @Inject constructor(
     suspend fun setWishlist( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
 
         bookRepo.addToWishlist(token,bookId,booksItem, userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+                is  Status.Loading-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is   Status.Success-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         isLoading = false,
                         success = resource.data?.message.toString()
                     )
                     Log.e( "getAllBooks: ", resource.data?.message.toString())
                 }
-                Status.ERROR-> {
+                is Status.Error-> {
                     _stateWishlist.value = stateWishlist.value.copy(
                         error = resource.message,
                         isLoading = false
@@ -153,7 +153,6 @@ class BookViewModel @Inject constructor(
                     )
 
                 }
-                else -> {}
             }
         }
     }

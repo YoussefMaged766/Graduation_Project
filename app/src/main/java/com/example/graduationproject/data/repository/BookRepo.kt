@@ -11,7 +11,7 @@ import com.example.graduationproject.db.BookDatabase
 import com.example.graduationproject.models.*
 import com.example.graduationproject.models.mappers.toBookEntity
 import com.example.graduationproject.utils.NetworkState
-import com.example.graduationproject.utils.Resource
+import com.example.graduationproject.utils.Status
 import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -30,27 +30,27 @@ class BookRepo @Inject constructor(
     private val gson = Gson()
     private val networkState = NetworkState
 
-    suspend fun getAllBooks(token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
+    suspend fun getAllBooks(token: String): Flow<Status<PagingData<BooksItem>>> = flow {
 
-        emit(Resource.loading(null))
+        emit(Status.Loading)
         delay(2000)
 
             val page = Pager(PagingConfig(pageSize = 20, enablePlaceholders = true)) {
                 HomePagingSource(webServices, token)
             }
             page.flow.map { pagingData ->
-                emit(Resource.success(pagingData))
+                emit(Status.Success(pagingData))
             }.catch  {e->
                 if (e is HttpException){
                     val type = object : TypeToken<UserResponseLogin>() {}.type
                     val errorResponse: UserResponseLogin? =
                         gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
                     Log.e("loginUsereeeeerrrrr: ", e.message().toString())
-                    emit(Resource.error(null, errorResponse?.message.toString()))
+                    emit(Status.Error(errorResponse?.message.toString()))
                 }
                 else if (e is IOException){
                     Log.e("loginUsereeeee: ", e.message.toString())
-                    emit(Resource.error(null, e.message.toString()))
+                    emit(Status.Error( e.message.toString()))
                 }
                 Log.e( "getAllBooks: ",e.message.toString() )
 
@@ -60,8 +60,8 @@ class BookRepo @Inject constructor(
     }
 
 
-    fun search(query: String, token: String): Flow<Resource<PagingData<BooksItem>>> = flow {
-        emit(Resource.loading(null))
+    fun search(query: String, token: String): Flow<Status<PagingData<BooksItem>>> = flow {
+        emit(Status.Loading)
         delay(2000)
         try {
             val page = Pager(PagingConfig(pageSize = 20, enablePlaceholders = true)) {
@@ -69,7 +69,7 @@ class BookRepo @Inject constructor(
             }
 
             page.flow.map { pagingData ->
-                emit(Resource.success(pagingData))
+                emit(Status.Success(pagingData))
             }.collect()
 
         } catch (e: Throwable) {
@@ -79,11 +79,11 @@ class BookRepo @Inject constructor(
                     val errorResponse: BooksItem? =
                         gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
                     Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
-                    emit(Resource.error(null, errorResponse?.message.toString()))
+                    emit(Status.Error( errorResponse?.message.toString()))
                 }
                 is Exception -> {
                     Log.e("loginUsereeeee: ", e.message.toString())
-                    emit(Resource.error(null, e.message.toString()))
+                    emit(Status.Error( e.message.toString()))
                 }
             }
         }
@@ -91,13 +91,13 @@ class BookRepo @Inject constructor(
 
 
     fun saveSearchHistory(searchHistory: HistorySearchEntity) = flow {
-        emit(Resource.loading(null))
+        emit(Status.Loading)
         try {
             val mDao = database.searchDao()
             mDao.insertHistorySearch(searchHistory)
-            emit(Resource.success(""))
+            emit(Status.Success(""))
         } catch (e: Exception) {
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error(e.message.toString()))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -107,23 +107,23 @@ class BookRepo @Inject constructor(
 
     fun deleteHistorySearch(query: String) = flow {
         try {
-            emit(Resource.loading(null))
+            emit(Status.Loading)
             val mDao = database.searchDao()
             mDao.deleteHistorySearch(query)
-            emit(Resource.success(""))
+            emit(Status.Success(""))
         } catch (e: Exception) {
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error( e.message.toString()))
 
         }
     }.flowOn(Dispatchers.IO)
 
     suspend fun addFavorite(key:String, bookId:BookIdResponse, booksItem: BooksItem,userId: String) = flow{
         try {
-            emit(Resource.loading(null))
+            emit(Status.Loading)
             if (networkState.isOnline()) {
                 val response = webServices.addFavourite(key,bookId)
 
-                emit(Resource.success(response))
+                emit(Status.Success(response))
                 if (database.searchDao().bookExist(booksItem.bookId!!,userId)){
                     database.searchDao().setFavoriteBook(booksItem.bookId,userId)
                 }
@@ -136,48 +136,48 @@ class BookRepo @Inject constructor(
                 Log.e("loginUser: ", response.toString())
             } else {
 
-                emit(Resource.error(null, "no Internet"))
+                emit(Status.Error( "no Internet"))
                 Log.e( "addFavorite: ","no Internet" )
 
             }
 
         }catch (e: Exception){
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error( e.message.toString()))
         }
 
     }
 
     suspend fun removeFavorite(key:String, bookId:BookIdResponse,booksItem: BooksItem,userId: String) = flow{
         try {
-            emit(Resource.loading(null))
+            emit(Status.Loading)
             if (networkState.isOnline()) {
                 val response = webServices.removeFavourite(key,bookId)
-                emit(Resource.success(response))
+                emit(Status.Success(response))
                 database.searchDao().unFavoriteBook(booksItem.bookId!!,userId)
 
                 Log.e("loginUser: ", response.toString())
             } else {
-                emit(Resource.error(null, "no Internet"))
+                emit(Status.Error( "no Internet"))
             }
 
         }catch (e: Exception){
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error( e.message.toString()))
         }
 
     }
     suspend fun getAllFavorite(token:String,userId: String) = flow{
-        emit(Resource.loading(null))
+        emit(Status.Loading)
 
         try {
             if (networkState.isOnline()){
                 val  response = webServices.getAllFavourite(token)
                 val books = response.results?.books?.map { it.toBookEntity(userId) }
 
-                emit(Resource.success(books))
+                emit(Status.Success(books))
             } else{
                 val books = database.searchDao().getAllFavoriteBooksLocal(userId).map { it }
                 books.collect{
-                    emit(Resource.success(it))
+                    emit(Status.Success(it))
                 }
 
             }
@@ -189,11 +189,11 @@ class BookRepo @Inject constructor(
                     val errorResponse: BooksItem? =
                         gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
                     Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
-                    emit(Resource.error(null, errorResponse?.message.toString()))
+                    emit(Status.Error( errorResponse?.message.toString()))
                 }
                 is Exception -> {
                     Log.e("loginUsereeeee: ", e.message.toString())
-                    emit(Resource.error(null, e.message.toString()))
+                    emit(Status.Error( e.message.toString()))
                 }
             }
 
@@ -201,10 +201,10 @@ class BookRepo @Inject constructor(
     }
     suspend fun addToWishlist (key:String, bookId:BookIdResponse,booksItem: BooksItem,userId: String) = flow{
         try {
-            emit(Resource.loading(null))
+            emit(Status.Loading)
             if (networkState.isOnline()) {
                 val response = webServices.addToWishlist(key,bookId)
-                emit(Resource.success(response))
+                emit(Status.Success(response))
                 if (database.searchDao().bookExist(booksItem.bookId!!,userId)){
                     database.searchDao().setWishBook(booksItem.bookId,userId)
                 }
@@ -216,11 +216,11 @@ class BookRepo @Inject constructor(
 
                 Log.e("loginUser: ", response.toString())
             } else {
-                emit(Resource.error(null, "no Internet"))
+                emit(Status.Error("no Internet"))
             }
 
         }catch (e: Exception){
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error( e.message.toString()))
         }
 
     }
@@ -229,18 +229,18 @@ class BookRepo @Inject constructor(
     suspend fun getAllBooksLocal(userId: String) = database.searchDao().getAllBooksLocal(userId)
 
     suspend fun getAllWishlist(token:String,userId: String) = flow{
-        emit(Resource.loading(null))
+        emit(Status.Loading)
 
         try {
             if (networkState.isOnline()){
                 val response = webServices.getAllWishlist(token)
                 val books = response.results?.books?.map { it.toBookEntity(userId) }
-                emit(Resource.success(books))
+                emit(Status.Success(books))
 
             } else{
                 val books = database.searchDao().getAllWishListBooksLocal(userId).map { it }
                 books.collect{
-                    emit(Resource.success(it))
+                    emit(Status.Success(it))
                 }
             }
 
@@ -251,11 +251,11 @@ class BookRepo @Inject constructor(
                     val errorResponse: BooksItem? =
                         gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
                     Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
-                    emit(Resource.error(null, errorResponse?.message.toString()))
+                    emit(Status.Error( errorResponse?.message.toString()))
                 }
                 is Exception -> {
                     Log.e("loginUsereeeee: ", e.message.toString())
-                    emit(Resource.error(null, e.message.toString()))
+                    emit(Status.Error( e.message.toString()))
                 }
             }
 
@@ -264,19 +264,19 @@ class BookRepo @Inject constructor(
 
     suspend fun removeWishlist(key:String, bookId:BookIdResponse,bookIdInRoom: Int,userId: String) = flow{
         try {
-            emit(Resource.loading(null))
+            emit(Status.Loading)
             if (networkState.isOnline()) {
                 val response = webServices.removeWishlist(key,bookId)
-                emit(Resource.success(response))
+                emit(Status.Success(response))
                 database.searchDao().unWishBook(bookIdInRoom,userId)
 
                 Log.e("loginUser: ", response.toString())
             } else {
-                emit(Resource.error(null, "no Internet"))
+                emit(Status.Error( "no Internet"))
             }
 
         }catch (e: Exception){
-            emit(Resource.error(null, e.message.toString()))
+            emit(Status.Error( e.message.toString()))
         }
 
     }

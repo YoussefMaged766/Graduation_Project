@@ -110,7 +110,7 @@ class ForgetPasswordFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
-                    if (it) Constants.showCustomAlertDialog(requireContext(),R.layout.custom_alert_dailog,false)
+                    if (it) Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
                     else Constants.hideCustomAlertDialog()
 //                    binding.frameLoading.isVisible = it
                     Log.i(TAG, "collectProgress: $it")

@@ -39,8 +39,8 @@ class SignUpViewModel @Inject constructor(val userRepo: UserRepo) : ViewModel() 
     fun signUpUser(user: User, activity: FragmentActivity) = viewModelScope.launch(Dispatchers.IO) {
 
         userRepo.signUpUser(user).collect {
-            when (it.status) {
-                Status.LOADING -> {
+            when (it) {
+                is  Status.Loading -> {
                     _progress.send(true)
 //                    activity.window.setFlags(
 //                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -48,20 +48,20 @@ class SignUpViewModel @Inject constructor(val userRepo: UserRepo) : ViewModel() 
 //                    )
                 }
 
-                Status.SUCCESS -> {
+                is Status.Success -> {
                     _progress.send(false)
                     _response.send(it.data!!)
                     eventChannel.send(R.id.action_signUpFragment_to_loginFragment)
 //                    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
 
-                Status.ERROR -> {
+                is Status.Error -> {
                     _progress.send(false)
                     _error.send(it.message.toString())
 //                    activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
 
-                Status.NO_DATA->{}
+
             }
 
         }

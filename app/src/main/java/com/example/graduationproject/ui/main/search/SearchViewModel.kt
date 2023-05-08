@@ -28,8 +28,8 @@ class SearchViewModel @Inject constructor(var bookRepo: BookRepo) : ViewModel() 
     fun saveSearchHistory(searchHistory: HistorySearchEntity)=viewModelScope.launch(Dispatchers.IO) {
 
         bookRepo.saveSearchHistory(searchHistory).collect{
-            when(it.status){
-                Status.ERROR -> _error.send(it.message.toString())
+            when(it){
+              is  Status.Error -> _error.send(it.message.toString())
                 else->{}
             }
         }
@@ -43,12 +43,12 @@ class SearchViewModel @Inject constructor(var bookRepo: BookRepo) : ViewModel() 
 
     fun deleteHistorySearch(query: String)=viewModelScope.launch(Dispatchers.IO) {
         bookRepo.deleteHistorySearch(query).collect{
-            when(it.status){
-                Status.SUCCESS->{
+            when(it){
+                is    Status.Success->{
                     _successDelete.value = "Deleted"
 
                 }
-                Status.ERROR -> _error.send(it.message.toString())
+                is   Status.Error -> _error.send(it.message.toString())
                 else->{}
             }
         }

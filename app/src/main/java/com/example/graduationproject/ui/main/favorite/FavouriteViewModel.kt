@@ -23,13 +23,13 @@ class FavouriteViewModel @Inject constructor(private val bookRepo: BookRepo):Vie
 
     suspend fun getAllFavorite(token:String,userId:String)=viewModelScope.launch {
         bookRepo.getAllFavorite(token,userId).collectLatest { resource ->
-            when(resource.status){
-                Status.LOADING-> {
+            when(resource){
+                is  Status.Loading-> {
                     _stateFav.value = stateFav.value.copy(
                         isLoading = true
                     )
                 }
-                Status.SUCCESS-> {
+                is   Status.Success-> {
                     _stateFav.value = stateFav.value.copy(
                         isLoading = false,
                         allLocalBooks = resource.data
@@ -37,13 +37,13 @@ class FavouriteViewModel @Inject constructor(private val bookRepo: BookRepo):Vie
 
 
                 }
-                Status.ERROR-> {
+                is  Status.Error-> {
                     _stateFav.value = stateFav.value.copy(
                         error = resource.message,
                         isLoading = false
                     )
                 }
-                else -> {}
+
             }
         }
     }

@@ -22,8 +22,16 @@
             app:layout_scrollFlags="noScroll"
             app:titleTextColor="@color/white"
             android:scrollbarSize="0dp"
-
-            />
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_delete_24"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/imgDelete"
+                android:visibility="gone"/>
+        </androidx.appcompat.widget.Toolbar>
 <!--        app:popupTheme="@style/Theme.SolutionChallenge.PopupOverlay"-->
 <!--        android:background="@color/intro_color"-->
 <!--        android:theme="@style/ToolbarTheme"-->

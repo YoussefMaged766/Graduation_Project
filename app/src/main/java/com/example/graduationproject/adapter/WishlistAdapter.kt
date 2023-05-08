@@ -1,6 +1,7 @@
 package com.example.graduationproject.adapter
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,6 +12,7 @@ import com.example.graduationproject.R
 import com.example.graduationproject.databinding.BookItemBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BooksItem
+import java.lang.IndexOutOfBoundsException
 
 class WishlistAdapter() :
     ListAdapter<BookEntity, WishlistAdapter.viewholder>(WishlistAdapter) {
@@ -84,14 +86,25 @@ class WishlistAdapter() :
             }
             notifyDataSetChanged()
 
+try {
+    onItemLongClickListener?.onItemLongClick(position, getItem(position))
+} catch (e: IndexOutOfBoundsException) {
+    e.printStackTrace()
+    Log.e( "onBindViewHolder: ",e.message.toString() )
+}
 
-            onItemLongClickListener?.onItemLongClick(position, getItem(position))
             true
         }
-        if (position == selectedItem){
-            holder.binding.frameLayout.setBackgroundColor(holder.itemView.context.getColor(R.color.selected_background))
-        } else {
-            holder.binding.frameLayout.setBackgroundColor(Color.TRANSPARENT)
+        try {
+            if (position == selectedItem&& selectedItem!=-1){
+                holder.binding.frameLayout.setBackgroundColor(holder.itemView.context.getColor(R.color.selected_background))
+            } else {
+                holder.binding.frameLayout.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+        } catch (e: IndexOutOfBoundsException) {
+            e.printStackTrace()
+            Log.e( "onBindViewHolder: ",e.message.toString() )
         }
 
         holder.binding.root.setOnClickListener {

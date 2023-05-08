@@ -32,10 +32,10 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
     fun loginUser(user: User, context: Context, Class: Class<*>, activity: FragmentActivity) =
         viewModelScope.launch(Dispatchers.IO) {
             userRepo.loginUser(user).collect {
-                when (it.status) {
-                    Status.LOADING -> _progress.send(true)
+                when (it) {
+                  is  Status.Loading -> _progress.send(true)
 
-                    Status.SUCCESS -> {
+                    is  Status.Success -> {
                         _progress.send(false)
                         _response.send(it.data!!)
                         context.startActivity(Intent(context, Class))
@@ -43,11 +43,11 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
 
 
                     }
-                    Status.ERROR -> {
+                    is  Status.Error -> {
                         _progress.send(false)
                         _error.send(it.message.toString())
                     }
-                    Status.NO_DATA->{}
+
                 }
             }
         }

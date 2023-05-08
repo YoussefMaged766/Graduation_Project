@@ -39,26 +39,25 @@ class NewPasswordViewModel @Inject constructor(private val userRepo: UserRepo) :
     fun newPassword(user: User) = viewModelScope.launch(Dispatchers.IO) {
 
         userRepo.newPassword(user).collect {
-            when (it.status) {
-                Status.LOADING -> _progress.send(true)
+            when (it) {
+                is Status.Loading -> _progress.send(true)
 
-                Status.SUCCESS -> {
+                is Status.Success -> {
                     _progress.send(false)
                     _response.send(it.data!!)
                     eventChannel.send(R.id.action_createNewPasswordFragment_to_loginFragment)
                 }
 
-                Status.ERROR -> {
+                is Status.Error -> {
                     _progress.send(false)
                     _error.send(it.message.toString())
+
                 }
-                Status.NO_DATA->{}
+
             }
 
         }
-
     }
-
 
 
 }
