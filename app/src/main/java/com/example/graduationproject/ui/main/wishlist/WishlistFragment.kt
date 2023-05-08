@@ -90,11 +90,7 @@ class WishlistFragment : Fragment() {
 
         viewModel.stateWishlist.collect {
 
-//            if (it.isLoading){
-//                Constants.showCustomAlertDialog(requireActivity(), R.layout.custom_alert_dailog, false)
-//            }else{
-//                Constants.hideCustomAlertDialog()
-//            }
+            binding.progressBar.isIndeterminate = it.isLoading
 
             if (it.allLocalBooks.isNullOrEmpty()) {
                 binding.lottieEmpty.visibility = View.VISIBLE
@@ -123,15 +119,11 @@ class WishlistFragment : Fragment() {
         }
         lifecycleScope.launch {
             viewModel.stateRemoveWishlist.collect {
-//                    if (it.isLoading) {
-//                        Constants.showCustomAlertDialog(
-//                            requireActivity(),
-//                            R.layout.custom_alert_dailog,
-//                            false
-//                        )
-//                    } else {
-//                        Constants.hideCustomAlertDialog()
-//                    }
+                    if (it.isLoading) {
+                        binding.progressBar.isIndeterminate = true
+                    } else {
+                        binding.progressBar.isIndeterminate = true
+                    }
                 if (it.success != null) {
                     Constants.customToast(requireContext(), requireActivity(), it.success)
                     adapter.notifyDataSetChanged()

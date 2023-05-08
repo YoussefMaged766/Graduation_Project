@@ -72,6 +72,18 @@
                         android:id="@+id/imgProfile"
                         android:layout_marginEnd="@dimen/_8sdp"
                         />
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@id/imgProfile"
+                    app:layout_constraintBottom_toBottomOf="@id/imgProfile"
+                    android:backgroundTint="#B3967355"
+                    app:fabSize="mini"
+                    app:fabCustomSize="40dp"
+                    android:src="@drawable/baseline_photo_camera_24"
+                    app:tint="@color/white"
+                    android:contentDescription="Take Photo"
+                    android:id="@+id/btnCamera"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="wrap_content"
@@ -104,5 +116,7 @@
         android:animateLayoutChanges="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -32,4 +32,12 @@
         app:lottie_rawRes="@raw/empty"
         android:visibility="gone"
         />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="false"
+        android:id="@+id/progressBar"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -87,7 +87,7 @@ class Constants {
 
        const val userToken = "userToken"
         const val userId="userId"
-
-
+        const val CAMERA_REQUEST_CODE = 1
+        const val GALLERY_REQUEST_CODE = 2
     }
 }

@@ -1,15 +1,32 @@
 package com.example.graduationproject.ui.main.profile
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import com.example.graduationproject.R
 import com.example.graduationproject.adapter.ViewPagerAdapter
+import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.databinding.FragmentProfileBinding
 import com.example.graduationproject.ui.main.favorite.FavoriteFragment
 import com.example.graduationproject.ui.main.wishlist.WishlistFragment
 import com.example.graduationproject.utils.FadeOutTransformation
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +34,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
     private val fadeOutTransformation= FadeOutTransformation()
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +52,15 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViewPager()
+     checkPermission()
+
+        binding.btnCamera.setOnClickListener {
+            handelPermission()
+        }
     }
 
     private fun setUpViewPager() {
@@ -55,6 +80,82 @@ class ProfileFragment : Fragment() {
         }.attach()
 
 
+    }
+
+
+private fun checkPermission() {
+
+
+
+    permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val isCameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
+        val isGalleryPermissionGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+
+        if (isCameraPermissionGranted && isGalleryPermissionGranted) {
+            // Both permissions are granted, do something
+//            openGalley()
+            setUpBottomSheet()
+        } else {
+            // One or both permissions are not granted, show a message or take some other action
+            Toast.makeText(requireContext(), "Camera and gallery permissions are required", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+    private fun handelPermission(){
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Both permissions are already granted, open the camera or gallery
+//           openGalley()
+            setUpBottomSheet()
+        } else {
+            // One or both permissions are not granted, request them
+            val permissions = arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            permissionLauncher.launch(permissions)
+        }
+    }
+
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivity(intent)
+    }
+
+    private fun openGalley() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivity(intent)
+    }
+
+    private fun setUpBottomSheet(){
+
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
+        val camera = view.findViewById<LinearLayout>(R.id.linearCamera)
+        val gallery = view.findViewById<LinearLayout>(R.id.linearGallery)
+        camera.setOnClickListener {
+            openCamera()
+            dialog.dismiss()
+        }
+        gallery.setOnClickListener {
+            openGalley()
+            dialog.dismiss()
+        }
+        dialog.setCancelable(true)
+        dialog.setContentView(view)
+        dialog.show()
     }
 
 
