@@ -1,8 +1,11 @@
 package com.example.graduationproject.ui.main.profile
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import com.bumptech.glide.Glide
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.ViewPagerAdapter
 import com.example.graduationproject.constants.Constants
@@ -35,7 +39,9 @@ class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
     private val fadeOutTransformation= FadeOutTransformation()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
-
+    private var imgUri: Uri? = null
+    lateinit var loadFileGallery : ActivityResultLauncher<String>
+    lateinit var loadFileCamera : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +62,23 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViewPager()
-     checkPermission()
+        checkPermission()
+
+         loadFileGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it != null) {
+                imgUri = it
+
+                Glide.with(requireContext()).asBitmap().load(it).into(binding.imgProfile)
+            }
+
+        }
+         loadFileCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val imageBitmap = data?.extras?.get("data") as Bitmap
+                binding.imgProfile.setImageBitmap(imageBitmap)
+            }
+        }
 
         binding.btnCamera.setOnClickListener {
             handelPermission()
@@ -85,8 +107,6 @@ class ProfileFragment : Fragment() {
 
 private fun checkPermission() {
 
-
-
     permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -95,7 +115,6 @@ private fun checkPermission() {
 
         if (isCameraPermissionGranted && isGalleryPermissionGranted) {
             // Both permissions are granted, do something
-//            openGalley()
             setUpBottomSheet()
         } else {
             // One or both permissions are not granted, show a message or take some other action
@@ -115,7 +134,6 @@ private fun checkPermission() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             // Both permissions are already granted, open the camera or gallery
-//           openGalley()
             setUpBottomSheet()
         } else {
             // One or both permissions are not granted, request them
@@ -128,15 +146,20 @@ private fun checkPermission() {
     }
 
 
+
+
+
+
+
+
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivity(intent)
+        loadFileCamera.launch(intent)
     }
 
     private fun openGalley() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivity(intent)
+//        getImage().launch("image/*")
+        loadFileGallery.launch("image/*")
     }
 
     private fun setUpBottomSheet(){
