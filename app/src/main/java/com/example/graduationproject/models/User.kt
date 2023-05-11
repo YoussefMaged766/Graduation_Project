@@ -1,6 +1,7 @@
 package com.example.graduationproject.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.File
 
 data class User(
     val email: String? = null,
@@ -11,6 +12,7 @@ data class User(
     val token: String? = null,
     val resetToken: String? = null,
     val newPassword: String? = null
+
 
 
 ):java.io.Serializable
@@ -25,6 +27,8 @@ data class UserResponseSignUp(
 
     @field:SerializedName("data")
     val data: List<DataItem?>? = null,
+
+    val image :String? = null
 )
 
 data class SavedUser(

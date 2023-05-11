@@ -1,7 +1,11 @@
 package com.example.graduationproject.ui.auth.signup
 
+import android.content.Context
+import android.net.Uri
 import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.R
@@ -15,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,29 +42,37 @@ class SignUpViewModel @Inject constructor(val userRepo: UserRepo) : ViewModel() 
 
     private val _error = Channel<String>()
     val error = _error.receiveAsFlow()
-    fun signUpUser(user: User, activity: FragmentActivity) = viewModelScope.launch(Dispatchers.IO) {
 
-        userRepo.signUpUser(user).collect {
+    private val _fileName = MutableLiveData("")
+
+    // new added
+    val fileName: LiveData<String>
+        get() = _fileName
+
+    // new added
+    fun setFileName(name:String) {
+        _fileName.value = name
+    }
+    fun signUpUser(fileUri: Uri,
+                   fileRealPath: String, firstName: RequestBody, lastName:RequestBody, email:RequestBody, password:RequestBody , cnx:Context) = viewModelScope.launch(Dispatchers.IO) {
+
+        userRepo.signUpUser(fileUri, fileRealPath, firstName, lastName, email, password , cnx).collect {
             when (it) {
                 is  Status.Loading -> {
                     _progress.send(true)
-//                    activity.window.setFlags(
-//                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-//                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-//                    )
                 }
 
                 is Status.Success -> {
                     _progress.send(false)
                     _response.send(it.data!!)
                     eventChannel.send(R.id.action_signUpFragment_to_loginFragment)
-//                    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                 }
 
                 is Status.Error -> {
                     _progress.send(false)
                     _error.send(it.message.toString())
-//                    activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                 }
 
 

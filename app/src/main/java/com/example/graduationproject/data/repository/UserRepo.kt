@@ -1,5 +1,7 @@
 package com.example.graduationproject.data.repository
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.example.graduationproject.models.*
 import com.example.graduationproject.utils.NetworkState
@@ -11,8 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
 class UserRepo @Inject constructor(private val webServices: WebServices ) {
@@ -48,13 +55,15 @@ class UserRepo @Inject constructor(private val webServices: WebServices ) {
 
     }.flowOn(Dispatchers.IO)
 
-    suspend fun signUpUser(user: User) = flow {
+    suspend fun signUpUser(fileUri: Uri, fileRealPath: String ,firstName: RequestBody,lastName:RequestBody , email:RequestBody , password:RequestBody , ctx:Context ) = flow {
 
         try {
             emit(Status.Loading)
             if (networkState.isOnline()){
-                val response = webServices.signUpUser(user)
+                val fileToSend = prepareFilePart("image", fileRealPath,fileUri ,ctx)
+                val response = webServices.signUpUser(fileToSend, firstName, lastName, email, password)
                 emit(Status.Success(response))
+                Log.e( "signUpUser: ",response.toString() )
             }else{
                 emit(Status.Error("no Internet"))
             }
@@ -66,17 +75,25 @@ class UserRepo @Inject constructor(private val webServices: WebServices ) {
                     val type = object : TypeToken<UserResponseSignUp>() {}.type
                     val errorResponse: UserResponseSignUp? =
                         gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
-                    Log.e("signUpUser: ", errorResponse?.data?.get(0)?.msg.toString())
-                    emit(Status.Error( errorResponse?.data?.get(0)?.msg.toString()))
+                    Log.e("signUpUser: ", errorResponse?.message.toString())
+                    emit(Status.Error( errorResponse?.message.toString()))
                 }
                 is Exception->{
                     emit(Status.Error( e.message.toString()))
+                    Log.e( "signUpUser: ",e.message.toString() )
                 }
             }
 
         }
 
     }.flowOn(Dispatchers.IO)
+
+    private fun prepareFilePart(partName: String,fileRealPath: String,fileUri: Uri , ctx:Context): MultipartBody.Part {
+        val file: File = File(fileRealPath)
+        val requestFile: RequestBody = RequestBody.create(
+            ctx.contentResolver.getType(fileUri)!!.toMediaTypeOrNull(), file)
+        return MultipartBody.Part.createFormData(partName, file.name, requestFile)
+    }
 
     fun forgetPassword(user: User): Flow<Status<GenerationCodeResponse>> = flow {
 

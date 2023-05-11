@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,10 +22,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.ViewPagerAdapter
 import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentProfileBinding
 import com.example.graduationproject.ui.main.favorite.FavoriteFragment
 import com.example.graduationproject.ui.main.wishlist.WishlistFragment
@@ -33,16 +40,25 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
     private val fadeOutTransformation= FadeOutTransformation()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
-    private var imgUri: Uri? = null
+    private var imgBitmap: Bitmap? = null
     lateinit var loadFileGallery : ActivityResultLauncher<String>
     lateinit var loadFileCamera : ActivityResultLauncher<Intent>
-
+    private lateinit var dataStore: DataStore<Preferences>
+    val viewModel by viewModels<ProfileViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -66,17 +82,17 @@ class ProfileFragment : Fragment() {
 
          loadFileGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                imgUri = it
-
-                Glide.with(requireContext()).asBitmap().load(it).into(binding.imgProfile)
+                val inputStream = requireActivity().contentResolver.openInputStream(it)
+                imgBitmap = BitmapFactory.decodeStream(inputStream)
+                Glide.with(requireContext()).asBitmap().load(imgBitmap).into(binding.imgProfile)
             }
 
         }
          loadFileCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                val imageBitmap = data?.extras?.get("data") as Bitmap
-                binding.imgProfile.setImageBitmap(imageBitmap)
+                imgBitmap = data?.extras?.get("data") as Bitmap
+                binding.imgProfile.setImageBitmap(imgBitmap)
             }
         }
 
@@ -146,7 +162,28 @@ private fun checkPermission() {
     }
 
 
+fun updatePhoto(){
+    lifecycleScope.launch {
+    val  token = getToken(Constants.userToken)
+        val firstName = RequestBody.create(
+            "text/plain".toMediaTypeOrNull(),
+            "Youssef"
+        )
+        val lastName = RequestBody.create(
+            "text/plain".toMediaTypeOrNull(),
+            "Maged"
+        )
+        val email = RequestBody.create(
+            "text/plain".toMediaTypeOrNull(),
+            "yoer766@gmail.com"
+        )
 
+        val imageFile = File("path/to/image")
+        val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, imageRequestBody)
+        viewModel.updateProfile(token!!,imagePart,firstName,lastName,email)
+    }
+}
 
 
 
@@ -181,5 +218,10 @@ private fun checkPermission() {
         dialog.show()
     }
 
-
+    private suspend fun getToken(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
+    }
 }
