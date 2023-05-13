@@ -1,5 +1,7 @@
 package com.example.graduationproject.data.repository
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -18,10 +20,12 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.IOException
 import retrofit2.HttpException
+import java.io.File
 import javax.inject.Inject
 
 class BookRepo @Inject constructor(
@@ -309,21 +313,47 @@ class BookRepo @Inject constructor(
 
     suspend fun updateProfile(
         token: String,
-        image: MultipartBody.Part? = null,
-        firstName: RequestBody,
-        lastName: RequestBody,
-        email: RequestBody
+        fileUri: Uri,
+        fileRealPath: String,
+        firstName: String,
+        lastName: String,
+        email: String,
+        ctx: Context
     ) = flow {
         emit(Status.Loading)
         try {
-            if (networkState.isOnline()){
-                val response = webServices.updateProfile(token,image, firstName, lastName, email)
+            if (networkState.isOnline()) {
+                val fileToSend = prepareFilePart("image", fileRealPath,fileUri ,ctx)
+                val firstNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), firstName)
+                val lastNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), lastName)
+                val emailRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
+                val response = webServices.updateProfile( token, fileToSend, firstNameRequestBody, lastNameRequestBody, emailRequestBody)
                 emit(Status.Success(response))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             emit(Status.Error(e.message.toString()))
         }
     }.flowOn(Dispatchers.IO)
 
 
+    suspend fun getProfile(token: String) = flow {
+        emit(Status.Loading)
+        try {
+            if (networkState.isOnline()) {
+                val response = webServices.getProfile(token)
+                emit(Status.Success(response))
+
+            }
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+
+        }
+    }
+
+    private fun prepareFilePart(partName: String,fileRealPath: String,fileUri: Uri , ctx:Context): MultipartBody.Part {
+        val file: File = File(fileRealPath)
+        val requestFile: RequestBody = RequestBody.create(
+            ctx.contentResolver.getType(fileUri)!!.toMediaTypeOrNull(), file)
+        return MultipartBody.Part.createFormData(partName, file.name, requestFile)
+    }
 }

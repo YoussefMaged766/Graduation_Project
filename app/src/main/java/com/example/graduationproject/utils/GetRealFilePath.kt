@@ -7,6 +7,7 @@ import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import android.os.Environment
 import android.os.StatFs
+import android.util.Log
 import android.webkit.MimeTypeMap
 import com.example.graduationproject.ui.auth.signup.SignUpViewModel
 import java.io.*
@@ -18,6 +19,7 @@ internal fun getFilePathFromUri(context: Context, uri: Uri,signUpViewModel: Sign
         uri.path!!
     } else {
         getFileFromContentUri(context, uri,signUpViewModel).path
+
     }
 
 @SuppressLint("SuspiciousIndentation")
@@ -45,6 +47,7 @@ private fun getFileFromContentUri(context: Context, contentUri: Uri, signUpViewM
         oStream?.close()
     }
     signUpViewModel.setFileName(fileName)
+    Log.e( "getFileFromContentUri: ",tempFile.toString() )
     return tempFile
 }
 

@@ -1,5 +1,8 @@
 package com.example.graduationproject.ui.main.profile
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.repository.BookRepo
@@ -22,14 +25,18 @@ class ProfileViewModel @Inject constructor(
     private val _stateProfile = MutableStateFlow(BookState())
     val stateProfile = _stateProfile.asStateFlow()
 
+    private val _getProfile = MutableStateFlow(BookState())
+    val getProfile = _getProfile.asStateFlow()
+
     suspend fun updateProfile(
         token: String,
-        image: MultipartBody.Part? = null,
-        firstName: RequestBody,
-        lastName: RequestBody,
-        email: RequestBody
+        fileUri: Uri, fileRealPath: String,
+        firstName: String,
+        lastName: String,
+        email: String,
+        ctx: Context
     ) = viewModelScope.launch(Dispatchers.IO) {
-        bookRepo.updateProfile(token, image, firstName, lastName, email).collect { resource ->
+        bookRepo.updateProfile(token, fileUri ,fileRealPath , firstName, lastName, email , ctx).collect { resource ->
             when (resource) {
                 is Status.Loading -> {
                     _stateProfile.value = stateProfile.value.copy(
@@ -53,6 +60,33 @@ class ProfileViewModel @Inject constructor(
             }
         }
 
+    }
+
+    suspend fun getProfile(token: String) =viewModelScope.launch(Dispatchers.IO) {
+        bookRepo.getProfile(token).collect{
+            when (it) {
+                is Status.Loading -> {
+                    _getProfile.value = getProfile.value.copy(
+                        isLoading = true
+                    )
+                }
+
+                is Status.Success -> {
+                    _getProfile.value = getProfile.value.copy(
+                        isLoading = false,
+                        userResponse = it.data
+                    )
+
+                }
+
+                is Status.Error -> {
+                    _getProfile.value = getProfile.value.copy(
+                        isLoading = false,
+                        error = it.message
+                    )
+                }
+            }
+        }
     }
 
 }

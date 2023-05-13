@@ -38,30 +38,34 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_16sdp">
+                android:padding="@dimen/_8sdp">
 
-                <TextView
-                    android:id="@+id/txt1"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/txtName"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Youssef Maged"
+                    android:enabled="false"
                     android:textColor="@color/black"
+                    android:textSize="@dimen/_20ssp"
+                    app:layout_constraintEnd_toStartOf="@+id/imgProfile"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="@dimen/_20ssp"/>
+                    tools:text="Youssef Maged" />
 
-                <TextView
-                    android:id="@+id/textView2"
+                <EditText
+                    android:id="@+id/txtEmail"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_8sdp"
                     android:autoSizeTextType="uniform"
-                    android:text="info about account user info about account user info about account user"
-                    android:textColor="#21212180"
+                    tools:text="Email"
+                    android:textColor="@color/black"
                     app:layout_collapseMode="pin"
                     app:layout_constraintEnd_toStartOf="@id/imgProfile"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txt1" />
+                    app:layout_constraintTop_toBottomOf="@id/txtName"
+                    android:textSize="@dimen/_12ssp"
+                    android:enabled="false"/>
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:layout_width="100dp"
@@ -83,7 +87,9 @@
                     android:src="@drawable/baseline_photo_camera_24"
                     app:tint="@color/white"
                     android:contentDescription="Take Photo"
-                    android:id="@+id/btnCamera"/>
+                    android:id="@+id/btnCamera"
+                    android:visibility="gone"
+                    />
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="wrap_content"
@@ -92,7 +98,8 @@
                     android:text="Edit Profile"
                     app:layout_constraintEnd_toEndOf="@id/imgProfile"
                     app:layout_constraintStart_toStartOf="@+id/imgProfile"
-                    app:layout_constraintTop_toBottomOf="@id/imgProfile" />
+                    app:layout_constraintTop_toBottomOf="@id/imgProfile"
+                    android:id="@+id/btnEditProfile"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

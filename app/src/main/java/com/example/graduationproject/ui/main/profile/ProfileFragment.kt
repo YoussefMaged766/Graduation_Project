@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -33,13 +35,16 @@ import com.example.graduationproject.adapter.ViewPagerAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentProfileBinding
+import com.example.graduationproject.ui.auth.signup.SignUpViewModel
 import com.example.graduationproject.ui.main.favorite.FavoriteFragment
 import com.example.graduationproject.ui.main.wishlist.WishlistFragment
 import com.example.graduationproject.utils.FadeOutTransformation
+import com.example.graduationproject.utils.getFilePathFromUri
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -48,17 +53,22 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
-    private val fadeOutTransformation= FadeOutTransformation()
+    private val fadeOutTransformation = FadeOutTransformation()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var imgBitmap: Bitmap? = null
-    lateinit var loadFileGallery : ActivityResultLauncher<String>
-    lateinit var loadFileCamera : ActivityResultLauncher<Intent>
+    var imgUri: Uri? = null
+    lateinit var loadFileGallery: ActivityResultLauncher<String>
+    lateinit var loadFileCamera: ActivityResultLauncher<Intent>
     private lateinit var dataStore: DataStore<Preferences>
     val viewModel by viewModels<ProfileViewModel>()
+
+    val viewModel2 by viewModels<SignUpViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -79,26 +89,29 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpViewPager()
         checkPermission()
+        editProfile()
 
-         loadFileGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        loadFileGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                val inputStream = requireActivity().contentResolver.openInputStream(it)
-                imgBitmap = BitmapFactory.decodeStream(inputStream)
-                Glide.with(requireContext()).asBitmap().load(imgBitmap).into(binding.imgProfile)
+                imgUri = it
+                Glide.with(requireContext()).load(it).into(binding.imgProfile)
             }
 
         }
-         loadFileCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                imgBitmap = data?.extras?.get("data") as Bitmap
-                binding.imgProfile.setImageBitmap(imgBitmap)
+        loadFileCamera =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    imgBitmap = data?.extras?.get("data") as Bitmap
+                    imgUri = bitmapToUri(imgBitmap!!)
+                    binding.imgProfile.setImageBitmap(imgBitmap)
+                }
             }
-        }
 
         binding.btnCamera.setOnClickListener {
             handelPermission()
         }
+        getProfile()
     }
 
     private fun setUpViewPager() {
@@ -121,25 +134,30 @@ class ProfileFragment : Fragment() {
     }
 
 
-private fun checkPermission() {
+    private fun checkPermission() {
 
-    permissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val isCameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
-        val isGalleryPermissionGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val isCameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
+            val isGalleryPermissionGranted =
+                permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
 
-        if (isCameraPermissionGranted && isGalleryPermissionGranted) {
-            // Both permissions are granted, do something
-            setUpBottomSheet()
-        } else {
-            // One or both permissions are not granted, show a message or take some other action
-            Toast.makeText(requireContext(), "Camera and gallery permissions are required", Toast.LENGTH_SHORT).show()
+            if (isCameraPermissionGranted && isGalleryPermissionGranted) {
+                // Both permissions are granted, do something
+                setUpBottomSheet()
+            } else {
+                // One or both permissions are not granted, show a message or take some other action
+                Toast.makeText(
+                    requireContext(),
+                    "Camera and gallery permissions are required",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
-}
 
-    private fun handelPermission(){
+    private fun handelPermission() {
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -162,31 +180,93 @@ private fun checkPermission() {
     }
 
 
-fun updatePhoto(){
-    lifecycleScope.launch {
-    val  token = getToken(Constants.userToken)
-        val firstName = RequestBody.create(
-            "text/plain".toMediaTypeOrNull(),
-            "Youssef"
-        )
-        val lastName = RequestBody.create(
-            "text/plain".toMediaTypeOrNull(),
-            "Maged"
-        )
-        val email = RequestBody.create(
-            "text/plain".toMediaTypeOrNull(),
-            "yoer766@gmail.com"
-        )
+    fun updateProfile() {
+        lifecycleScope.launch {
+            val fullName = binding.txtName.text.toString().split(" ")
+            val token = "Bearer ${getToken("userToken")}"
+            val firstName = fullName[0]
+            val lastName = fullName[1]
+            val email = binding.txtEmail.text.toString()
+            viewModel.updateProfile(
+                token,
+                imgUri!!,
+                getFilePathFromUri(requireContext(), imgUri!!, viewModel2),
+                firstName,
+                lastName,
+                email,
+                requireContext()
+            )
 
-        val imageFile = File("path/to/image")
-        val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, imageRequestBody)
-        viewModel.updateProfile(token!!,imagePart,firstName,lastName,email)
+            viewModel.stateProfile.collect {
+                Toast.makeText(requireContext(), it.success.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), it.error.toString(), Toast.LENGTH_SHORT).show()
+
+                if (it.isLoading) {
+                    Constants.showCustomAlertDialog(
+                        requireActivity(),
+                        R.layout.custom_alert_dailog,
+                        false
+                    )
+                } else {
+                    Constants.hideCustomAlertDialog()
+                }
+
+            }
+        }
     }
-}
 
+    private fun bitmapToUri(bitmap: Bitmap): Uri {
+        val imageFile = File(requireContext().cacheDir, "temp_image.png")
+        val os = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
+        os.flush()
+        os.close()
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            imageFile
+        )
+    }
 
+    private fun getProfile() {
+        lifecycleScope.launch {
+            viewModel.getProfile("Bearer ${getToken("userToken")}")
 
+            viewModel.getProfile.collect {
+                if (it.userResponse?.results?.image != null) {
+                    val imageString = it.userResponse.results.image
+                    Glide.with(requireContext()).load("http://192.168.1.2:5000/$imageString")
+                        .into(binding.imgProfile)
+                }
+                binding.txtName.setText(buildString {
+                    append(it.userResponse?.results?.firstName)
+                    append(" ")
+                    append(it.userResponse?.results?.lastName)
+                })
+
+                binding.txtEmail.setText(it.userResponse?.results?.email)
+
+            }
+        }
+    }
+
+    private fun editProfile() {
+        binding.btnEditProfile.setOnClickListener {
+            if (binding.btnCamera.visibility == View.GONE) {
+                binding.btnCamera.visibility = View.VISIBLE
+                binding.btnEditProfile.text = "Save Changes"
+                binding.txtName.isEnabled = true
+                binding.txtEmail.isEnabled = true
+
+            } else {
+                binding.btnCamera.visibility = View.GONE
+                binding.btnEditProfile.text = "Edit Profile"
+                binding.txtName.isEnabled = false
+                binding.txtEmail.isEnabled = false
+                updateProfile()
+            }
+        }
+    }
 
 
     private fun openCamera() {
@@ -199,7 +279,7 @@ fun updatePhoto(){
         loadFileGallery.launch("image/*")
     }
 
-    private fun setUpBottomSheet(){
+    private fun setUpBottomSheet() {
 
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet, null)

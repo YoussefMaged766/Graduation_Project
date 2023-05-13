@@ -55,13 +55,17 @@ class UserRepo @Inject constructor(private val webServices: WebServices ) {
 
     }.flowOn(Dispatchers.IO)
 
-    suspend fun signUpUser(fileUri: Uri, fileRealPath: String ,firstName: RequestBody,lastName:RequestBody , email:RequestBody , password:RequestBody , ctx:Context ) = flow {
+    suspend fun signUpUser(fileUri: Uri, fileRealPath: String ,firstName: String,lastName:String , email:String , password:String , ctx:Context ) = flow {
 
         try {
             emit(Status.Loading)
             if (networkState.isOnline()){
                 val fileToSend = prepareFilePart("image", fileRealPath,fileUri ,ctx)
-                val response = webServices.signUpUser(fileToSend, firstName, lastName, email, password)
+                val firstNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), firstName)
+                val lastNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), lastName)
+                val emailRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
+                val passwordRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), password)
+                val response = webServices.signUpUser(fileToSend, firstNameRequestBody, lastNameRequestBody, emailRequestBody, passwordRequestBody)
                 emit(Status.Success(response))
                 Log.e( "signUpUser: ",response.toString() )
             }else{

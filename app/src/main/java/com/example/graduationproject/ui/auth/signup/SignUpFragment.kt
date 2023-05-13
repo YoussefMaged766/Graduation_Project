@@ -25,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -71,11 +72,11 @@ class SignUpFragment : Fragment() {
     lateinit var binding: FragmentSignUpBinding
     val viewModel: SignUpViewModel by viewModels()
     var imageFile: File? = null
-    var imgUri:Uri?=null
+    var imgUri: Uri? = null
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var imgBitmap: Bitmap? = null
-    lateinit var loadFileGallery : ActivityResultLauncher<String>
-    lateinit var loadFileCamera : ActivityResultLauncher<Intent>
+    lateinit var loadFileGallery: ActivityResultLauncher<String>
+    lateinit var loadFileCamera: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,23 +105,28 @@ class SignUpFragment : Fragment() {
         animation()
         checkPermission()
 
+        Log.e( "onViewCreated: ",imgUri.toString() )
+
         loadFileGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
                 imgUri = it
-                Log.e( "onViewCreated: ",imgUri.toString() )
-                val inputStream = requireActivity().contentResolver.openInputStream(it)
-                imgBitmap = BitmapFactory.decodeStream(inputStream)
-                Glide.with(requireContext()).asBitmap().load(imgBitmap).into(binding.imgProfile)
+                Log.e("onViewCreated: ", imgUri.toString())
+                Glide.with(requireContext()).load(it).into(binding.imgProfile)
             }
 
         }
-        loadFileCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                imgBitmap = data?.extras?.get("data") as Bitmap
-                binding.imgProfile.setImageBitmap(imgBitmap)
+        loadFileCamera =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    imgBitmap = data?.extras?.get("data") as Bitmap
+                    imgUri = bitmapToUri(imgBitmap!!)
+
+//                    Glide.with(requireContext()).load(imgUri).into(binding.imgProfile)
+                    binding.imgProfile.setImageBitmap(imgBitmap)
+
+                }
             }
-        }
 
         binding.btnCamera.setOnClickListener {
             handelPermission()
@@ -131,41 +137,15 @@ class SignUpFragment : Fragment() {
 
         binding.apply {
             btnSignUp.setOnClickListener {
-//                imageFile =
-//                    saveDrawableToFile(requireContext(), R.drawable.photo1, "img_profile.jpg")
-                Log.e( "onClicks: ", bitmapToFile(imgBitmap!!) .toString() )
-                val file = File(requireContext().filesDir,"image.jpg")
-                val inputStream = requireActivity().contentResolver.openInputStream(imgUri!!)
-                val outputStream = FileOutputStream(file)
-                inputStream!!.copyTo(outputStream)
-                val requestFile =
-                   file.asRequestBody("image/*".toMediaTypeOrNull())
-
-                val imagePart =
-                    MultipartBody.Part.createFormData("image", file.name, requestFile)
-                Log.e("onClicks: ", file.toString() )
 
                 if (userDataValidation(getUserData())) {
                     viewModel.signUpUser(
                         imgUri!!,
-                        getFilePathFromUri(requireContext(), imgUri!! , viewModel)
-                        ,
-                        RequestBody.create(
-                            "multipart/form-data".toMediaTypeOrNull(),
-                            getUserData().firstName.toString()
-                        ),
-                        RequestBody.create(
-                            "multipart/form-data".toMediaTypeOrNull(),
-                            getUserData().lastName.toString()
-                        ),
-                        RequestBody.create(
-                            "multipart/form-data".toMediaTypeOrNull(),
-                            getUserData().email.toString()
-                        ),
-                        RequestBody.create(
-                            "multipart/form-data".toMediaTypeOrNull(),
-                            getUserData().password.toString()
-                        ),
+                        getFilePathFromUri(requireContext(), imgUri!!, viewModel),
+                        getUserData().firstName.toString(),
+                        getUserData().lastName.toString(),
+                        getUserData().email.toString(),
+                        getUserData().password.toString(),
                         requireContext()
                     )
                 }
@@ -176,6 +156,18 @@ class SignUpFragment : Fragment() {
 
     }
 
+    private fun bitmapToUri(bitmap: Bitmap): Uri {
+        val imageFile = File(requireContext().cacheDir, "temp_image.png")
+        val os = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
+        os.flush()
+        os.close()
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            imageFile
+        )
+    }
 
 
     private fun checkPermission() {
@@ -184,19 +176,24 @@ class SignUpFragment : Fragment() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             val isCameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
-            val isGalleryPermissionGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+            val isGalleryPermissionGranted =
+                permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
 
             if (isCameraPermissionGranted && isGalleryPermissionGranted) {
                 // Both permissions are granted, do something
                 setUpBottomSheet()
             } else {
                 // One or both permissions are not granted, show a message or take some other action
-                Toast.makeText(requireContext(), "Camera and gallery permissions are required", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Camera and gallery permissions are required",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    private fun handelPermission(){
+    private fun handelPermission() {
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -229,7 +226,7 @@ class SignUpFragment : Fragment() {
         loadFileGallery.launch("image/*")
     }
 
-    private fun setUpBottomSheet(){
+    private fun setUpBottomSheet() {
 
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
@@ -350,21 +347,22 @@ class SignUpFragment : Fragment() {
         }
         return null
     }
+
     private fun bitmapToFile(bitmap: Bitmap): File {
 
         // Get the directory for the app's private pictures directory.
         val file = File(requireContext().filesDir, "img_profile.jpg")
 
-try {
-    // Convert bitmap to byte array
-    val fos = FileOutputStream(file)
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, fos)
-    // Write the bytes to a file
-    fos.flush()
-    fos.close()
-} catch (e: IOException) {
-    Log.e( "bitmapToFile: ", e.message.toString())
-}
+        try {
+            // Convert bitmap to byte array
+            val fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, fos)
+            // Write the bytes to a file
+            fos.flush()
+            fos.close()
+        } catch (e: IOException) {
+            Log.e("bitmapToFile: ", e.message.toString())
+        }
 
 
         return file
