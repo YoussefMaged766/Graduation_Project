@@ -1,4 +1,4 @@
-package com.example.graduationproject.ui.main.wishlist
+package com.example.graduationproject.ui.main.read
 
 import android.content.Context
 import android.os.Build
@@ -8,46 +8,37 @@ import android.os.Vibrator
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
-
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.WishlistAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
-import com.example.graduationproject.databinding.FragmentWishlistBinding
+import com.example.graduationproject.databinding.FragmentAlreadyReadBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BookIdResponse
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
-class WishlistFragment : Fragment() {
+class AlreadyReadFragment : Fragment() {
 
-    lateinit var binding: FragmentWishlistBinding
+lateinit var binding: FragmentAlreadyReadBinding
+
     val adapter: WishlistAdapter by lazy { WishlistAdapter() }
-    private val viewModel: WishlistViewModel by viewModels()
+    private val viewModel: ReadViewModel by viewModels()
     val hash = HashMap<Int, BookEntity>()
     private lateinit var dataStore: DataStore<Preferences>
     var selectionMode: Boolean = false
     val networkState = com.example.graduationproject.utils.NetworkState
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -58,47 +49,40 @@ class WishlistFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentWishlistBinding.inflate(layoutInflater)
-
+        binding  = FragmentAlreadyReadBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         lifecycleScope.launch {
-            getAllWishlist()
+            getAllRead()
         }
         longClick()
-//        addMenu()
-//        requireActivity().findViewById<Toolbar>(R.id.toolbar).menu.clear()
         delete()
-
-
     }
 
+    private suspend fun getAllRead() {
 
-    private suspend fun getAllWishlist() {
-
-        viewModel.getAllWishlist(
+        viewModel.getAllRead(
             "Bearer ${getToken(Constants.userToken)}",
             userId = getUserId(Constants.userId)!!
         )
 
-        viewModel.stateWishlist.collect {
+        viewModel.stateRead.collect {
 
             binding.progressBar.isIndeterminate = it.isLoading
 
             if (it.allLocalBooks.isNullOrEmpty()) {
                 binding.lottieEmpty.visibility = View.VISIBLE
-                binding.recyclerWishlist.visibility = View.GONE
+                binding.recyclerAlreadyRead.visibility = View.GONE
             } else {
                 binding.lottieEmpty.visibility = View.GONE
                 adapter.submitList(it.allLocalBooks)
-                binding.recyclerWishlist.adapter = adapter
-                binding.recyclerWishlist.visibility = View.VISIBLE
+                binding.recyclerAlreadyRead.adapter = adapter
+                binding.recyclerAlreadyRead.visibility = View.VISIBLE
 
             }
 
@@ -106,36 +90,6 @@ class WishlistFragment : Fragment() {
         }
     }
 
-    private fun remove(bookId: BookIdResponse, bookEntity: BookEntity) {
-
-        lifecycleScope.launch {
-            viewModel.removeWishlist(
-                "Bearer ${getToken(Constants.userToken)}",
-                userId = getUserId(Constants.userId)!!,
-                bookId = bookId,
-                booksItem = bookEntity.bookId!!
-            )
-        }
-        lifecycleScope.launch {
-            viewModel.stateRemoveWishlist.collect {
-                    if (it.isLoading) {
-                        binding.progressBar.isIndeterminate = true
-                    } else {
-                        binding.progressBar.isIndeterminate = true
-                    }
-                if (it.success != null) {
-                    Constants.customToast(requireContext(), requireActivity(), it.success)
-                    adapter.notifyDataSetChanged()
-                    lifecycleScope.launch {
-                        getAllWishlist()
-                    }
-                }
-            }
-
-        }
-
-
-    }
 
     private fun longClick() {
         adapter.onItemLongClickListener = object : WishlistAdapter.OnItemLongClickListener {
@@ -166,7 +120,7 @@ class WishlistFragment : Fragment() {
                     requireActivity().findViewById<ImageView>(R.id.imgDelete).visibility = View.VISIBLE
                     selectionMode = true
                 }
-               else if (adapter.selectedItem ==-1) {
+                else if (adapter.selectedItem ==-1) {
                     Log.e("onItemLongClick: ", "alo")
 
                     requireActivity().findViewById<ImageView>(R.id.imgDelete).visibility = View.GONE
@@ -182,47 +136,36 @@ class WishlistFragment : Fragment() {
 
     }
 
-    private fun addMenu() {
+    private fun remove(bookId: BookIdResponse, bookEntity: BookEntity) {
 
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.remove_menu, menu)
-                menu.findItem(R.id.action_delete).isVisible = false
-
-            }
-
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.action_delete -> {
-                        for (i in hash.values) {
-                            if (networkState.isOnline()) {
-
-                                remove(BookIdResponse(bookId = i.bookIdMongo), i)
-                                hash.clear()
-
-                                menuItem.isVisible = false
-                                selectionMode = false
-
-                            } else {
-                                Constants.customToast(
-                                    requireContext(),
-                                    requireActivity(),
-                                    "check your internet connection"
-                                )
-                                Log.e("onMenuItemSelected: ", "no Internet")
-                            }
-                        }
-                        return true
-                    }
-
+        lifecycleScope.launch {
+            viewModel.removeRead(
+                "Bearer ${getToken(Constants.userToken)}",
+                userId = getUserId(Constants.userId)!!,
+                bookId = bookId,
+                booksItem = bookEntity.bookId!!
+            )
+        }
+        lifecycleScope.launch {
+            viewModel.stateRemoveRead.collect {
+                if (it.isLoading) {
+                    binding.progressBar.isIndeterminate = true
+                } else {
+                    binding.progressBar.isIndeterminate = true
                 }
-                return false
+                if (it.success != null) {
+                    Constants.customToast(requireContext(), requireActivity(), it.success)
+                    adapter.notifyDataSetChanged()
+                    lifecycleScope.launch {
+                        getAllRead()
+                    }
+                }
             }
 
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
+        }
 
+
+    }
 
     fun delete(){
         requireActivity().findViewById<ImageView>(R.id.imgDelete).setOnClickListener {
@@ -259,6 +202,5 @@ class WishlistFragment : Fragment() {
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
-
 
 }

@@ -84,6 +84,24 @@ class HomeActivity : AppCompatActivity() {
 
                     true
                 }
+
+                R.id.favoriteFragment -> {
+                    navController.navigate(R.id.favoriteFragment)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.wishlistFragment -> {
+                    navController.navigate(R.id.wishlistFragment)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+
+                R.id.alreadyReadFragment -> {
+                    navController.navigate(R.id.alreadyReadFragment)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+
                 else -> false
             }
         }

@@ -38,6 +38,9 @@ interface BookDao {
     @Query("SELECT * FROM BookEntity where userId=:userId")
     fun getAllBooksLocal(userId: String): Flow<List<BookEntity>>
 
+    @Query("SELECT * FROM BookEntity where userId=:userId and is_read=1")
+    fun getAllReadBooksLocal(userId: String): Flow<List<BookEntity>>
+
     @Insert()
     suspend fun insetAllBooks(books: List<BookEntity>)
 
@@ -52,6 +55,13 @@ interface BookDao {
 
     @Query("UPDATE BookEntity SET is_Wish = 0 WHERE bookId =:bookId and userId=:userId")
     suspend fun unWishBook(bookId: Int, userId: String)
+
+    @Query("UPDATE BookEntity SET is_read = 1 WHERE bookId = :bookId and userId=:userId")
+    suspend fun setReadBook(bookId: Int, userId: String)
+
+    @Query("UPDATE BookEntity SET is_read = 0 WHERE bookId =:bookId and userId=:userId")
+    suspend fun unReadBook(bookId: Int, userId: String)
+
     @Query("SELECT EXISTS( SELECT * FROM BookEntity WHERE bookId = :bookId and userId=:userId)")
     suspend fun bookExist(bookId: Int, userId: String):Boolean
 

@@ -38,5 +38,9 @@
     <string name="reviews">Reviews</string>
     <string name="overview">Overview</string>
     <string name="add_to_wishlist">add to Wishlist</string>
+    <string name="wish_list">WishList</string>
+    <string name="favourites">Favourites</string>
+    <string name="add_to_alreadyread">add to AlreadyRead</string>
+    <string name="alreadyread">AlreadyRead</string>
 
 </resources>

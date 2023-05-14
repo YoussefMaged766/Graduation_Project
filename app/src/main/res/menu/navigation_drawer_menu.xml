@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/favoriteFragment"
+        android:title="@string/favourites"
+        />
+    <item android:id="@+id/wishlistFragment"
+        android:title="@string/wish_list"
+        />
+    <item
+        android:id="@+id/alreadyReadFragment"
+        android:title="@string/alreadyread"
+        />
     <item android:id="@+id/nav_logout"
         android:title="@string/logout"
         />

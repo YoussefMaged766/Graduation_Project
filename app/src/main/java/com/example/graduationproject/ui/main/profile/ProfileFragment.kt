@@ -180,7 +180,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    fun updateProfile() {
+    private fun updateProfile() {
         lifecycleScope.launch {
             val fullName = binding.txtName.text.toString().split(" ")
             val token = "Bearer ${getToken("userToken")}"

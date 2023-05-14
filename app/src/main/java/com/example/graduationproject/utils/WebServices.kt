@@ -70,11 +70,29 @@ interface WebServices {
     @GET("list/wishlist")
     suspend fun getAllWishlist(@Header("token") token: String): WishAndFavResponse
 
+    @GET("list/alreadyread")
+    suspend fun getAllAlreadyRead(@Header("token") token: String): WishAndFavResponse
+
+    @PUT("list/removeFromAlreadyRead")
+    suspend fun removeAlreadyRead(
+        @Header("token") token: String,
+        @Body bookId: BookIdResponse
+    ): BookIdResponse
+
+    @PUT("list/addToAlreadyRead")
+    suspend fun addToAlreadyRead(
+        @Header("token") token: String,
+        @Body bookId: BookIdResponse
+    ): BookIdResponse
+
+
     @PUT("list/RemoveFromWishlist")
     suspend fun removeWishlist(
         @Header("token") token: String,
         @Body bookId: BookIdResponse
     ): BookIdResponse
+
+
 
     @Multipart
     @PATCH("auth/updateprofile")

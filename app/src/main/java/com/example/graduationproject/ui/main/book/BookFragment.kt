@@ -145,6 +145,17 @@ class BookFragment : Fragment() {
             )
         }
     }
+    private fun setRead() {
+        lifecycleScope.launch {
+            viewModel.setRead(
+                "Bearer ${getToken("userToken")}",
+                BookIdResponse(bookId = data.bookObject.id.toString()),
+                data.bookObject,
+                getUserId(Constants.userId)!!
+            )
+        }
+    }
+
 
     private fun collectState() {
         lifecycleScope.launch {
@@ -161,51 +172,26 @@ class BookFragment : Fragment() {
             }
         }
     }
-    private fun addFavourite() {
-        lifecycleScope.launch {
-            viewModel.getAllBooksLocal(getUserId(Constants.userId)!!).collect {
-                it.map {
-                    bookEntity = it
-                }
-            }
-            delay(500)
-        }
 
-        if (bookEntity.bookId == data.bookObject.bookId) {
-            setFavourite()
-        } else {
-            insetBookLocal()
-            setFavourite()
-        }
-
-    }
-    private fun addWishList() {
-        lifecycleScope.launch {
-            viewModel.getAllBooksLocal(getUserId(Constants.userId)!!).collect {
-                it.map {
-                    bookEntity = it
-                }
-            }
-            delay(500)
-        }
-
-        if (bookEntity.bookId == data.bookObject.bookId) {
-           setWishlist()
-        } else {
-            insetBookLocal()
-            setWishlist()
-        }
-
-    }
-    private fun insetBookLocal(){
-        lifecycleScope.launch {
-            viewModel.insertBookLocal(data.bookObject, getUserId(Constants.userId)!!)
-        }
-    }
 
     private fun collectStateWishlist() {
         lifecycleScope.launch {
             viewModel.stateWishlist.collect {
+                if (it.success != null) {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        it.success.toString()
+                    )
+                }
+
+            }
+        }
+    }
+
+    private fun collectStateRead() {
+        lifecycleScope.launch {
+            viewModel.stateRead.collect {
                 if (it.success != null) {
                     Constants.customToast(
                         requireContext(),
@@ -230,6 +216,12 @@ class BookFragment : Fragment() {
 //                        addWishList()
                         setWishlist()
                         collectStateWishlist()
+                        return true
+                    }
+
+                    R.id.action_alreadyRead -> {
+                        setRead()
+                        collectStateRead()
                         return true
                     }
 

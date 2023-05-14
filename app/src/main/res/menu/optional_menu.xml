@@ -4,4 +4,9 @@
     android:id="@+id/action_whishlist"
     android:title="@string/add_to_wishlist"
      />
+
+    <item
+        android:id="@+id/action_alreadyRead"
+        android:title="@string/add_to_alreadyread"
+        />
 </menu>

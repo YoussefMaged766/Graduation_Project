@@ -68,4 +68,9 @@
             android:id="@+id/action_favoriteFragment_to_bookFragment2"
             app:destination="@id/bookFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/alreadyReadFragment"
+        android:name="com.example.graduationproject.ui.main.read.AlreadyReadFragment"
+        android:label="Already Read"
+        tools:layout="@layout/fragment_already_read" />
 </navigation>

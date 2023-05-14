@@ -37,6 +37,9 @@ data class BookEntity(
     @ColumnInfo(name = "is_Wish")
     val IsWish: Int = 0,
 
+    @ColumnInfo(name = "is_read")
+    val IsRead: Int = 0,
+
     val userId: String? = null,
 
     val bookIdMongo: String? = null,

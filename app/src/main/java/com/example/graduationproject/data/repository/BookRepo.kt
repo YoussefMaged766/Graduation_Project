@@ -311,6 +311,95 @@ class BookRepo @Inject constructor(
 
     }
 
+    suspend fun getAllRead(token: String, userId: String) = flow {
+        emit(Status.Loading)
+
+        try {
+            if (networkState.isOnline()) {
+                val response = webServices.getAllAlreadyRead(token)
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
+                emit(Status.Success(books))
+
+            } else {
+                val books = database.searchDao().getAllReadBooksLocal(userId).map { it }
+                books.collect {
+                    emit(Status.Success(it))
+                }
+            }
+
+        } catch (e: Throwable) {
+            when (e) {
+                is HttpException -> {
+                    val type = object : TypeToken<BooksItem>() {}.type
+                    val errorResponse: BooksItem? =
+                        gson.fromJson(e.response()?.errorBody()!!.charStream(), type)
+                    Log.e("loginUsereeeeerrrrr: ", errorResponse?.message.toString())
+                    emit(Status.Error(errorResponse?.message.toString()))
+                }
+
+                is Exception -> {
+                    Log.e("loginUsereeeee: ", e.message.toString())
+                    emit(Status.Error(e.message.toString()))
+                }
+            }
+
+        }
+    }
+
+    suspend fun addToRead(
+        key: String,
+        bookId: BookIdResponse,
+        booksItem: BooksItem,
+        userId: String
+    ) = flow {
+        try {
+            emit(Status.Loading)
+            if (networkState.isOnline()) {
+                val response = webServices.addToAlreadyRead(key, bookId)
+                emit(Status.Success(response))
+                if (database.searchDao().bookExist(booksItem.bookId!!, userId)) {
+                    database.searchDao().setReadBook(booksItem.bookId, userId)
+                } else {
+                    database.searchDao().insertBook(booksItem.toBookEntity(userId))
+                    database.searchDao().setReadBook(booksItem.bookId, userId)
+                }
+//                database.searchDao().setWishBook(booksItem.bookId!!,userId)
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Status.Error("no Internet"))
+            }
+
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+        }
+
+    }
+
+    suspend fun removeRead(
+        key: String,
+        bookId: BookIdResponse,
+        bookIdInRoom: Int,
+        userId: String
+    ) = flow {
+        try {
+            emit(Status.Loading)
+            if (networkState.isOnline()) {
+                val response = webServices.removeAlreadyRead(key, bookId)
+                emit(Status.Success(response))
+                database.searchDao().unReadBook(bookIdInRoom, userId)
+
+                Log.e("loginUser: ", response.toString())
+            } else {
+                emit(Status.Error("no Internet"))
+            }
+
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+        }
+
+    }
+
     suspend fun updateProfile(
         token: String,
         fileUri: Uri,

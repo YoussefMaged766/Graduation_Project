@@ -31,7 +31,8 @@ class BookViewModel @Inject constructor(
     private val _stateWishlist = MutableStateFlow(BookState())
     val stateWishlist = _stateWishlist.asStateFlow()
 
-
+    private val _stateRead = MutableStateFlow(BookState())
+    val stateRead = _stateRead.asStateFlow()
 
     private val _stateFav = MutableStateFlow(WishlistState())
     val stateFav = _stateFav.asStateFlow()
@@ -66,10 +67,6 @@ class BookViewModel @Inject constructor(
             }
         }
     }
-
-
-
-
 
     suspend fun setFavorite( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -157,11 +154,35 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    suspend fun insertBookLocal(booksItem: BooksItem,userId: String) =
-        bookRepo.insertBookLocal(booksItem,userId)
+
+    suspend fun setRead( token: String,bookId : BookIdResponse,booksItem: BooksItem,userId: String) = viewModelScope.launch(Dispatchers.IO) {
+
+        bookRepo.addToRead(token,bookId,booksItem, userId).collectLatest { resource ->
+            when(resource){
+                is  Status.Loading-> {
+                    _stateRead.value = stateRead.value.copy(
+                        isLoading = true
+                    )
+                }
+                is   Status.Success-> {
+                    _stateRead.value = stateRead.value.copy(
+                        isLoading = false,
+                        success = resource.data?.message.toString()
+                    )
+                    Log.e( "getAllBooks: ", resource.data?.message.toString())
+                }
+                is Status.Error-> {
+                    _stateRead.value = stateRead.value.copy(
+                        error = resource.message,
+                        isLoading = false
+
+                    )
+
+                }
+            }
+        }
+    }
 
 
-    suspend fun getAllBooksLocal(userId: String) =
-        bookRepo.getAllBooksLocal(userId)
 
 }
