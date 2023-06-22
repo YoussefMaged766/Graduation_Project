@@ -187,19 +187,34 @@ class ProfileFragment : Fragment() {
             val firstName = fullName[0]
             val lastName = fullName[1]
             val email = binding.txtEmail.text.toString()
-            viewModel.updateProfile(
-                token,
-                imgUri!!,
-                getFilePathFromUri(requireContext(), imgUri!!, viewModel2),
-                firstName,
-                lastName,
-                email,
-                requireContext()
-            )
+            if (imgUri!=null){
+                viewModel.updateProfile(
+                    token,
+                    imgUri!!,
+                    getFilePathFromUri(requireContext(), imgUri!!, viewModel2).toString(),
+                    firstName,
+                    lastName,
+                    email,
+                    requireContext()
+                )
+            }else{
+                viewModel.updateProfile(
+                    token =   token,
+                    firstName =  firstName,
+                    lastName= lastName,
+                    email =  email,
+                    ctx =  requireContext()
+                )
+            }
+
 
             viewModel.stateProfile.collect {
-                Toast.makeText(requireContext(), it.success.toString(), Toast.LENGTH_SHORT).show()
-                Toast.makeText(requireContext(), it.error.toString(), Toast.LENGTH_SHORT).show()
+                if (it.success!=null){
+                    Toast.makeText(requireContext(), it.success.toString(), Toast.LENGTH_SHORT).show()
+                }
+                if (it.error!=null){
+                    Toast.makeText(requireContext(), it.error.toString(), Toast.LENGTH_SHORT).show()
+                }
 
                 if (it.isLoading) {
                     Constants.showCustomAlertDialog(
@@ -235,8 +250,13 @@ class ProfileFragment : Fragment() {
             viewModel.getProfile.collect {
                 if (it.userResponse?.results?.image != null) {
                     val imageString = it.userResponse.results.image
-                    Glide.with(requireContext()).load("http://192.168.1.2:5000/$imageString")
-                        .into(binding.imgProfile)
+                    if (imageString.isNotBlank()){
+                        Glide.with(requireContext()).load("http://192.168.1.7:3000/$imageString")
+                            .into(binding.imgProfile)
+                    } else{
+                        binding.imgProfile.setImageResource(R.drawable.photo1)
+                    }
+
                 }
                 binding.txtName.setText(buildString {
                     append(it.userResponse?.results?.firstName)

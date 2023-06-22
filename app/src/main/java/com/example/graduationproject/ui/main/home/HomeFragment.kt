@@ -20,6 +20,7 @@ import androidx.paging.LoadState
 import com.example.graduationproject.adapter.HomePagingAdapter
 import com.example.graduationproject.adapter.loadState.LoadStateAdapter
 import com.example.graduationproject.adapter.SearchResultAdapter
+import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentHomeBinding
 import com.example.graduationproject.models.BooksItem
@@ -58,17 +59,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         getListedBook()
         recycler()
+//        collectRecommendationState()
         binding.swipeRefresh.setOnRefreshListener {
             getListedBook()
             lifecycleScope.launch {
                 delay(1000)
-
             }
-
-
         }
     }
 
@@ -158,6 +156,24 @@ class HomeFragment : Fragment() {
                 else -> {}
             }
         }
+    }
+
+    private fun collectRecommendationState(){
+        lifecycleScope.launch{
+            viewModel.getRecommendation(getUserId(Constants.userId)!!)
+            viewModel.stateReco.collect{
+                Log.e( "collectRecommendationState: ",it.allBooks.toString() )
+                binding.swipeRefresh.isRefreshing = it.isLoading
+                Log.e( "collectRecommendationState: ", it.error.toString())
+            }
+        }
+    }
+
+    private suspend fun getUserId(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
     }
 
 }

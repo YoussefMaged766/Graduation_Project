@@ -91,7 +91,7 @@ class BookFragment : Fragment() {
         Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
         binding.txtBookTitle.text = data.bookObject.title
         binding.txtDescription.text = data.bookObject.description
-        binding.txtRating.text = data.bookObject.ratings.toString()
+//        binding.txtRating.text = data.bookObject.ratings.toString()
     }
 
     private suspend fun getToken(key: String): String? {

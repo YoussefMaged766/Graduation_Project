@@ -26,6 +26,7 @@ class Application: Application() {
 
     }
 
+
     private fun initNetworkConnectivity() {
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -49,3 +50,4 @@ class Application: Application() {
     }
 
 }
+

@@ -59,6 +59,7 @@ class SearchHistoryAdapter(private val listener: OnItemClickListener) :
         }
         holder.binding.root.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(getItem(position).query.toString())
+
             it.findNavController().navigate(action)
         }
 

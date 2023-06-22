@@ -13,6 +13,7 @@ import com.example.graduationproject.db.BookDatabase
 import com.example.graduationproject.models.*
 import com.example.graduationproject.models.mappers.toBookEntity
 import com.example.graduationproject.utils.NetworkState
+import com.example.graduationproject.utils.RecommendationService
 import com.example.graduationproject.utils.Status
 import com.example.graduationproject.utils.WebServices
 import com.google.gson.Gson
@@ -25,16 +26,21 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.IOException
 import retrofit2.HttpException
+import retrofit2.Retrofit
 import java.io.File
 import javax.inject.Inject
+import javax.inject.Named
 
 class BookRepo @Inject constructor(
     private val webServices: WebServices,
     private val database: BookDatabase,
+    private val recommendationService: RecommendationService
 
     ) {
     private val gson = Gson()
     private val networkState = NetworkState
+
+
 
     suspend fun getAllBooks(token: String): Flow<Status<PagingData<BooksItem>>> = flow {
 
@@ -187,7 +193,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllFavourite(token)
-                val books = response.results?.books?.map { it.toBookEntity(userId) }
+                val books = response.results?.map { it.toBookEntity(userId) }
 
                 emit(Status.Success(books))
             } else {
@@ -258,7 +264,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllWishlist(token)
-                val books = response.results?.books?.map { it.toBookEntity(userId) }
+                val books = response.results?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {
@@ -317,7 +323,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllAlreadyRead(token)
-                val books = response.results?.books?.map { it.toBookEntity(userId) }
+                val books = response.results?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {
@@ -402,8 +408,8 @@ class BookRepo @Inject constructor(
 
     suspend fun updateProfile(
         token: String,
-        fileUri: Uri,
-        fileRealPath: String,
+        fileUri: Uri?,
+        fileRealPath: String?,
         firstName: String,
         lastName: String,
         email: String,
@@ -412,12 +418,26 @@ class BookRepo @Inject constructor(
         emit(Status.Loading)
         try {
             if (networkState.isOnline()) {
-                val fileToSend = prepareFilePart("image", fileRealPath,fileUri ,ctx)
-                val firstNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), firstName)
-                val lastNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), lastName)
-                val emailRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
-                val response = webServices.updateProfile( token, fileToSend, firstNameRequestBody, lastNameRequestBody, emailRequestBody)
-                emit(Status.Success(response))
+                if (fileUri != null && fileRealPath != null){
+                    val fileToSend = prepareFilePart("image", fileRealPath,fileUri ,ctx)
+                    val firstNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), firstName)
+                    val lastNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), lastName)
+                    val emailRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
+                    val response = webServices.updateProfile( token, fileToSend, firstNameRequestBody, lastNameRequestBody, emailRequestBody)
+                    emit(Status.Success(response))
+                }else{
+                    val firstNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), firstName)
+                    val lastNameRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), lastName)
+                    val emailRequestBody: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
+
+                    val response = webServices.updateProfile(firstName =  firstNameRequestBody,
+                        lastName = lastNameRequestBody,
+                        email =  emailRequestBody,
+                        token = token
+                       )
+                    emit(Status.Success(response))
+                }
+
             }
         } catch (e: Exception) {
             emit(Status.Error(e.message.toString()))
@@ -444,5 +464,21 @@ class BookRepo @Inject constructor(
         val requestFile: RequestBody = RequestBody.create(
             ctx.contentResolver.getType(fileUri)!!.toMediaTypeOrNull(), file)
         return MultipartBody.Part.createFormData(partName, file.name, requestFile)
+    }
+
+    fun getRecommendation(id:String)= flow {
+        emit(Status.Loading)
+        try {
+
+                val response = recommendationService.getRecommendations(id)
+                emit(Status.Success(response))
+                Log.e( "getRecommendation: ",response.toString() )
+
+
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+            Log.e( "getRecommendation: ",e.message.toString() )
+
+        }
     }
 }

@@ -30,7 +30,7 @@ class ProfileViewModel @Inject constructor(
 
     suspend fun updateProfile(
         token: String,
-        fileUri: Uri, fileRealPath: String,
+        fileUri: Uri?=null, fileRealPath: String?=null,
         firstName: String,
         lastName: String,
         email: String,

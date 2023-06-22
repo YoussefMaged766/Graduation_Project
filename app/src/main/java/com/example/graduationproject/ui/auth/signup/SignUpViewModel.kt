@@ -53,8 +53,8 @@ class SignUpViewModel @Inject constructor(val userRepo: UserRepo) : ViewModel() 
     fun setFileName(name:String) {
         _fileName.value = name
     }
-    fun signUpUser(fileUri: Uri,
-                   fileRealPath: String, firstName: String, lastName:String, email:String, password:String , cnx:Context) = viewModelScope.launch(Dispatchers.IO) {
+    fun signUpUser(fileUri: Uri? = null,
+                   fileRealPath: String? =null, firstName: String, lastName:String, email:String, password:String , cnx:Context) = viewModelScope.launch(Dispatchers.IO) {
 
         userRepo.signUpUser(fileUri, fileRealPath, firstName, lastName, email, password , cnx).collect {
             when (it) {

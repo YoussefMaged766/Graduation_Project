@@ -17,8 +17,8 @@ data class BookResponse(
 
 data class BooksItem(
 
-    @field:SerializedName("ratings")
-    val ratings: Int? = null,
+//    @field:SerializedName("ratings")
+//    val ratings: Int? = null,
 
     @field:SerializedName("_id")
     val id: String? = null,
@@ -49,6 +49,7 @@ data class BookIdResponse(
     val bookId: String? = null,
     @field:SerializedName("message")
     val message: String? = null
+
 )
 data class WishAndFavResponse(
 
@@ -56,7 +57,7 @@ data class WishAndFavResponse(
     val message: String? = null,
 
     @field:SerializedName("results")
-    val results: Results? = null
+    val results: List<BooksItem>? = null
 )
 
 data class Results(

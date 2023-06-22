@@ -14,9 +14,9 @@ import java.io.*
 import java.util.*
 
 
-internal fun getFilePathFromUri(context: Context, uri: Uri,signUpViewModel: SignUpViewModel): String =
+internal fun getFilePathFromUri(context: Context, uri: Uri,signUpViewModel: SignUpViewModel): String? =
     if (uri.path?.contains("file://") == true) {
-        uri.path!!
+        uri.path
     } else {
         getFileFromContentUri(context, uri,signUpViewModel).path
 

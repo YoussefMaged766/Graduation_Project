@@ -219,10 +219,8 @@ class LoginFragment : Fragment() {
     }
 
     private suspend fun handleCheckBox(value: String){
-
         if (binding.checkBox.isChecked) {
             saveToken(Constants.userToken, value)
-
         }
     }
 

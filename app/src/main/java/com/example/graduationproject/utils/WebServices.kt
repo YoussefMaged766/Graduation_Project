@@ -24,7 +24,7 @@ interface WebServices {
     @Multipart
 
     @POST("auth/signup")
-    suspend fun signUpUser(@Part image: MultipartBody.Part? , @Part("firstName") firstName: RequestBody,
+    suspend fun signUpUser(@Part image: MultipartBody.Part? = null , @Part("firstName") firstName: RequestBody,
                             @Part("lastName") lastName: RequestBody,
                             @Part("email") email: RequestBody,
                             @Part("password") password: RequestBody,
@@ -106,5 +106,7 @@ interface WebServices {
 
     @GET("auth/updateprofile")
     suspend fun getProfile(@Header("token") token: String):UserResponse
+
+
 
 }

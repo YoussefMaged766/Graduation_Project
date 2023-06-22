@@ -71,7 +71,6 @@ class SignUpFragment : Fragment() {
 
     lateinit var binding: FragmentSignUpBinding
     val viewModel: SignUpViewModel by viewModels()
-    var imageFile: File? = null
     var imgUri: Uri? = null
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var imgBitmap: Bitmap? = null
@@ -139,15 +138,25 @@ class SignUpFragment : Fragment() {
             btnSignUp.setOnClickListener {
 
                 if (userDataValidation(getUserData())) {
-                    viewModel.signUpUser(
-                        imgUri!!,
-                        getFilePathFromUri(requireContext(), imgUri!!, viewModel),
-                        getUserData().firstName.toString(),
-                        getUserData().lastName.toString(),
-                        getUserData().email.toString(),
-                        getUserData().password.toString(),
-                        requireContext()
-                    )
+                    if (imgUri != null) {
+                        viewModel.signUpUser(
+                            imgUri,
+                            getFilePathFromUri(requireContext(), imgUri!!, viewModel).toString(),
+                            getUserData().firstName.toString(),
+                            getUserData().lastName.toString(),
+                            getUserData().email.toString(),
+                            getUserData().password.toString(),
+                            requireContext()
+                        )
+                    } else{
+                        viewModel.signUpUser(
+                           firstName =  getUserData().firstName.toString(),
+                            lastName =  getUserData().lastName.toString(),
+                            email =  getUserData().email.toString(),
+                            password =  getUserData().password.toString(),
+                            cnx =  requireContext()
+                        )
+                    }
                 }
 
             }

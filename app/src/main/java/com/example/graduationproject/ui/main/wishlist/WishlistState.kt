@@ -2,6 +2,7 @@ package com.example.graduationproject.ui.main.wishlist
 
 import androidx.paging.PagingData
 import com.example.graduationproject.models.BookEntity
+import com.example.graduationproject.models.BookIdResponse
 import com.example.graduationproject.models.BooksItem
 
 data class WishlistState(
