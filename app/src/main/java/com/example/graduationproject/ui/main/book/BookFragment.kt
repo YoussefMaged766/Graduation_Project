@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -15,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.graduationproject.R
+import com.example.graduationproject.adapter.BookListsAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentBookBinding
@@ -30,12 +32,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BookFragment : Fragment() {
+class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
 
     lateinit var binding: FragmentBookBinding
     private lateinit var dataStore: DataStore<Preferences>
     private val data: BookFragmentArgs by navArgs()
     private val viewModel: BookViewModel by viewModels()
+    val adapter :BookListsAdapter by lazy { BookListsAdapter(this) }
   private var bookEntity=BookEntity()
 
 
@@ -62,9 +65,10 @@ class BookFragment : Fragment() {
         show()
         selectHeart()
         addMenu()
-        checkFav()
+//        checkFav()
 //        checkLocalFav()
         showMoreAndLess()
+        collectRecommend()
 
     }
 
@@ -301,6 +305,31 @@ class BookFragment : Fragment() {
 
                 })
             }
+    }
+
+    override fun onItemClick(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    private fun collectRecommend(){
+        lifecycleScope.launch{
+            viewModel.getItemBasedRecommend(data.bookObject.title.toString())
+
+            viewModel.stateRecommend.collect{
+                if (it.isLoading){
+                    Constants.showCustomAlertDialog(requireActivity(), R.layout.custom_alert_dailog, false)
+                }else{
+                    Constants.hideCustomAlertDialog()
+                }
+
+//                binding.progress.isVisible = it.isLoading
+                Log.e( "bind: ",it.allBooks.toString() )
+                if (!it.allBooks.isNullOrEmpty()){
+                    adapter.submitList(it.allBooks)
+                    binding.recyclerViewRecommend.adapter = adapter
+                }
+            }
+        }
     }
 
 

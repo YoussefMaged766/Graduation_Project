@@ -37,6 +37,9 @@ class BookViewModel @Inject constructor(
     private val _stateFav = MutableStateFlow(WishlistState())
     val stateFav = _stateFav.asStateFlow()
 
+    private val _stateRecommend = MutableStateFlow(WishlistState())
+    val stateRecommend = _stateRecommend.asStateFlow()
+
 
 
 
@@ -184,5 +187,30 @@ class BookViewModel @Inject constructor(
     }
 
 
+    suspend fun getItemBasedRecommend( title: String)=viewModelScope.launch {
+        bookRepo.getItemBased(title).collectLatest { resource ->
+            when(resource){
+                is Status.Loading-> {
+                    _stateRecommend.value = stateRecommend.value.copy(
+                        isLoading = true
+                    )
+                }
+                is  Status.Success-> {
+                    _stateRecommend.value = stateRecommend.value.copy(
+                        isLoading = false,
+                        allBooks = resource.data.books
+                    )
 
+
+                }
+                is  Status.Error-> {
+                    _stateRecommend.value = stateRecommend.value.copy(
+                        error = resource.message,
+                        isLoading = false
+                    )
+                }
+
+            }
+        }
+    }
 }

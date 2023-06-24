@@ -41,7 +41,18 @@ data class BooksItem(
     val modTitle: String? = null,
 
     @field:SerializedName("message")
-    val message: String? = null
+    val message: String? = null,
+
+    @field:SerializedName("publication_year")
+    val publication_year: Any? = null,
+
+    @field:SerializedName("country_code")
+    val country_code: String? = null,
+
+    @field:SerializedName("publisher")
+    val publisher: String? = null
+
+
 ) : java.io.Serializable
 
 data class BookIdResponse(

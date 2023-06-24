@@ -481,4 +481,21 @@ class BookRepo @Inject constructor(
 
         }
     }
+
+    fun getItemBased(title:String)= flow {
+        emit(Status.Loading)
+        try {
+
+            val response = recommendationService.getItemBased(title)
+            emit(Status.Success(response))
+            Log.e( "getRecommendation: ",response.toString() )
+
+
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+            Log.e( "getRecommendation: ",e.message.toString() )
+
+        }
+    }
+
 }

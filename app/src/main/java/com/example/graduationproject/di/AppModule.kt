@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.graduationproject.db.BookDatabase
 import com.example.graduationproject.utils.RecommendationService
 import com.example.graduationproject.utils.WebServices
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -47,7 +47,7 @@ object AppModule {
 
     @Provides
     @Singleton
-   @ServerA
+    @ServerA
     fun retrofitA(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("http://192.168.1.7:3000/")
@@ -60,9 +60,12 @@ object AppModule {
     @Singleton
     @ServerB
     fun retrofitB(okHttpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
         return Retrofit.Builder()
             .baseUrl("http://192.168.1.7:5000/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
     }
