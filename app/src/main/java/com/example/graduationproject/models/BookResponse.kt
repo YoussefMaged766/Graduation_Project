@@ -50,7 +50,11 @@ data class BooksItem(
     val country_code: String? = null,
 
     @field:SerializedName("publisher")
-    val publisher: String? = null
+    val publisher: String? = null,
+
+    @field:SerializedName("isbn13")
+    val isbn13: String? = null,
+
 
 
 ) : java.io.Serializable

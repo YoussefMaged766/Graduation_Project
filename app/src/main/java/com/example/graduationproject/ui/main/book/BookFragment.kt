@@ -1,5 +1,7 @@
 package com.example.graduationproject.ui.main.book
 
+import android.app.SearchManager
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -69,6 +71,8 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
 //        checkLocalFav()
         showMoreAndLess()
         collectRecommend()
+        addToCart(data.bookObject.isbn13.toString())
+
 
     }
 
@@ -332,5 +336,14 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
         }
     }
 
+
+    private fun addToCart(isbn: String){
+        binding.btnAddToCart.setOnClickListener {
+            val intent = Intent(Intent.ACTION_WEB_SEARCH)
+            intent.putExtra(SearchManager.QUERY, " ${isbn} buy")
+            startActivity(intent)
+
+        }
+    }
 
 }
