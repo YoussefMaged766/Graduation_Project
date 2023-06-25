@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
     private lateinit var dataStore: DataStore<Preferences>
     private var RUN_ONCE = true
     lateinit var dialog: Dialog
-    var id:String?= null
+    var id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +67,7 @@ class LoginFragment : Fragment() {
 
 
         ocClicks()
-        collectResponse()
-        collectProgress()
-        collectError()
+
         validateBtn()
         animation()
 //        lifecycleScope.launch {
@@ -86,23 +84,18 @@ class LoginFragment : Fragment() {
         }
 
     }
-// login fragment
+
+    // login fragment
     private fun ocClicks() {
         binding.apply {
             btnSignIn.setOnClickListener {
-                if (emailAndPassValidation(getUserData())){
+                if (emailAndPassValidation(getUserData())) {
                     viewModel.loginUser(
                         getUserData(),
-                        requireContext(),
-                        HomeActivity::class.java,
-                        requireActivity()
                     )
-
-
+                    collectResponse()
 
                 }
-
-
             }
             forgetPassword.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
@@ -114,53 +107,67 @@ class LoginFragment : Fragment() {
 
     private fun collectResponse() {
         lifecycleScope.launch {
-            viewModel.response.collect {
-                Constants.customToast(
-                    requireContext(),
-                    requireActivity(),
-                    it.message.toString()
-                )
-                Log.e("collectResponse: ", it.toString())
-                handleCheckBox(it.token.toString())
-                saveUserId(Constants.userId,it.userId.toString())
-            }
-        }
-    }
+            viewModel.stateLogin.collect {
+                if (it.success != null) {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        it.success.toString()
+                    )
+                    handleCheckBox(it.userLogin?.token.toString())
+                    saveUserId(Constants.userId, it.userLogin?.userId.toString())
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+                    if (it.error != null) {
+                        Constants.customToast(
+                            requireContext(),
+                            requireActivity(),
+                            it.error.toString()
+                        )
+                    }
 
-
-
-
-
-
-
-    private fun collectProgress() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-                viewModel.progress.collectLatest {
-                    if (it){
-                        Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
-                    } else{
-//                        dialog.cancel()
+                    if (it.isLoading) {
+                        Constants.showCustomAlertDialog(
+                            requireActivity(),
+                            R.layout.custom_alert_dailog,
+                            false
+                        )
+                    } else {
                         Constants.hideCustomAlertDialog()
                     }
-//                    binding.frameLoading.isVisible = it
                 }
+
             }
         }
-
-
     }
 
-    private fun collectError() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-                viewModel.error.collect {
-                    Constants.customToast(requireContext(), requireActivity(), it)
-                }
-            }
-        }
 
-    }
+//    private fun collectProgress() {
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.Main) {
+//                viewModel.progress.collectLatest {
+//                    if (it){
+//                        Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
+//                    } else{
+////                        dialog.cancel()
+//                        Constants.hideCustomAlertDialog()
+//                    }
+////                    binding.frameLoading.isVisible = it
+//                }
+//            }
+//        }
+//    }
+
+//    private fun collectError() {
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.Main) {
+//                viewModel.error.collect {
+//                    Constants.customToast(requireContext(), requireActivity(), it)
+//                }
+//            }
+//        }
+//
+//    }
 
     private fun getUserData(): User {
         val email = binding.txtEmail.text?.trim().toString()
@@ -218,7 +225,7 @@ class LoginFragment : Fragment() {
 
     }
 
-    private suspend fun handleCheckBox(value: String){
+    private suspend fun handleCheckBox(value: String) {
         if (binding.checkBox.isChecked) {
             saveToken(Constants.userToken, value)
         }
@@ -247,26 +254,34 @@ class LoginFragment : Fragment() {
             val dataStoreKey = stringPreferencesKey(Constants.userToken)
             dataStore.edit {
                 if (it.contains(dataStoreKey)) {
-                    Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
+                    Constants.showCustomAlertDialog(
+                        requireActivity(),
+                        R.layout.custom_alert_dailog,
+                        false
+                    )
 //                    binding.frameLoading.visibility = View.VISIBLE
                     delay(1000L)
                     startActivity(Intent(requireActivity(), HomeActivity::class.java))
                     activity?.finish()
                     Constants.customToast(requireContext(), requireActivity(), "Welcome back")
                 } else {
-                        if (getIsLogging("Logging") != false) {
-                            Constants.customToast(requireContext(), requireActivity(), "Welcome ")
-                            Log.e( "onStart: ",getIsLogging("Logging").toString() )
-                        }else{
-                            Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
+                    if (getIsLogging("Logging") != false) {
+                        Constants.customToast(requireContext(), requireActivity(), "Welcome ")
+                        Log.e("onStart: ", getIsLogging("Logging").toString())
+                    } else {
+                        Constants.showCustomAlertDialog(
+                            requireActivity(),
+                            R.layout.custom_alert_dailog,
+                            false
+                        )
 //                            binding.frameLoading.visibility = View.VISIBLE
-                            Constants
-                            delay(1000L)
+                        Constants
+                        delay(1000L)
 //                            binding.frameLoading.visibility = View.GONE
-                            Constants.hideCustomAlertDialog()
-                            Constants.customToast(requireContext(), requireActivity(), "isn't sign in")
-                            Log.e("onStartafter: ", RUN_ONCE.toString())
-                        }
+                        Constants.hideCustomAlertDialog()
+                        Constants.customToast(requireContext(), requireActivity(), "isn't sign in")
+                        Log.e("onStartafter: ", RUN_ONCE.toString())
+                    }
 
                 }
             }

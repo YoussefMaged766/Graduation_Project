@@ -61,7 +61,11 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getListedBook()
         recycler()
-        collectRecommendationState()
+        lifecycleScope.launch {
+            Log.e( "onViewCreated: ",getUserId(Constants.userId).toString() )
+        }
+
+//        collectRecommendationState()
         binding.swipeRefresh.setOnRefreshListener {
             getListedBook()
             lifecycleScope.launch {

@@ -3,6 +3,7 @@ package com.example.graduationproject.ui.main.search
 import androidx.paging.PagingData
 import com.example.graduationproject.models.BooksItem
 import com.example.graduationproject.models.UserResponse
+import com.example.graduationproject.models.UserResponseLogin
 
 data class BookState(
     val allBooks: PagingData<BooksItem>? = null,
@@ -10,5 +11,6 @@ data class BookState(
     val error: String? = null,
     val success : String? = null,
     val loadingState:String? = null,
-    val userResponse: UserResponse? = null
+    val userResponse: UserResponse? = null,
+    val userLogin: UserResponseLogin? = null
 )
