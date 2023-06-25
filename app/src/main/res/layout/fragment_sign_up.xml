@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="64dp"
-                android:src="@drawable/logo2"
+                android:src="@drawable/logo4"
                 app:layout_constraintDimensionRatio="4:1"
                 app:layout_constraintEnd_toEndOf="@id/pathTop"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -89,12 +89,21 @@
                 android:contentDescription="Take Photo"
                 android:id="@+id/btnCamera"/>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/txtEmailContainer"
+                app:layout_constraintStart_toStartOf="@+id/txtEmailContainer"
+                app:layout_constraintTop_toBottomOf="@id/imgProfile"
+                android:id="@+id/linearName">
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtFirstNameContainer"
                 style="@style/ThemeOverlay.Material3.TextInputEditText.FilledBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_16sdp"
+                android:layout_weight="1"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:hint="@string/first_name"
                 android:textColorHint="#80212121"
@@ -107,13 +116,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgProfile"
                 android:background="@drawable/edittext_border"
+                android:layout_marginEnd="5dp"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -122,8 +131,9 @@
                 android:id="@+id/txtLastNameContainer"
                 style="@style/ThemeOverlay.Material3.TextInputEditText.FilledBox"
                 android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:hint="@string/last_name"
                 android:textColorHint="#80212121"
@@ -141,11 +151,12 @@
                     android:id="@+id/txtLastName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
+
+            </LinearLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtEmailContainer"
                 style="@style/ThemeOverlay.Material3.TextInputEditText.FilledBox"
@@ -162,7 +173,7 @@
                 app:hintTextColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLastNameContainer"
+                app:layout_constraintTop_toBottomOf="@id/linearName"
                 android:background="@drawable/edittext_border">
 
                 <com.google.android.material.textfield.TextInputEditText

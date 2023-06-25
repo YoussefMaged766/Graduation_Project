@@ -67,7 +67,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
         show()
         selectHeart()
         addMenu()
-//        checkFav()
+        checkFav()
 //        checkLocalFav()
         showMoreAndLess()
         collectRecommend()

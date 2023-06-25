@@ -99,14 +99,15 @@ interface WebServices {
     suspend fun updateProfile(
         @Header("token") token: String,
         @Part image: MultipartBody.Part? = null,
-        @Part("firstName") firstName: RequestBody,
-        @Part("lastName") lastName: RequestBody,
-        @Part("email") email: RequestBody
+        @Part("newFName") firstName: RequestBody,
+        @Part("newLName") lastName: RequestBody,
+        @Part("newEmail") email: RequestBody
     ): BookIdResponse
 
     @GET("auth/updateprofile")
     suspend fun getProfile(@Header("token") token: String):UserResponse
 
-
+    @GET("book")
+    suspend fun getBookDetails(@Header("token") token: String, @Query("bookId") id: String): BookResponse
 
 }

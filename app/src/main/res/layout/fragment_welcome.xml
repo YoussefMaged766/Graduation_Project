@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="64dp"
-        android:src="@drawable/logo2"
+        android:src="@drawable/logo4"
         app:tint="@color/primary_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,18 +40,18 @@
         app:layout_constraintDimensionRatio="4:1"/>
 
 
-    <TextView
-        android:id="@+id/txtReco"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins"
-        android:text="@string/recobooks"
-        android:textColor="#562505"
-        android:textSize="@dimen/_32sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img" />
+<!--    <TextView-->
+<!--        android:id="@+id/txtReco"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:fontFamily="@font/poppins"-->
+<!--        android:text="@string/recobooks"-->
+<!--        android:textColor="#562505"-->
+<!--        android:textSize="@dimen/_32sdp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/img" />-->
 
     <TextView
         android:id="@+id/txtWelcome"
@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtReco" />
+        app:layout_constraintTop_toBottomOf="@id/img" />
 
     <TextView
         android:id="@+id/txtWelcome2"

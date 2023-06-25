@@ -193,7 +193,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllFavourite(token)
-                val books = response.results?.map { it.toBookEntity(userId) }
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
 
                 emit(Status.Success(books))
             } else {
@@ -264,7 +264,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllWishlist(token)
-                val books = response.results?.map { it.toBookEntity(userId) }
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {
@@ -323,7 +323,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllAlreadyRead(token)
-                val books = response.results?.map { it.toBookEntity(userId) }
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {
@@ -487,6 +487,22 @@ class BookRepo @Inject constructor(
         try {
 
             val response = recommendationService.getItemBased(title)
+            emit(Status.Success(response))
+            Log.e( "getRecommendation: ",response.toString() )
+
+
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+            Log.e( "getRecommendation: ",e.message.toString() )
+
+        }
+    }
+
+    fun getSingleBook(token: String , id:String)= flow {
+        emit(Status.Loading)
+        try {
+
+            val response = webServices.getBookDetails(token,id)
             emit(Status.Success(response))
             Log.e( "getRecommendation: ",response.toString() )
 

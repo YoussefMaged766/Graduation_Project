@@ -16,6 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouriteViewModel @Inject constructor(private val bookRepo: BookRepo):ViewModel() {
 
+    private val _stateBook = MutableStateFlow(WishlistState())
+    val stateBook = _stateBook.asStateFlow()
+
     private val _stateFav = MutableStateFlow(WishlistState())
     val stateFav = _stateFav.asStateFlow()
 
@@ -39,6 +42,31 @@ class FavouriteViewModel @Inject constructor(private val bookRepo: BookRepo):Vie
                 }
                 is  Status.Error-> {
                     _stateFav.value = stateFav.value.copy(
+                        error = resource.message,
+                        isLoading = false
+                    )
+                }
+
+            }
+        }
+    }
+
+    suspend fun getSingleBook(token:String,id:String)=viewModelScope.launch {
+        bookRepo.getSingleBook(token,id).collectLatest { resource ->
+            when(resource){
+                is  Status.Loading-> {
+                    _stateBook.value = stateBook.value.copy(
+                        isLoading = true
+                    )
+                }
+                is   Status.Success-> {
+                    _stateBook.value = stateBook.value.copy(
+                        isLoading = false,
+                        allBooks = resource.data.books
+                    )
+                }
+                is  Status.Error-> {
+                    _stateBook.value = stateBook.value.copy(
                         error = resource.message,
                         isLoading = false
                     )
