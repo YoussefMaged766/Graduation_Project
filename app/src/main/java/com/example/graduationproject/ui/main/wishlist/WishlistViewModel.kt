@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.repository.BookRepo
 import com.example.graduationproject.models.BookIdResponse
-import com.example.graduationproject.models.BooksItem
 import com.example.graduationproject.ui.main.search.BookState
 import com.example.graduationproject.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -70,7 +70,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
         checkFav()
 //        checkLocalFav()
         showMoreAndLess()
-        collectRecommend()
+//        collectRecommend()
         addToCart(data.bookObject.isbn13.toString())
 
 
@@ -254,7 +254,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
                 }
 
                 if (it.allLocalBooks != null) {
-                    if (it.allLocalBooks.any { it.bookId == data.bookObject.bookId }) {
+                    if (it.allLocalBooks.any { it?.bookId == data.bookObject.bookId }) {
                         binding.imageViewAnimation.isSelected = true
 
                     }

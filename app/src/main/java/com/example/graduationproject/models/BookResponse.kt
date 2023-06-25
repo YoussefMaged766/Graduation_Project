@@ -78,5 +78,23 @@ data class WishAndFavResponse(
 data class Results(
 
     @field:SerializedName("books")
-    val books: List<BooksItem>? = null
+    val books: List<BooksItem1>? = null
+)
+
+data class BooksItem1(
+
+    @field:SerializedName("is_read")
+    val isRead: Int? = null,
+
+    @field:SerializedName("book_item")
+    val bookItem: BooksItem? = null,
+
+    @field:SerializedName("is_reviewed")
+    val isReviewed: Int? = null,
+
+    @field:SerializedName("rating")
+    val rating: Int? = null,
+
+    @field:SerializedName("_id")
+    val id: String? = null
 )
