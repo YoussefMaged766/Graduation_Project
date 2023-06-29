@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import com.example.graduationproject.R
 import com.example.graduationproject.adapter.HomePagingAdapter
 import com.example.graduationproject.adapter.loadState.LoadStateAdapter
 import com.example.graduationproject.adapter.SearchResultAdapter
@@ -168,7 +169,17 @@ class HomeFragment : Fragment() {
             viewModel.stateReco.collect{
                 Log.e( "collectRecommendationState: ",it.allBooks.toString() )
                 binding.swipeRefresh.isRefreshing = it.isLoading
-                Log.e( "collectRecommendationState: ", it.error.toString())
+                Log.e( "collectRecommendationStateError: ", it.error.toString())
+
+                if (it.isLoading) {
+                    Constants.showCustomAlertDialog(
+                        requireActivity(),
+                        R.layout.custom_alert_dailog,
+                        false
+                    )
+                } else {
+                    Constants.hideCustomAlertDialog()
+                }
             }
         }
     }
@@ -179,5 +190,7 @@ class HomeFragment : Fragment() {
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
     }
+
+
 
 }

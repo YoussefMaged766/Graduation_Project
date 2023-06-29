@@ -58,7 +58,6 @@ import java.io.FileOutputStream
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
-    private val fadeOutTransformation = FadeOutTransformation()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var imgBitmap: Bitmap? = null
     var imgUri: Uri? = null
@@ -87,7 +86,7 @@ class ProfileFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpViewPager()
+
         checkPermission()
         editProfile()
 
@@ -114,24 +113,7 @@ class ProfileFragment : Fragment() {
         getProfile()
     }
 
-    private fun setUpViewPager() {
-        val adapter =
-            ViewPagerAdapter(
-                supportFragmentManager = requireActivity().supportFragmentManager,
-                lifecycle = lifecycle
-            )
-        adapter.addFragment(WishlistFragment(), "Wishlist")
-        adapter.addFragment(FavoriteFragment(), "Favorite")
-        binding.viewpager.adapter = adapter
-        binding.viewpager.isSaveEnabled = false
-        binding.viewpager.setPageTransformer(fadeOutTransformation)
-        TabLayoutMediator(binding.tabLayout, binding.viewpager) { tab, position ->
-            tab.text = adapter.getPageTitle(position)
-            binding.viewpager.setCurrentItem(tab.position, true)
-        }.attach()
 
-
-    }
 
 
     private fun checkPermission() {
@@ -257,7 +239,7 @@ class ProfileFragment : Fragment() {
                 if (it.userResponse?.results?.image != null) {
                     val imageString = it.userResponse.results.image
                     if (imageString.isNotBlank()) {
-                        Glide.with(requireContext()).load("http://192.168.1.6:3000/$imageString")
+                        Glide.with(requireContext()).load("http://192.168.1.2:3000/$imageString")
                             .into(binding.imgProfile)
                     } else {
                         binding.imgProfile.setImageResource(R.drawable.photo1)

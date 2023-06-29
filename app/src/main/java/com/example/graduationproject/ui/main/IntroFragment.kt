@@ -54,9 +54,9 @@ class IntroFragment : Fragment() {
         }
     }
 
-    fun list(): List<Intro> = arrayListOf(Intro(R.drawable.ic_launcher_background, "desc") ,
-        Intro(R.drawable.ic_launcher_background, "alo"),
-        Intro(R.drawable.ic_launcher_background, "dessdgasdfsadfasfdc")
+    fun list(): List<Intro> = arrayListOf(Intro(R.drawable.intro1, "Choose your favorite \n Book with us"),
+        Intro(R.drawable.intro2, "Explore our diverse collection of books across various genres \n Swipe across and browse to find \n captivating reads or let our intelligent algorithm \n recommend books based on your preferences"),
+        Intro(R.drawable.intro3, "Have nice Day to read books \n with us")
         )
 
 }

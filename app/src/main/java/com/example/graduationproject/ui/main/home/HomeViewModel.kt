@@ -26,8 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val bookRepo: BookRepo,
-    private val webServices: WebServices,
-    private val recommendationService: RecommendationService
+    private val webServices: WebServices
 ) : ViewModel() {
     private val _state = MutableStateFlow(BookState())
      val state = _state.asStateFlow()

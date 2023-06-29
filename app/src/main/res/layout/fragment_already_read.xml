@@ -17,6 +17,7 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:listitem="@layout/book_item"
+        android:layoutAnimation="@anim/recycler_book_anim"
         />
 
     <com.airbnb.lottie.LottieAnimationView

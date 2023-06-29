@@ -232,11 +232,12 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/imageViewAnimation"
             app:layout_constraintStart_toStartOf="@id/txtDescription"
-            android:text="Recommended"
+            android:text="Similar Books"
             android:textSize="24sp"
             android:textStyle="bold"
             android:id="@+id/txtRecommend"
             />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -246,8 +247,39 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
             android:id="@+id/recyclerViewRecommend"
+            android:layoutAnimation="@anim/recycler_book_anim"
             />
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_recycler_recommendation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:elevation="@dimen/_10sdp"
+            android:background="@color/background"
+            app:layout_constraintTop_toBottomOf="@id/txtRecommend"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="visible"
+                android:background="@color/background"
+                android:orientation="horizontal">
+
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+                <include layout="@layout/book_item_shimmer"/>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
 
 

@@ -19,6 +19,8 @@ data class BooksItem(
 
 //    @field:SerializedName("ratings")
 //    val ratings: Int? = null,
+    @field:SerializedName("ratings_count")
+    val ratings_count: Int? = null,
 
     @field:SerializedName("_id")
     val id: String? = null,
@@ -56,8 +58,7 @@ data class BooksItem(
     val isbn13: String? = null,
 
 
-
-) : java.io.Serializable
+    ) : java.io.Serializable
 
 data class BookIdResponse(
     @field:SerializedName("bookId")
@@ -66,6 +67,7 @@ data class BookIdResponse(
     val message: String? = null
 
 )
+
 data class WishAndFavResponse(
 
     @field:SerializedName("message")

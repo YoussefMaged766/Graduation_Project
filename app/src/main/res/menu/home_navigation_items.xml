@@ -8,9 +8,10 @@
             android:icon="@drawable/baseline_search_24"
             />
 
-        <item android:id="@+id/wishlistFragment"
-            android:title="@string/whislist"
-            android:icon="@drawable/wishlist" />
+        <item android:id="@+id/RecommendationFragment"
+            android:title="Recommend"
+            android:icon="@drawable/recommend_icon"/>
+
         <item android:id="@+id/profileFragment"
             android:title="@string/profile"
             android:icon="@drawable/user" />

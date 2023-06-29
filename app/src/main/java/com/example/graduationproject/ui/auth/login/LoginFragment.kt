@@ -93,9 +93,10 @@ class LoginFragment : Fragment() {
                     viewModel.loginUser(
                         getUserData(),
                     )
-                    collectResponse()
 
+                    collectResponse()
                 }
+
             }
             forgetPassword.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
@@ -125,8 +126,11 @@ class LoginFragment : Fragment() {
                             it.error.toString()
                         )
                     }
+                }
 
-                    if (it.isLoading) {
+
+
+                if (it.isLoading) {
                         Constants.showCustomAlertDialog(
                             requireActivity(),
                             R.layout.custom_alert_dailog,
@@ -135,7 +139,6 @@ class LoginFragment : Fragment() {
                     } else {
                         Constants.hideCustomAlertDialog()
                     }
-                }
 
             }
         }

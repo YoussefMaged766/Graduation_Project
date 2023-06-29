@@ -110,6 +110,8 @@ dependencies {
     // show more and less text
     implementation 'com.github.noowenz:ShowMoreLess:1.0.3'
 
+    implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
+
 }
 kapt {
     correctErrorTypes true

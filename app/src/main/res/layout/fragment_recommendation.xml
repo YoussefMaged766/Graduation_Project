@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.main.recommend.RecommendationFragment">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_recycler_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:elevation="@dimen/_10sdp"
+        android:background="@color/background"
+        >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rowCount="2"
+            android:columnCount="2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"
+            android:background="@color/background">
+
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+            <include layout="@layout/book_item_shimmer"/>
+
+
+        </GridLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/book_item"
+        android:layoutAnimation="@anim/recycler_book_anim"
+        android:background="@color/background"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

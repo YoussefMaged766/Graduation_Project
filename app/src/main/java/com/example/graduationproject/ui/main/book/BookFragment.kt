@@ -15,6 +15,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.graduationproject.R
@@ -70,7 +71,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
         checkFav()
 //        checkLocalFav()
         showMoreAndLess()
-//        collectRecommend()
+        collectRecommend()
         addToCart(data.bookObject.isbn13.toString())
 
 
@@ -99,7 +100,9 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
         Glide.with(requireContext()).load(data.bookObject.coverImage).into(binding.BookImage)
         binding.txtBookTitle.text = data.bookObject.title
         binding.txtDescription.text = data.bookObject.description
-//        binding.txtRating.text = data.bookObject.ratings.toString()
+        binding.txtRating.text = data.bookObject.ratings_count.toString()
+        binding.txtAuthor.text = data.bookObject.publisher
+
     }
 
     private suspend fun getToken(key: String): String? {
@@ -312,7 +315,10 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+        val action = BookFragmentDirections.actionBookFragmentSelf(
+             adapter.currentList[position]
+        )
+        findNavController().navigate(action)
     }
 
     private fun collectRecommend(){
@@ -320,10 +326,14 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
             viewModel.getItemBasedRecommend(data.bookObject.title.toString())
 
             viewModel.stateRecommend.collect{
+                binding.shimmerRecyclerRecommendation.startShimmerAnimation()
+                binding.shimmerRecyclerRecommendation.isVisible = it.isLoading
                 if (it.isLoading){
-                    Constants.showCustomAlertDialog(requireActivity(), R.layout.custom_alert_dailog, false)
+                    binding.shimmerRecyclerRecommendation.startShimmerAnimation()
+
                 }else{
-                    Constants.hideCustomAlertDialog()
+                    binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
+
                 }
 
 //                binding.progress.isVisible = it.isLoading

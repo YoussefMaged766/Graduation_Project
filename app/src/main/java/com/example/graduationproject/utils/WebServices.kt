@@ -43,7 +43,7 @@ interface WebServices {
         @Query("page") page: Int
     ): BookResponse
 
-    @GET("book")
+    @GET("book/all")
     suspend fun getAllBooks(@Header("token") token: String, @Query("page") page: Int): BookResponse
 
     @PUT("list/addToFavorits")
