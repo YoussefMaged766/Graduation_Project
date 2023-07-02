@@ -74,13 +74,17 @@ data class WishAndFavResponse(
     val message: String? = null,
 
     @field:SerializedName("results")
-    val results: Results? = null
+    val results: Results? = null,
+
 )
 
 data class Results(
 
+    @field:SerializedName("items")
+    val books: List<BooksItem>? = null,
+
     @field:SerializedName("books")
-    val books: List<BooksItem1>? = null
+    val favBooks: List<BooksItem1>? = null
 )
 
 data class BooksItem1(

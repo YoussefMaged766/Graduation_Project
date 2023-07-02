@@ -22,6 +22,9 @@ class RecommendationViewModel @Inject constructor(
     private val _stateReco = MutableStateFlow(WishlistState())
     val stateReco = _stateReco.asStateFlow()
 
+    private val _stateReco2 = MutableStateFlow(WishlistState())
+    val stateReco2 = _stateReco2.asStateFlow()
+
     private var fetchDataJob: Job? = null
 
     suspend fun getRecommendation(id: String) {
@@ -44,6 +47,35 @@ class RecommendationViewModel @Inject constructor(
 
                     is Status.Error -> {
                         _stateReco.value = stateReco.value.copy(
+                            isLoading = false,
+                            error = it.message
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun getRecommendationFromMongo(token:String) {
+        fetchDataJob = viewModelScope.launch(Dispatchers.IO) {
+            bookRepo.getProfile(token).collect {
+                when (it) {
+                    is Status.Loading -> {
+                        _stateReco2.value = stateReco2.value.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    is Status.Success -> {
+                        _stateReco2.value = stateReco2.value.copy(
+                            isLoading = false,
+                            recommendation = it.data.results?.recommendations
+                        )
+
+                    }
+
+                    is Status.Error -> {
+                        _stateReco2.value = stateReco2.value.copy(
                             isLoading = false,
                             error = it.message
                         )

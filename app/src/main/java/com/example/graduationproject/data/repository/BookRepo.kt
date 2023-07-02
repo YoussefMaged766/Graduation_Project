@@ -193,7 +193,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllFavourite(token)
-                val books = response.results?.books?.map { it.bookItem?.toBookEntity(userId) }
+                val books = response.results?.favBooks?.map { it.bookItem?.toBookEntity(userId) }
 
                 emit(Status.Success(books))
             } else {
@@ -264,7 +264,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllWishlist(token)
-                val books = response.results?.books?.map { it.bookItem?.toBookEntity(userId) }
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {
@@ -323,7 +323,7 @@ class BookRepo @Inject constructor(
         try {
             if (networkState.isOnline()) {
                 val response = webServices.getAllAlreadyRead(token)
-                val books = response.results?.books?.map { it.bookItem?.toBookEntity(userId) }
+                val books = response.results?.books?.map { it.toBookEntity(userId) }
                 emit(Status.Success(books))
 
             } else {

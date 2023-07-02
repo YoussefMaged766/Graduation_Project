@@ -21,7 +21,19 @@ data class ResultsUser(
     @field: SerializedName("image")
     val image: String?=null,
     @field: SerializedName("lastName")
-    val lastName: String?=null
+    val lastName: String?=null,
+
+    @field: SerializedName("recommendations")
+    val recommendations: RecomBooks?=null
+
 
 
     )
+data class  RecomBooks(
+    @field: SerializedName("updatedAt")
+    val updatedAt: String?=null,
+
+    @field: SerializedName("results")
+    val results: List<BooksItem>?=null
+
+)

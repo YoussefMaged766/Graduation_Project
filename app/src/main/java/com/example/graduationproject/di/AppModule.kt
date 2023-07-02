@@ -50,7 +50,7 @@ object AppModule {
     @ServerA
     fun retrofitA(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.2:3000/")
+            .baseUrl("http://192.168.1.6:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -64,7 +64,7 @@ object AppModule {
             .setLenient()
             .create()
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.2:5000/")
+            .baseUrl("http://192.168.1.6:5000/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()

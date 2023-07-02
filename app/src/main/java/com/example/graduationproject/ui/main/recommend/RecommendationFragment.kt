@@ -18,6 +18,7 @@ import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentRecommendationBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -40,7 +41,7 @@ class RecommendationFragment : Fragment(), BookListsAdapter.OnItemClickListener 
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-       binding= FragmentRecommendationBinding.inflate(layoutInflater)
+        binding = FragmentRecommendationBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -51,9 +52,11 @@ class RecommendationFragment : Fragment(), BookListsAdapter.OnItemClickListener 
     }
 
     override fun onItemClick(position: Int) {
-        val action = RecommendationFragmentDirections.actionRecommendationFragmentToBookFragment(adapter.currentList[position])
+        val action =
+            RecommendationFragmentDirections.actionRecommendationFragmentToBookFragment(adapter.currentList[position])
         findNavController().navigate(action)
     }
+
     private suspend fun getUserId(key: String): String? {
         dataStore = requireContext().dataStore
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
@@ -61,36 +64,68 @@ class RecommendationFragment : Fragment(), BookListsAdapter.OnItemClickListener 
         return preference[dataStoreKey]
     }
 
-    private fun collectRecommendationState(){
-        lifecycleScope.launch{
-            viewModel.getRecommendation(getUserId(Constants.userId)!!)
-            viewModel.stateReco.collect{
-                adapter.submitList(it.allBooks)
-                Log.e( "collectRecommendationState: ", it.allBooks?.size.toString())
+    private fun collectRecommendationState() {
+        lifecycleScope.launch {
 
-                Log.e( "collectRecommendationState: ",it.allBooks.toString() )
+            viewModel.getRecommendationFromMongo("Bearer ${getToken("userToken")}")
+
+            viewModel.stateReco2.collect {
+                if (it.recommendation?.results.isNullOrEmpty()) {
+                    viewModel.getRecommendation(getUserId(Constants.userId)!!)
+                    viewModel.getRecommendationFromMongo("Bearer ${getToken("userToken")}")
+                    val data = async { it.recommendation?.results }
+                    adapter.submitList(data.await())
+
+                    viewModel.stateReco.collect{it2->
+                        if (it2.isLoading) {
+                            binding.shimmerRecyclerRecommendation.startShimmerAnimation()
+                            binding.shimmerRecyclerRecommendation.visibility = View.VISIBLE
+                            binding.rvRecommendation.visibility = View.GONE
+
+                        } else {
+                            binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
+                            binding.shimmerRecyclerRecommendation.visibility = View.GONE
+                            binding.rvRecommendation.visibility = View.VISIBLE
+                        }
+                    }
 
 
-                binding.shimmerRecyclerRecommendation.startShimmerAnimation()
-                binding.shimmerRecyclerRecommendation.visibility=View.VISIBLE
-
-                if (it.isLoading) {
-                    binding.shimmerRecyclerRecommendation.startShimmerAnimation()
-                    binding.shimmerRecyclerRecommendation.visibility=View.VISIBLE
-                    binding.rvRecommendation.visibility=View.GONE
 
                 } else {
-                    binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
-                    binding.shimmerRecyclerRecommendation.visibility=View.GONE
-                    binding.rvRecommendation.visibility=View.VISIBLE
+                    Log.e("collectRecommendationState: ", it.recommendation?.updatedAt.toString())
+                    adapter.submitList(it.recommendation?.results)
+                    binding.shimmerRecyclerRecommendation.startShimmerAnimation()
+                    binding.shimmerRecyclerRecommendation.visibility = View.VISIBLE
+
+                    if (it.isLoading) {
+                        binding.shimmerRecyclerRecommendation.startShimmerAnimation()
+                        binding.shimmerRecyclerRecommendation.visibility = View.VISIBLE
+                        binding.rvRecommendation.visibility = View.GONE
+
+                    } else {
+                        binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
+                        binding.shimmerRecyclerRecommendation.visibility = View.GONE
+                        binding.rvRecommendation.visibility = View.VISIBLE
+                    }
+
                 }
             }
+
+
         }
-        binding.rvRecommendation.adapter=adapter
+        binding.rvRecommendation.adapter = adapter
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.cancelRequest()
+    }
+
+    private suspend fun getToken(key: String): String? {
+        dataStore = requireContext().dataStore
+        val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
+        val preference = dataStore.data.first()
+        return preference[dataStoreKey]
     }
 
 }

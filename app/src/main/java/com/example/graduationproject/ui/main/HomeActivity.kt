@@ -50,7 +50,7 @@ class HomeActivity : AppCompatActivity() {
     private fun setUpDrawer() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment, R.id.searchFragment, R.id.profileFragment, R.id.wishlistFragment,
+                R.id.homeFragment, R.id.searchFragment, R.id.profileFragment, R.id.RecommendationFragment,
             ), binding.drawerLayout
         )
         setSupportActionBar(binding.appBarHome.toolbar)
