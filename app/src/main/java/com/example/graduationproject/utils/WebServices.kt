@@ -85,6 +85,12 @@ interface WebServices {
         @Body bookId: BookIdResponse
     ): BookIdResponse
 
+    @PUT("book/rating")
+    suspend fun rate(
+        @Header("token") token: String,
+        @Body bookId: BookIdResponse
+    ): BookIdResponse
+
 
     @PUT("list/RemoveFromWishlist")
     suspend fun removeWishlist(

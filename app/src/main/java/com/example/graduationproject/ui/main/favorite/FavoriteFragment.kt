@@ -11,22 +11,22 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.graduationproject.R
+import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.adapter.WishlistAdapter
 import com.example.graduationproject.constants.Constants
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentFavoriteBinding
-import com.example.graduationproject.databinding.FragmentProfileBinding
+import com.example.graduationproject.models.mappers.toBookItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : Fragment(), WishlistAdapter.OnItemClickListener {
     lateinit var  binding :FragmentFavoriteBinding
     private val viewModel: FavouriteViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
-    val adapter: WishlistAdapter by lazy { WishlistAdapter() }
+    val adapter: WishlistAdapter by lazy { WishlistAdapter(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,6 +84,11 @@ class FavoriteFragment : Fragment() {
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
+    }
+
+    override fun onItemClick(position: Int) {
+        val action = FavoriteFragmentDirections.actionFavoriteFragmentToBookFragment2(adapter.currentList[position].toBookItem())
+        findNavController().navigate(action)
     }
 
 

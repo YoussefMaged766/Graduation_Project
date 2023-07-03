@@ -39,6 +39,9 @@ class BookViewModel @Inject constructor(
     private val _stateRecommend = MutableStateFlow(WishlistState())
     val stateRecommend = _stateRecommend.asStateFlow()
 
+    private val _stateRate = MutableStateFlow(WishlistState())
+    val stateRate = _stateRate.asStateFlow()
+
 
 
 
@@ -111,9 +114,9 @@ class BookViewModel @Inject constructor(
                 is  Status.Success-> {
                     _stateRemoveFavourite.value = stateRemoveFavourite.value.copy(
                         isLoading = false,
-                        success = resource.data?.message.toString()
+                        success = resource.data.message.toString()
                     )
-                    Log.e( "getAllBooks: ", resource.data?.message.toString())
+                    Log.e( "getAllBooks: ", resource.data.message.toString())
                 }
                 is  Status.Error-> {
                     _stateRemoveFavourite.value = stateRemoveFavourite.value.copy(
@@ -204,6 +207,33 @@ class BookViewModel @Inject constructor(
                 }
                 is  Status.Error-> {
                     _stateRecommend.value = stateRecommend.value.copy(
+                        error = resource.message,
+                        isLoading = false
+                    )
+                }
+
+            }
+        }
+    }
+
+    suspend fun rate(token:String, book: BookIdResponse)=viewModelScope.launch {
+        bookRepo.rating(token,book).collectLatest { resource ->
+            when(resource){
+                is Status.Loading-> {
+                    _stateRate.value = stateRate.value.copy(
+                        isLoading = true
+                    )
+                }
+                is  Status.Success-> {
+                    _stateRate.value = stateRate.value.copy(
+                        isLoading = false,
+                        success = resource.data.message.toString()
+                    )
+
+
+                }
+                is  Status.Error-> {
+                    _stateRate.value = stateRate.value.copy(
                         error = resource.message,
                         isLoading = false
                     )

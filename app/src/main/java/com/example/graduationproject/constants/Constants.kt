@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.datastore.core.DataStore
@@ -70,7 +72,33 @@ class Constants {
                dialog.show()
 
            }
+        }
 
+        fun showRatingAlertDialog(
+            activity: Activity,
+            layout: Int,
+            checkCancel: Boolean,
+            submitListener: (String) -> Unit
+        ) {
+            if (!activity.isFinishing && !activity.isDestroyed) {
+                dialog = Dialog(activity)
+                dialog.setContentView(layout)
+                val submit = dialog.findViewById<Button>(R.id.btnSubmit)
+                val cancel = dialog.findViewById<Button>(R.id.btnCancel)
+                val rate = dialog.findViewById<RatingBar>(R.id.ratingBar)
+
+                cancel.setOnClickListener {
+                    dialog.dismiss()
+                }
+                submit.setOnClickListener {
+                    val rating = rate.rating.toString()
+                    submitListener.invoke(rating)
+                    dialog.dismiss()
+                }
+                dialog.setCancelable(checkCancel)
+                dialog.show()
+
+            }
         }
         fun hideCustomAlertDialog() {
             try {

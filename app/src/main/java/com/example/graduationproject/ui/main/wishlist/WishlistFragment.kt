@@ -14,9 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -24,6 +22,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.WishlistAdapter
 import com.example.graduationproject.constants.Constants
@@ -31,18 +30,17 @@ import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentWishlistBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BookIdResponse
+import com.example.graduationproject.models.mappers.toBookItem
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class WishlistFragment : Fragment() {
+class WishlistFragment : Fragment(), WishlistAdapter.OnItemClickListener {
 
     lateinit var binding: FragmentWishlistBinding
-    val adapter: WishlistAdapter by lazy { WishlistAdapter() }
+    val adapter: WishlistAdapter by lazy { WishlistAdapter(this) }
     private val viewModel: WishlistViewModel by viewModels()
     val hash = HashMap<Int, BookEntity>()
     private lateinit var dataStore: DataStore<Preferences>
@@ -258,6 +256,13 @@ class WishlistFragment : Fragment() {
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
+    }
+
+    override fun onItemClick(position: Int) {
+        val action = WishlistFragmentDirections.actionWishlistFragmentToBookFragment(
+            adapter.currentList[position].toBookItem()
+        )
+        findNavController().navigate(action)
     }
 
 

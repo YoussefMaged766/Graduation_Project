@@ -28,6 +28,9 @@
         android:name="com.example.graduationproject.ui.main.wishlist.WishlistFragment"
         android:label="Wishlist"
         tools:layout="@layout/fragment_wishlist" >
+        <action
+            android:id="@+id/action_wishlistFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -97,7 +100,11 @@
         android:id="@+id/alreadyReadFragment"
         android:name="com.example.graduationproject.ui.main.read.AlreadyReadFragment"
         android:label="Already Read"
-        tools:layout="@layout/fragment_already_read" />
+        tools:layout="@layout/fragment_already_read" >
+        <action
+            android:id="@+id/action_alreadyReadFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+    </fragment>
     <fragment
         android:id="@+id/RecommendationFragment"
         android:name="com.example.graduationproject.ui.main.recommend.RecommendationFragment"

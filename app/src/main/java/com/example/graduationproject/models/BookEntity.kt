@@ -28,6 +28,8 @@ data class BookEntity(
 
     val modTitle: String? = null,
 
+    val isbn13: String? = null,
+
 
     val message: String? = null,
 

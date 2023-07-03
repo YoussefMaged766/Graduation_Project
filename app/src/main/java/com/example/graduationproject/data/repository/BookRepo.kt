@@ -466,6 +466,20 @@ class BookRepo @Inject constructor(
         return MultipartBody.Part.createFormData(partName, file.name, requestFile)
     }
 
+    suspend fun rating(token: String , book: BookIdResponse) = flow {
+        emit(Status.Loading)
+        try {
+            if (networkState.isOnline()) {
+                val response = webServices.rate(token,book)
+                emit(Status.Success(response))
+
+            }
+        } catch (e: Exception) {
+            emit(Status.Error(e.message.toString()))
+
+        }
+    }
+
     fun getRecommendation(id:String)= flow {
         emit(Status.Loading)
         try {

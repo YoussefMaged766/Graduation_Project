@@ -16,6 +16,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.adapter.WishlistAdapter
 import com.example.graduationproject.constants.Constants
@@ -23,16 +24,18 @@ import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.databinding.FragmentAlreadyReadBinding
 import com.example.graduationproject.models.BookEntity
 import com.example.graduationproject.models.BookIdResponse
+import com.example.graduationproject.models.mappers.toBookItem
+import com.example.graduationproject.ui.main.favorite.FavoriteFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AlreadyReadFragment : Fragment() {
+class AlreadyReadFragment : Fragment(), WishlistAdapter.OnItemClickListener {
 
 lateinit var binding: FragmentAlreadyReadBinding
 
-    val adapter: WishlistAdapter by lazy { WishlistAdapter() }
+    val adapter: WishlistAdapter by lazy { WishlistAdapter(this) }
     private val viewModel: ReadViewModel by viewModels()
     val hash = HashMap<Int, BookEntity>()
     private lateinit var dataStore: DataStore<Preferences>
@@ -201,6 +204,12 @@ lateinit var binding: FragmentAlreadyReadBinding
         val dataStoreKey: Preferences.Key<String> = stringPreferencesKey(key)
         val preference = dataStore.data.first()
         return preference[dataStoreKey]
+    }
+
+    override fun onItemClick(position: Int) {
+       val action = AlreadyReadFragmentDirections.actionAlreadyReadFragmentToBookFragment(
+           adapter.currentList[position].toBookItem())
+        findNavController().navigate(action)
     }
 
 }

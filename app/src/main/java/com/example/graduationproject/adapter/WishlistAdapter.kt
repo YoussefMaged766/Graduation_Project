@@ -11,16 +11,19 @@ import com.bumptech.glide.Glide
 import com.example.graduationproject.R
 import com.example.graduationproject.databinding.BookItemBinding
 import com.example.graduationproject.models.BookEntity
-import com.example.graduationproject.models.BooksItem
 import java.lang.IndexOutOfBoundsException
 
-class WishlistAdapter() :
+class WishlistAdapter(private val listener:OnItemClickListener) :
     ListAdapter<BookEntity, WishlistAdapter.viewholder>(WishlistAdapter) {
     var selectedItem = -1
     interface OnItemLongClickListener {
 
         fun onItemLongClick(position: Int, data: BookEntity)
 
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
     var onItemLongClickListener: OnItemLongClickListener? = null
       companion object : DiffUtil.ItemCallback<BookEntity>() {
@@ -56,9 +59,6 @@ class WishlistAdapter() :
 
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(query: String)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewholder {
         val binding =
@@ -108,8 +108,7 @@ try {
         }
 
         holder.binding.root.setOnClickListener {
-//            val action = FavoriteFragmentDirections.actionFavoriteFragmentToBookFragment()
-//            it.findNavController().navigate(action)
+            listener.onItemClick(position)
         }
 
     }

@@ -1,5 +1,6 @@
 package com.example.graduationproject.ui.main.book
 
+import android.app.Dialog
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
@@ -35,15 +36,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
+class BookFragment : Fragment(), BookListsAdapter.OnItemClickListener {
 
     lateinit var binding: FragmentBookBinding
     private lateinit var dataStore: DataStore<Preferences>
     private val data: BookFragmentArgs by navArgs()
     private val viewModel: BookViewModel by viewModels()
-    val adapter :BookListsAdapter by lazy { BookListsAdapter(this) }
-  private var bookEntity=BookEntity()
-
+    val adapter: BookListsAdapter by lazy { BookListsAdapter(this) }
+    private var bookEntity = BookEntity()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +64,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.e( "onViewCreated: ",data.toString() )
         show()
         selectHeart()
         addMenu()
@@ -80,16 +80,41 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
     private fun selectHeart() {
         binding.imageViewHeart.setOnClickListener {
             if (binding.imageViewAnimation.isSelected) {
-
                 binding.imageViewAnimation.isSelected = false
                 setUnFavourite()
+                collectStateFav()
 
             } else {
                 binding.imageViewAnimation.isSelected = true
                 binding.imageViewAnimation.likeAnimation()
-//                addFavourite()
                 setFavourite()
                 collectState()
+                Constants.showRatingAlertDialog(
+                    requireActivity(),
+                    R.layout.rating_dialog,
+                    false,
+                    submitListener = { rate ->
+                        lifecycleScope.launch {
+                            viewModel.rate(
+                                "Bearer ${getToken("userToken")}",
+                                BookIdResponse(bookId = data.bookObject.id.toString(), rate = rate),
+
+                                )
+                            viewModel.stateRate.collect {
+                                if (it.success != null) {
+                                    Constants.customToast(
+                                        requireContext(),
+                                        requireActivity(),
+                                        it.success.toString()
+                                    )
+                                }
+                            }
+                        }
+
+
+                    }
+
+                )
 
             }
         }
@@ -156,6 +181,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
             )
         }
     }
+
     private fun setRead() {
         lifecycleScope.launch {
             viewModel.setRead(
@@ -181,6 +207,23 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
                 }
 
             }
+
+        }
+    }
+    private fun collectStateFav() {
+        lifecycleScope.launch {
+            viewModel.stateRemoveFavourite.collect {
+                if (it.success != null) {
+                    Constants.customToast(
+                        requireContext(),
+                        requireActivity(),
+                        it.success.toString()
+                    )
+
+                }
+
+            }
+
         }
     }
 
@@ -316,29 +359,29 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val action = BookFragmentDirections.actionBookFragmentSelf(
-             adapter.currentList[position]
+            adapter.currentList[position]
         )
         findNavController().navigate(action)
     }
 
-    private fun collectRecommend(){
-        lifecycleScope.launch{
+    private fun collectRecommend() {
+        lifecycleScope.launch {
             viewModel.getItemBasedRecommend(data.bookObject.title.toString())
 
-            viewModel.stateRecommend.collect{
+            viewModel.stateRecommend.collect {
                 binding.shimmerRecyclerRecommendation.startShimmerAnimation()
                 binding.shimmerRecyclerRecommendation.isVisible = it.isLoading
-                if (it.isLoading){
+                if (it.isLoading) {
                     binding.shimmerRecyclerRecommendation.startShimmerAnimation()
 
-                }else{
+                } else {
                     binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
 
                 }
 
 //                binding.progress.isVisible = it.isLoading
-                Log.e( "bind: ",it.allBooks.toString() )
-                if (!it.allBooks.isNullOrEmpty()){
+                Log.e("bind: ", it.allBooks.toString())
+                if (!it.allBooks.isNullOrEmpty()) {
                     adapter.submitList(it.allBooks)
                     binding.recyclerViewRecommend.adapter = adapter
                 }
@@ -347,7 +390,7 @@ class BookFragment : Fragment() , BookListsAdapter.OnItemClickListener {
     }
 
 
-    private fun addToCart(isbn: String){
+    private fun addToCart(isbn: String) {
         binding.btnAddToCart.setOnClickListener {
             val intent = Intent(Intent.ACTION_WEB_SEARCH)
             intent.putExtra(SearchManager.QUERY, " ${isbn} buy")
