@@ -21,7 +21,7 @@
                 android:id="@+id/imgLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:src="@drawable/logo4"
+                android:src="@drawable/logo5"
                 app:layout_constraintDimensionRatio="4:1"
                 app:layout_constraintEnd_toEndOf="@id/pathTop"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -30,45 +30,22 @@
                 app:tint="@color/primary_gray" />
 
             <TextView
-                android:id="@+id/txtWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins"
-                android:text="@string/welcome_back"
-                android:textColor="@color/primary_gray"
-                android:textSize="@dimen/_25ssp"
-                app:layout_constraintEnd_toEndOf="@+id/imgLogo"
-                app:layout_constraintStart_toStartOf="@+id/imgLogo"
-                app:layout_constraintTop_toBottomOf="@id/imgLogo" />
-
-            <TextView
                 android:id="@+id/txtLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="@string/create_your_account"
                 android:textColor="@color/primary_gray"
-                android:textSize="@dimen/_15ssp"
+                android:textSize="@dimen/_25ssp"
                 app:layout_constraintEnd_toEndOf="@+id/imgLogo"
                 app:layout_constraintStart_toStartOf="@+id/imgLogo"
-                app:layout_constraintTop_toBottomOf="@id/txtWelcome" />
-
-            <ImageView
-                android:id="@+id/img1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_16sdp"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
-                android:src="@drawable/tree"
-                app:layout_constraintEnd_toStartOf="@id/txtLogin"
-                app:layout_constraintTop_toTopOf="@id/txtLogin" />
+                app:layout_constraintTop_toBottomOf="@id/imgLogo" />
 
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                app:layout_constraintTop_toBottomOf="@id/img1"
+                app:layout_constraintTop_toBottomOf="@id/txtLogin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/photo1"

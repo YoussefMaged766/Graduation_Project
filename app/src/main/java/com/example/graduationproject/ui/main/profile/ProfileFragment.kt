@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -65,8 +69,9 @@ class ProfileFragment : Fragment() {
     lateinit var loadFileCamera: ActivityResultLauncher<Intent>
     private lateinit var dataStore: DataStore<Preferences>
     val viewModel by viewModels<ProfileViewModel>()
-
     val viewModel2 by viewModels<SignUpViewModel>()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +115,7 @@ class ProfileFragment : Fragment() {
         binding.btnCamera.setOnClickListener {
             handelPermission()
         }
+
         getProfile()
     }
 
@@ -265,12 +271,14 @@ class ProfileFragment : Fragment() {
                 binding.btnEditProfile.text = "Save Changes"
                 binding.txtName.isEnabled = true
                 binding.txtEmail.isEnabled = true
+                Log.e("editProfile: ","aloo" )
 
             } else {
                 binding.btnCamera.visibility = View.GONE
                 binding.btnEditProfile.text = "Edit Profile"
                 binding.txtName.isEnabled = false
                 binding.txtEmail.isEnabled = false
+                Log.e("editProfile: ","aloo2" )
                 updateProfile()
             }
         }

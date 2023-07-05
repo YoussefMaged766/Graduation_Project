@@ -7,18 +7,19 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:fitsSystemWindows="true"
+    app:layoutDescription="@xml/fragment_profile_scene"
     tools:context=".ui.main.profile.ProfileFragment">
 
     <EditText
         android:id="@+id/txtName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16sdp"
         android:enabled="false"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/_20ssp"
-        android:layout_margin="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnEditProfile"
         tools:text="Youssef Maged" />
@@ -27,15 +28,15 @@
         android:id="@+id/txtEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:autoSizeTextType="uniform"
         android:enabled="false"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_16sdp"
         app:layout_collapseMode="pin"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtName"
         tools:text="Email" />
@@ -44,11 +45,11 @@
         android:id="@+id/imgProfile"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="@dimen/_32sdp"
         android:src="@drawable/photo1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/_32sdp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCamera"

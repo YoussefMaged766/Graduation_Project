@@ -437,7 +437,6 @@ class SignUpFragment : Fragment() {
         val an2 = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb_edit_text)
         binding.apply {
             imgLogo.startAnimation(an)
-            txtWelcome.startAnimation(an)
             txtLogin.startAnimation(an)
             txtFirstNameContainer.startAnimation(an2)
             txtEmailContainer.startAnimation(an2)

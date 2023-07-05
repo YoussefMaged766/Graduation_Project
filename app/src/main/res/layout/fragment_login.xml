@@ -13,7 +13,7 @@
         android:id="@+id/imgLogo"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/logo4"
+        android:src="@drawable/logo5"
         app:tint="@color/primary_gray"
         app:layout_constraintTop_toBottomOf="@+id/pathTop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,16 +47,7 @@
         app:layout_constraintStart_toStartOf="@+id/imgLogo"
         app:layout_constraintTop_toBottomOf="@id/txtWelcome" />
 
-    <ImageView
-        android:id="@+id/img1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_16sdp"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        android:src="@drawable/tree"
-        app:layout_constraintEnd_toStartOf="@id/txtLogin"
-        app:layout_constraintTop_toTopOf="@id/txtLogin" />
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtEmailContainer"
@@ -72,7 +63,7 @@
         app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img1"
+        app:layout_constraintTop_toBottomOf="@id/txtLogin"
         app:endIconTint="@color/cardview_dark_background"
         android:background="@drawable/edittext_border"
         >
