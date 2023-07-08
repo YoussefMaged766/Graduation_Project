@@ -245,7 +245,7 @@ class ProfileFragment : Fragment() {
                 if (it.userResponse?.results?.image != null) {
                     val imageString = it.userResponse.results.image
                     if (imageString.isNotBlank()) {
-                        Glide.with(requireContext()).load("http://192.168.1.6:3000/$imageString")
+                        Glide.with(requireContext()).load("http://192.168.1.2:3000/$imageString")
                             .into(binding.imgProfile)
                     } else {
                         binding.imgProfile.setImageResource(R.drawable.photo1)
