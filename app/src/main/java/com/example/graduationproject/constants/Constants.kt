@@ -28,8 +28,44 @@ class Constants {
         }
 
         fun String.validatePass(): Boolean {
-            return !(this.isEmpty() || this.length < 6)
+            return !(this.isEmpty() || this.length < 8)
         }
+
+        fun String.checkPass(): Boolean {
+            val symbols = listOf(
+                '!',
+                '@',
+                '#',
+                '$',
+                '%',
+                '^',
+                '&',
+                '*',
+                '(',
+                ')',
+                '_',
+                '+',
+                '-',
+                '=',
+                '{',
+                '}',
+                '[',
+                ']',
+                '|',
+                ':',
+                ';',
+                '<',
+                '>',
+                ',',
+                '.',
+                '?',
+                '/'
+            )
+            val hasLetter = this.any { it.isLetter() && it.isUpperCase() }
+            val hasNumber = this.any { it.isDigit() }
+            return hasLetter && hasNumber && this.all { it.isLetter() || it.isDigit() || it in symbols }
+        }
+
 
         fun String.validateFirstname(): Boolean {
             return !(this.isEmpty() || this.length < 3)
@@ -57,21 +93,21 @@ class Constants {
 
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("save")
         lateinit var dialog: Dialog
-       fun showCustomAlertDialog(
-           activity: Activity,
+        fun showCustomAlertDialog(
+            activity: Activity,
             layout: Int,
             checkCancel: Boolean,
-            ) {
-           if (!activity.isFinishing && !activity.isDestroyed) {
-               dialog = Dialog(activity)
-               dialog.setContentView(layout)
-               val loader: CamomileSpinner = dialog.findViewById(R.id.progress)
-               loader.start()
-               dialog.setCancelable(checkCancel)
+        ) {
+            if (!activity.isFinishing && !activity.isDestroyed) {
+                dialog = Dialog(activity)
+                dialog.setContentView(layout)
+                val loader: CamomileSpinner = dialog.findViewById(R.id.progress)
+                loader.start()
+                dialog.setCancelable(checkCancel)
 
-               dialog.show()
+                dialog.show()
 
-           }
+            }
         }
 
         fun showRatingAlertDialog(
@@ -100,6 +136,7 @@ class Constants {
 
             }
         }
+
         fun hideCustomAlertDialog() {
             try {
                 if (::dialog.isInitialized && dialog.isShowing) {
@@ -107,14 +144,14 @@ class Constants {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e( "hideCustomAlertDialog: ",e.message.toString() )
+                Log.e("hideCustomAlertDialog: ", e.message.toString())
             }
 
 
         }
 
-       const val userToken = "userToken"
-        const val userId="userId"
+        const val userToken = "userToken"
+        const val userId = "userId"
         const val CAMERA_REQUEST_CODE = 1
         const val GALLERY_REQUEST_CODE = 2
     }

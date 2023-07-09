@@ -115,10 +115,7 @@ class LoginFragment : Fragment() {
                         requireActivity(),
                         it.success.toString()
                     )
-                    handleCheckBox(it.userLogin?.token.toString())
-                    saveUserId(Constants.userId, it.userLogin?.userId.toString())
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
+                }
                     if (it.error != null) {
                         Constants.customToast(
                             requireContext(),
@@ -126,7 +123,14 @@ class LoginFragment : Fragment() {
                             it.error.toString()
                         )
                     }
-                }
+
+
+                    handleCheckBox(it.userLogin?.token.toString())
+                    saveUserId(Constants.userId, it.userLogin?.userId.toString())
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+
+
 
 
 

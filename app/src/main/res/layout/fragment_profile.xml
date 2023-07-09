@@ -10,6 +10,14 @@
     app:layoutDescription="@xml/fragment_profile_scene"
     tools:context=".ui.main.profile.ProfileFragment">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="false"
+        android:id="@+id/progressBar"
+        />
+
     <EditText
         android:id="@+id/txtName"
         android:layout_width="0dp"

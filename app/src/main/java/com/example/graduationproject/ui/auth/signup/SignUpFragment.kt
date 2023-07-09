@@ -38,6 +38,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.checkPass
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validateFirstname
@@ -379,22 +380,26 @@ class SignUpFragment : Fragment() {
 
     private fun userDataValidation(user: User): Boolean {
         if (user.email!!.validateEmail() && user.password!!.validatePass() && user.password == user.confirmPassword
-            && user.firstName?.validateFirstname()!! && user.lastName?.validateLastname()!!
+            && user.firstName?.validateFirstname()!! && user.lastName?.validateLastname()!!&& user.password.checkPass()
         ) {
             return true
         }
         if (!user.email.validateEmail()) binding.txtEmailContainer.error =
             "Please enter a valid E-mail"
-        if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
-            "password should be at least 6 letters or numbers"
-        if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
-            "confirm password is not equal to password "
-        if (!user.firstName?.validateFirstname()!!) binding.txtFirstNameContainer.error =
+         if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
+            "password should be at least 8 letters or numbers"
+
+       else if (!user.password.checkPass()) binding.txtPasswordContainer.error =
+            "password should have UpperCase letters, symbols and numbers"
+
+//        if (!user.confirmPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
+//            "confirm password is not equal to password "
+          if (!user.firstName?.validateFirstname()!!) binding.txtFirstNameContainer.error =
             "Firstname should be at least 3 letters "
 
-        if (!user.lastName?.validateLastname()!!) binding.txtLastNameContainer.error =
+          if (!user.lastName?.validateLastname()!!) binding.txtLastNameContainer.error =
             "Lastname should be at least 4 letters "
-        if (user.password != user.confirmPassword) binding.txtPasswordConfirmContainer.error =
+          if (user.password != user.confirmPassword) binding.txtPasswordConfirmContainer.error =
             "confirm password is not equal to password "
 
         binding.txtEmail.doOnTextChanged { _, _, _, _ ->

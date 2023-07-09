@@ -28,6 +28,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -210,16 +211,21 @@ class ProfileFragment : Fragment() {
                     Toast.makeText(requireContext(), it.error.toString(), Toast.LENGTH_SHORT).show()
                 }
 
-                if (it.isLoading) {
-                    Constants.showCustomAlertDialog(
-                        requireActivity(),
-                        R.layout.custom_alert_dailog,
-                        false
-                    )
-                } else {
-                    Constants.hideCustomAlertDialog()
-                }
 
+                lifecycleScope.launch {
+
+//                    if (it.isLoading) {
+//                        Constants.showCustomAlertDialog(
+//                            requireActivity(),
+//                            R.layout.custom_alert_dailog,
+//                            false
+//                        )
+//                    } else {
+//                        Log.e( "updateProfile: ", it.isLoading.toString() )
+//                        Constants.hideCustomAlertDialog()
+//                    }
+                    binding.progressBar.isIndeterminate = it.isLoading
+                }
             }
         }
     }

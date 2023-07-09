@@ -81,16 +81,13 @@ class RecommendationFragment : Fragment(), BookListsAdapter.OnItemClickListener 
                             binding.shimmerRecyclerRecommendation.startShimmerAnimation()
                             binding.shimmerRecyclerRecommendation.visibility = View.VISIBLE
                             binding.rvRecommendation.visibility = View.GONE
-
-                        } else {
+                        }
+                        else {
                             binding.shimmerRecyclerRecommendation.stopShimmerAnimation()
                             binding.shimmerRecyclerRecommendation.visibility = View.GONE
                             binding.rvRecommendation.visibility = View.VISIBLE
                         }
                     }
-
-
-
                 } else {
                     Log.e("collectRecommendationState: ", it.recommendation?.updatedAt.toString())
                     adapter.submitList(it.recommendation?.results)
@@ -107,7 +104,6 @@ class RecommendationFragment : Fragment(), BookListsAdapter.OnItemClickListener 
                         binding.shimmerRecyclerRecommendation.visibility = View.GONE
                         binding.rvRecommendation.visibility = View.VISIBLE
                     }
-
                 }
             }
 
