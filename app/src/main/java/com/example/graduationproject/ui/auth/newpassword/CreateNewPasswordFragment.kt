@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.graduationproject.R
 import com.example.graduationproject.constants.Constants
+import com.example.graduationproject.constants.Constants.Companion.checkPass
 import com.example.graduationproject.constants.Constants.Companion.dataStore
 import com.example.graduationproject.constants.Constants.Companion.validateEmail
 import com.example.graduationproject.constants.Constants.Companion.validateFirstname
@@ -150,8 +151,12 @@ class CreateNewPasswordFragment : Fragment() {
             return true
         }
 
-        if (!user.password!!.validatePass()) binding.txtPasswordContainer.error =
-            "password should be at least 6 letters or numbers"
+        if (!user.password.validatePass()) binding.txtPasswordContainer.error =
+            "password should be at least 8 letters or numbers"
+
+        else if (!user.password.checkPass()) binding.txtPasswordContainer.error =
+            "password should have UpperCase letters, symbols and numbers"
+
         if (!user.newPassword?.validatePass()!!) binding.txtPasswordConfirmContainer.error =
             "confirm password is not equal to password "
 

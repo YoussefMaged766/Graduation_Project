@@ -437,6 +437,7 @@ class SignUpFragment : Fragment() {
         }
     }
 
+
     private fun animation() {
         val an = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb)
         val an2 = AnimationUtils.loadAnimation(requireContext(), R.anim.ftb_edit_text)

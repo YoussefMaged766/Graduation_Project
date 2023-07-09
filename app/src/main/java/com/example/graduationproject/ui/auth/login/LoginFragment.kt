@@ -115,6 +115,10 @@ class LoginFragment : Fragment() {
                         requireActivity(),
                         it.success.toString()
                     )
+                    saveToken(Constants.userToken, it.userLogin?.token.toString())
+                    saveUserId(Constants.userId, it.userLogin?.userId.toString())
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
                 }
                     if (it.error != null) {
                         Constants.customToast(
@@ -124,25 +128,25 @@ class LoginFragment : Fragment() {
                         )
                     }
 
-
-                    handleCheckBox(it.userLogin?.token.toString())
-                    saveUserId(Constants.userId, it.userLogin?.userId.toString())
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
-
-
-
-
-
                 if (it.isLoading) {
-                        Constants.showCustomAlertDialog(
-                            requireActivity(),
-                            R.layout.custom_alert_dailog,
-                            false
-                        )
-                    } else {
-                        Constants.hideCustomAlertDialog()
-                    }
+                    Constants.showCustomAlertDialog(
+                        requireActivity(),
+                        R.layout.custom_alert_dailog,
+                        false
+                    )
+                } else {
+                    Constants.hideCustomAlertDialog()
+                }
+
+
+//                    handleCheckBox(it.userLogin?.token.toString())
+
+
+
+
+
+
+
 
             }
         }
