@@ -104,7 +104,11 @@ class CreateNewPasswordFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 viewModel.progress.collectLatest {
 //                    binding.frameLoading.isVisible = it
-                    if (it)   Constants.showCustomAlertDialog(requireActivity(),R.layout.custom_alert_dailog,false)
+                    if (it) Constants.showCustomAlertDialog(
+                        requireActivity(),
+                        R.layout.custom_alert_dailog,
+                        false
+                    )
                     else Constants.hideCustomAlertDialog()
                     Log.i(ContentValues.TAG, "collectProgress: $it")
                 }
@@ -145,15 +149,13 @@ class CreateNewPasswordFragment : Fragment() {
     }
 
     private fun userDataValidation(user: User): Boolean {
-        if (user.password!!.validatePass() && user.password == user.newPassword
-
+        if (user.password!!.validatePass() && user.password == user.newPassword && user.password.checkPass()
         ) {
             return true
         }
 
         if (!user.password.validatePass()) binding.txtPasswordContainer.error =
             "password should be at least 8 letters or numbers"
-
         else if (!user.password.checkPass()) binding.txtPasswordContainer.error =
             "password should have UpperCase letters, symbols and numbers"
 
